@@ -149,8 +149,19 @@
         </div>
       </div>
 
-      <div class="field"><label>企业状态</label>
-        <select id="c_status"><option value="正常">正常</option><option value="去向不明">去向不明</option><option value="破产清算">破产清算</option><option value="营业执照注销">营业执照注销</option><option value="其他">其他</option></select>
+      <div class="field full">
+        <label>企业状态</label>
+        <div class="chips" id="statusMainGroup" style="margin-bottom:6px;">
+          <label class="chip"><input type="radio" name="statusMain" value="正常"><span>正常</span></label>
+          <label class="chip"><input type="radio" name="statusMain" value="异常"><span>异常</span></label>
+        </div>
+        <div class="chips" id="statusAbnormalGroup" style="display:none;padding-left:16px;">
+          <label class="chip"><input type="checkbox" value="去向不明"><span>去向不明</span></label>
+          <label class="chip"><input type="checkbox" value="向法院申请破产清算阶段"><span>向法院申请破产清算阶段</span></label>
+          <label class="chip"><input type="checkbox" value="营业执照已注销但生产许可未注销"><span>营业执照已注销但生产许可未注销</span></label>
+          <label class="chip"><input type="checkbox" value="营业执照已注销但生产备案未取消"><span>营业执照已注销但生产备案未取消</span></label>
+          <label class="chip"><input type="checkbox" value="其他"><span>其他</span></label>
+        </div>
       </div>
       <div class="field"><label>生产状态</label>
         <select id="c_prodstatus"><option value="连续生产">连续生产</option><option value="一年内间歇性生产">一年内间歇性生产</option><option value="连续停产一年以上">连续停产一年以上</option></select>
@@ -207,6 +218,20 @@
         <label class="chip"><input type="checkbox" value="__日内现场复查"><span>___日内现场复查</span></label>
         <input id="opt_rectdays" type="number" inputmode="numeric" placeholder="天数" style="width:90px;min-height:42px;font-size:15px;border:1.5px solid #c7d2e2;border-radius:9px;padding:8px;margin:0 4px;">
         <label class="chip"><input type="checkbox" value="其他"><span>其他</span></label>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:14px;">
+      <label>评估依据(盖章版,默认全部勾选,可取消)</label>
+      <div id="opt_basis" style="display:flex;flex-direction:column;gap:8px;">
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="2014年第64号" checked><span>医疗器械生产质量管理规范(2014年第64号)</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="无菌" checked><span>医疗器械生产质量管理规范附录无菌医疗器械</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="植入" checked><span>医疗器械生产质量管理规范附录植入性医疗器械</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="IVD" checked><span>医疗器械生产质量管理规范附录体外诊断试剂</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="义齿" checked><span>医疗器械生产质量管理规范附录定制式义齿</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="软件" checked><span>医疗器械生产质量管理规范附录独立软件</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="2025年第107号" checked><span>医疗器械生产质量管理规范(2025年第107号)</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="其他"><span>其他</span></label>
+        <input id="basisOther" type="text" placeholder="其他评估依据(选填)" style="width:100%;max-width:420px;min-height:40px;font-size:15px;border:1.5px solid #c7d2e2;border-radius:9px;padding:8px;">
       </div>
     </div>
     <div class="field" style="margin-bottom:14px;">
@@ -715,6 +740,17 @@ const RISK_TMPL = {
 };
 
 /* ==================== 状态 ==================== */
+const BASIS_ORDER = ["2014年第64号","无菌","植入","IVD","义齿","软件","2025年第107号"];
+const BASIS_LABELS = {
+  "2014年第64号":"医疗器械生产质量管理规范(2014年第64号)",
+  "无菌":"医疗器械生产质量管理规范附录无菌医疗器械",
+  "植入":"医疗器械生产质量管理规范附录植入性医疗器械",
+  "IVD":"医疗器械生产质量管理规范附录体外诊断试剂",
+  "义齿":"医疗器械生产质量管理规范附录定制式义齿",
+  "软件":"医疗器械生产质量管理规范附录独立软件",
+  "2025年第107号":"医疗器械生产质量管理规范(2025年第107号)"
+};
+const CATEGORY_TO_BASIS = { "无菌医疗器械":"无菌", "植入性医疗器械":"植入", "体外诊断试剂":"IVD", "定制式义齿":"义齿", "独立软件":"软件" };
 const STORE_KEY = "gmpTool_v4";
 const DEFAULT_ADVICE = "1、现行GMP不符合项优先落实闭环整改,防范产品质量风险;\n2、结合新版GMP(2025第107号)要求,统筹开展体系升级改造,加强______过程的控制,以按期满足新版法规实施要求。";
 let state = {
@@ -743,7 +779,7 @@ function collectCompany(){
     quality:val("c_quality"), address:val("c_address"), license:val("c_license"), sales:val("c_sales"),
     cert3:val("c_cert3"), cert2:val("c_cert2"), products:val("c_products"), employees:val("c_employees"),
     inspectors:val("c_inspectors"), auditors:val("c_auditors"), contactName:val("c_contactName"), contactPhone:val("c_contactPhone"), contactEmail:val("c_contactEmail"), categories:cats,
-    status:val("c_status"), prodstatus:val("c_prodstatus"), date:val("c_date"), year:val("c_year"),
+    statusMain:(document.querySelector('input[name="statusMain"]:checked')||{}).value||"", statusAbnormal:[...document.querySelectorAll("#statusAbnormalGroup input:checked")].map(e=>e.value), prodstatus:val("c_prodstatus"), date:val("c_date"), year:val("c_year"),
     siteChange:val("c_siteChange"), hasExport:val("c_hasExport"), managerKnow:val("c_managerKnow"),
     plan:val("c_plan"), assessor:val("c_assessor"),
     personnel:[ {dept:val("p1_dept"),name:val("p1_name")},{dept:val("p2_dept"),name:val("p2_name")},{dept:val("p3_dept"),name:val("p3_name")},{dept:val("p4_dept"),name:val("p4_name")} ] };
@@ -751,7 +787,7 @@ function collectCompany(){
 function fillCompany(c){
   const map={name:"c_name",credit:"c_credit",legal:"c_legal",manager:"c_manager",quality:"c_quality",
     address:"c_address",license:"c_license",sales:"c_sales",cert3:"c_cert3",cert2:"c_cert2",products:"c_products",
-    employees:"c_employees",inspectors:"c_inspectors",auditors:"c_auditors",contactName:"c_contactName",contactPhone:"c_contactPhone",contactEmail:"c_contactEmail",status:"c_status",
+    employees:"c_employees",inspectors:"c_inspectors",auditors:"c_auditors",contactName:"c_contactName",contactPhone:"c_contactPhone",contactEmail:"c_contactEmail",
     prodstatus:"c_prodstatus",date:"c_date",year:"c_year",siteChange:"c_siteChange",hasExport:"c_hasExport",
     managerKnow:"c_managerKnow",plan:"c_plan",assessor:"c_assessor"};
   for(const k in map){ const e=$(map[k]); if(e) e.value = c[k]||""; }
@@ -760,6 +796,14 @@ function fillCompany(c){
   document.querySelectorAll("#c_categories input").forEach(e=>{ e.checked = cats.includes(e.value); });
   const p = c.personnel || [];
   ["1","2","3","4"].forEach((n,i)=>{ const d=p[i]||{}; const de=$("p"+n+"_dept"); if(de) de.value = d.dept||""; const ne=$("p"+n+"_name"); if(ne) ne.value = d.name||""; });
+  const sm = c.statusMain || "";
+  if(sm){ const r=document.querySelector('input[name="statusMain"][value="'+sm+'"]'); if(r) r.checked = true; }
+  document.querySelectorAll("#statusAbnormalGroup input").forEach(e=>{ e.checked = (c.statusAbnormal||[]).includes(e.value); });
+  toggleStatusAbnormal();
+}
+function toggleStatusAbnormal(){
+  const sm = (document.querySelector('input[name="statusMain"]:checked')||{}).value;
+  const g = $("statusAbnormalGroup"); if(g) g.style.display = (sm==="异常") ? "flex" : "none";
 }
 function collectFill(){
   return { estYear:val("f_estYear"), manualVersion:val("f_manualVersion"), manualDate:val("f_manualDate"),
@@ -775,7 +819,7 @@ function fillFill(f){
 }
 function collectChecks(){
   const g=(sel)=>[...document.querySelectorAll(sel+":checked")].map(e=>e.value);
-  return { supervision:g("#opt_supervision input"), result:g("#opt_result input"), handling:g("#opt_handling input"), rectification:g("#opt_rectification input"), rectDays:val("opt_rectdays") };
+  return { supervision:g("#opt_supervision input"), result:g("#opt_result input"), handling:g("#opt_handling input"), rectification:g("#opt_rectification input"), rectDays:val("opt_rectdays"), basis:g("#opt_basis input"), basisOther:val("basisOther") };
 }
 function collectFlags(){ return { majorViolation: $("majorViolation").checked }; }
 function fillFlags(f){ f=f||{}; const e=$("majorViolation"); if(e) e.checked = !!f.majorViolation; }
@@ -784,6 +828,9 @@ function fillChecks(c){
   const set=(sel,arr)=>{ document.querySelectorAll(sel+" input").forEach(e=>{ e.checked=(arr||[]).includes(e.value); }); };
   set("#opt_supervision",c.supervision); set("#opt_result",c.result); set("#opt_handling",c.handling); set("#opt_rectification",c.rectification);
   $("opt_rectdays").value=c.rectDays||"";
+  if(c.basis === undefined){ document.querySelectorAll("#opt_basis input").forEach(e=>{ e.checked = (e.value!=="其他"); }); }
+  else { set("#opt_basis", c.basis); }
+  $("basisOther").value = c.basisOther||"";
 }
 function save(){
   state.company=collectCompany(); state.fill=collectFill(); state.checks=collectChecks(); state.flags=collectFlags();
@@ -1046,6 +1093,24 @@ function personnelRows(personnel){
   for(let i=0;i<4;i++){ const p=(personnel&&personnel[i])||{}; rows.push([escHtml(p.dept||""), escHtml(p.name||"")]); }
   return rows;
 }
+function statusHtml(c){
+  const main = c.statusMain || "";
+  if(main === "正常") return "正常";
+  if(main === "异常"){
+    const subs = (c.statusAbnormal || []).filter(Boolean);
+    return subs.length ? ("异常-" + subs.join("、")) : "异常";
+  }
+  return "____";
+}
+function basisHtml(k){
+  const basis = k.basis || [];
+  let html = "";
+  BASIS_ORDER.forEach(v=>{ if(basis.includes(v)) html += "☑ "+escHtml(BASIS_LABELS[v])+"<br>"; });
+  const otherChecked = basis.includes("其他");
+  html += (otherChecked ? "☑ " : "□ ") + "其他:" + (otherChecked ? escHtml(k.basisOther||"____") : "____");
+  html += "<br>注:<br>涉及不符合现行版法规可开具不符合项;<br>不构成不符合项,但企业体系有提升空间可开具建议项;<br>凡涉及不符合新版法规之处均不构成不符合判定,仅开具建议项。";
+  return html;
+}
 function buildReportB(){
   const c=state.company, f=state.fill, k=state.checks, g=autoCalculateGrade();
   const nonConform=state.items.filter(i=>i.ver==="current"&&i.level!=="不构成不符合");
@@ -1069,8 +1134,6 @@ function buildReportB(){
     });
     return subTable(headers, rows, ["6%","22%","72%"]);
   }
-
-  const appendixSel = ["无菌医疗器械","植入性医疗器械","体外诊断试剂","定制式义齿","独立软件"].map(x=>((c.categories||[]).includes(x)?"☑":"□")+ " 医疗器械生产质量管理规范附录"+x).join("<br>");
 
   const effResult = Array.from(new Set([...(k.result||[]), ...autoResultChecks(g.grade)]));
   const effHandling = Array.from(new Set([...(k.handling||[]), ...autoHandlingChecks(g.grade)]));
@@ -1096,9 +1159,9 @@ function buildReportB(){
     ["评估日期", escHtml(fill(c.date))],
     ["产品类别", escHtml(prodCats)],
     ["核查产品范围", escHtml(fill(c.products))+"【注册证号】<br>(仅填写本次现场实际核查的产品及注册证,未核查产品不得填入)"],
-    ["企业状态", "☑ "+escHtml(fill(c.status))+"<br>□ 正常 / □ 异常:□ 去向不明 □ 向法院申请破产清算阶段<br>□ 营业执照已注销但生产许可未注销 □ 营业执照已注销但生产备案未取消 □ 其他"],
+    ["企业状态", escHtml(statusHtml(c))],
     ["生产状态", (c.prodstatus==="连续生产"?"☑":"□")+" 连续生产 "+(c.prodstatus==="一年内间歇性生产"?"☑":"□")+" 一年内间歇性生产 "+(c.prodstatus==="连续停产一年以上"?"☑":"□")+" 连续停产一年以上"],
-    ["评估依据", "医疗器械生产质量管理规范(2014年第64号)<br>"+appendixSel+"<br>医疗器械生产质量管理规范(2025年第107号)<br>其他:____<br>注:<br>涉及不符合现行版法规可开具不符合项;<br>不构成不符合项,但企业体系有提升空间可开具建议项;<br>凡涉及不符合新版法规之处均不构成不符合判定,仅开具建议项。"],
+    ["评估依据", basisHtml(k)],
     ["企业主要人员", subTable(["部门/职务","姓名"], personnelRows(c.personnel), ["30%","70%"])],
     ["总体评估", escHtml("企业成立于"+fill(c.year)+",《医疗器械生产许可证》有效期至"+fill(c.license)+",法定代表人:"+fill(c.legal)+",企业负责人:"+fill(c.manager)+",质量负责人:"+fill(c.quality)+",2025年销售额约"+fill(c.sales)+"余万元,企业主营产品有"+fill(c.products)+",均正常生产。目前生产地址为:"+fill(c.address)+"。本次现场检查覆盖上述核查产品涉及的质量管理体系全流程。企业质量管理体系基本能够/能够有效运行;本次检查共发现现行GMP不符合项 "+n1+" 项,同时对标新版GMP识别 "+n3+" 项改进提升建议。")],
     ["不符合项", para("1.表中所列缺陷仅为评估组此次现场检查发现内容,不代表你公司质量管理体系全部问题。<br>2.本表所列为本评估组本次现场检查发现的不符合项,仅覆盖本次检查范围,不代表企业质量管理体系全部问题。企业签字仅确认报告中事实描述无误,最终行政处置结论由委托药品监管部门确定。<br>3.对所列缺陷有异议的,可与评估组进行沟通,或向评估组织单位提交书面说明。")+itemRows(nonConform,"nc")+para("不符合项共"+n1+"项:其中关键项"+nonConform.filter(i=>i.level==="严重不符合").length+"项,一般项"+nonConform.filter(i=>i.level==="一般不符合").length+"项。")],
@@ -1202,6 +1265,11 @@ function updateProductList(){
   const ps=val("c_products").split(/[、,,;;\s]+/).filter(Boolean);
   $("productList").innerHTML=ps.map(p=>'<option value="'+escHtml(p)+'">').join("");
 }
+function syncBasisFromCategories(){
+  const cats=[...document.querySelectorAll("#c_categories input:checked")].map(e=>e.value);
+  const basisValues = cats.map(c=>CATEGORY_TO_BASIS[c]).filter(Boolean);
+  document.querySelectorAll("#opt_basis input").forEach(e=>{ if(basisValues.includes(e.value)) e.checked = true; });
+}
 function resetMatchBoxes(){
   $("matchA_result").innerHTML='<div class="mtitle">现行版匹配(指导原则X.X.X · 含条款原文)</div><div class="empty">点击「智能匹配现行版」或「浏览完整条款库」选择条款。</div>';
   $("matchB_result").innerHTML='<div class="mtitle">新版GMP匹配(第X条)</div><div class="empty">点击「智能匹配新版」或「浏览新版条款库」选择条款。</div>';
@@ -1283,6 +1351,8 @@ function bindEvents(){
     el.addEventListener("change", ()=>{ save(); renderReports(); });
   });
   $("appendixFilter").addEventListener("change", ()=>{ resetMatchBoxes(); if($("clauseModal").style.display==="block" && clauseMode==="current") renderClauseList($("clauseSearch").value); });
+  document.querySelectorAll('input[name="statusMain"]').forEach(r=>r.addEventListener("change", ()=>{ toggleStatusAbnormal(); }));
+  document.querySelectorAll("#c_categories input").forEach(el=>el.addEventListener("change", ()=>{ syncBasisFromCategories(); save(); renderReports(); }));
   $("exportBackup_btn").addEventListener("click", exportBackup);
   $("importBackup_btn").addEventListener("click", ()=> $("importFile").click());
   $("importFile").addEventListener("change", (e)=>{ if(e.target.files && e.target.files[0]) importBackup(e.target.files[0]); e.target.value=""; });

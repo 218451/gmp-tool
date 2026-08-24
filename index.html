@@ -313,6 +313,7 @@
         <div class="bar">
           <button class="btn small" id="copyA_btn">📋 复制内容</button>
           <button class="btn small secondary" id="exportA_btn">⬇️ 导出为TXT</button>
+          <button class="btn small success" id="exportWordA_btn">📄 导出不给企业版Word</button>
         </div>
       </div>
       <div class="report-col">
@@ -321,6 +322,7 @@
         <div class="bar">
           <button class="btn small" id="copyB_btn">📋 复制内容</button>
           <button class="btn small secondary" id="exportB_btn">⬇️ 导出为TXT</button>
+          <button class="btn small success" id="exportWordB_btn">📄 导出企业盖章版Word</button>
         </div>
       </div>
     </div>
@@ -816,6 +818,163 @@ function renderReports(){
   $("reportB").value = buildReportB();
 }
 
+/* ==================== Word 导出 ==================== */
+function wordDoc(title, bodyHtml){
+  return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+    + '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
+    + '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->'
+    + '<style>'
+    + '@page{size:21cm 29.7cm;margin:2.54cm 3.18cm;}'
+    + 'body{font-family:"宋体","SimSun",serif;font-size:14pt;line-height:1.6;color:#000;}'
+    + 'h1{font-family:"黑体","SimHei",sans-serif;font-size:22pt;text-align:center;margin:0 0 14pt 0;}'
+    + 'h2{font-family:"黑体","SimHei",sans-serif;font-size:14pt;margin:12pt 0 6pt 0;font-weight:bold;}'
+    + 'h3{font-family:"黑体","SimHei",sans-serif;font-size:14pt;margin:8pt 0 4pt 0;font-weight:bold;}'
+    + 'p{margin:4pt 0;}'
+    + 'table{border-collapse:collapse;width:100%;margin:6pt 0;}'
+    + 'table,th,td{border:1px solid #000;}'
+    + 'th,td{padding:5pt;font-size:12pt;vertical-align:top;word-wrap:break-word;}'
+    + 'th{font-weight:bold;background:#f2f2f2;}'
+    + '.cb{white-space:nowrap;}'
+    + '</style></head><body>'
+    + '<h1>'+escHtml(title)+'</h1>'
+    + bodyHtml
+    + '</body></html>';
+}
+function exportWordDoc(html, filename){
+  const blob = new Blob([html], {type:'application/msword'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },100);
+  toast('已导出 '+filename);
+}
+function radioSpans(options, selected){
+  return options.map(opt=>'<span class="cb">'+(selected===opt?'☑':'□')+' '+escHtml(opt)+'</span>').join('　');
+}
+function checkSpans(options, selectedArr){
+  return options.map(opt=>'<span class="cb">'+((selectedArr||[]).includes(opt)?'☑':'□')+' '+escHtml(opt)+'</span>').join('　');
+}
+function kvTable(rows){
+  const trs = rows.map(r=>'<tr><td style="width:28%;font-weight:bold;">'+escHtml(r[0])+'</td><td>'+escHtml(r[1]==null?'':r[1])+'</td></tr>').join('');
+  return '<table>'+trs+'</table>';
+}
+function gradingTable(){
+  const head='<tr><th style="width:12%;">评级</th><th>不符合项数量和风险点</th><th style="width:9%;">规范性</th><th style="width:12%;">真实性</th><th style="width:12%;">有效性</th></tr>';
+  const data=[
+    ['A类（优）','同时满足：1.严重不符合项=0；2.不符合项数量≤5个；3.风险点≤3个','好','无真实性问题','体系有效'],
+    ['B类','同时满足：1.严重不符合项=0；2.满足其一（总不符合项＞5个或风险点＞3个）；3.总不符合项≤10个、风险点≤5个','良','无真实性问题','体系基本有效'],
+    ['C类','满足任意1条即判定C：1.关键不符合项≥1个；2.总不符合项＞10个；3.风险点＞5个','差','有真实性问题','有效性差'],
+    ['D类（差）','有重大违法行为，如无证生产、隐瞒产品质量问题，并不进行召回（立即通知相关行政监管部门）','—','—','—']
+  ];
+  const trs=data.map(r=>'<tr><td style="text-align:center;font-weight:bold;">'+escHtml(r[0])+'</td><td>'+escHtml(r[1])+'</td><td style="text-align:center;">'+escHtml(r[2])+'</td><td style="text-align:center;">'+escHtml(r[3])+'</td><td style="text-align:center;">'+escHtml(r[4])+'</td></tr>').join('');
+  return '<table>'+head+trs+'</table>';
+}
+function nonconformTable(arr){
+  if(!arr.length) return '<p>（无）</p>';
+  const head='<tr><th style="width:8%;">序号</th><th style="width:24%;">条款号</th><th>不符合项描述</th><th style="width:14%;">严重程度</th></tr>';
+  const trs=arr.map((i,idx)=>'<tr><td style="text-align:center;">'+(idx+1)+'</td><td>'+escHtml((i.levelA==="严重不符合"?"*":"")+i.clauseA)+'</td><td>'+escHtml(i.desc)+(i.product?('（'+escHtml(i.product)+'）'):'')+'</td><td style="text-align:center;">'+escHtml(i.levelA)+'</td></tr>').join('');
+  return '<table>'+head+trs+'</table>';
+}
+function suggestTable(arr, keyFn){
+  if(!arr.length) return '<p>（无）</p>';
+  const head='<tr><th style="width:8%;">序号</th><th style="width:24%;">条款号</th><th>建议项描述</th></tr>';
+  const trs=arr.map((i,idx)=>'<tr><td style="text-align:center;">'+(idx+1)+'</td><td>'+escHtml(keyFn(i))+'</td><td>'+escHtml(i.desc)+(i.product?('（'+escHtml(i.product)+'）'):'')+'</td></tr>').join('');
+  return '<table>'+head+trs+'</table>';
+}
+
+function buildReportA_HTML(){
+  const c=state.company, k=state.checks;
+  const keyN = state.items.filter(i=>i.levelA==="严重不符合").length;
+  const genN = state.items.filter(i=>i.levelA==="一般不符合").length;
+  const curN = state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA).length;
+  const newN = state.items.filter(i=>i.clauseB).length;
+  const total = keyN+genN+curN+newN;
+  let h='';
+  h += '<h2>表头信息</h2>';
+  h += kvTable([["企业名称",c.name],["生产地址",c.address],["评估产品",c.products],["评估日期",c.date],["评估人员",c.assessor]]);
+  h += '<h2>一、总体评价</h2>';
+  h += '<p>'+escHtml(fill(c.name)+"成立于"+fill(c.year)+"年，持有III类医疗器械注册证"+fill(c.cert3)+"张、II类医疗器械注册证"+fill(c.cert2)+"张，主营产品为"+fill(c.products)+"，生产许可证有效期至"+fill(c.license)+"。法定代表人为"+fill(c.legal)+"，企业负责人为"+fill(c.manager)+"，质量负责人为"+fill(c.quality)+"，生产地址位于"+fill(c.address)+"。2025年销售额约"+fill(c.sales)+"万元。")+'</p>';
+  h += '<p>'+escHtml("企业于2022年根据ISO 13485标准和相应法律法规要求建立了质量管理体系，于2024年11月5日发布了A/3版质量手册。组织能按策划要求定期开展“内审和管理评审”活动，企业于2025-11-12~13完成最近一次内审，本次内审发现2项不符合，对不符合进行了整改。管理评审改进计划也在按计划实施，最近一次管理评审于2025-12-18实施，上次管理评审生产的改进项，均已经完成改进。组织在质量手册中制定了“质量方针”：满足并努力超越顾客的最大需求；制定了公司层级的“质量目标”，并将质量目标分解到了各部门。本次抽查产品为定制式固定义齿（注册证编号：沪械注准20232170130），证书有效期至2028年5月16日。")+'</p>';
+  h += '<p>'+escHtml("新版《医疗器械生产质量管理规范》（2025年第107号）（以下简称为“新版GMP”）实施情况：企业收集了新版GMP法规，已经完成了对其的宣贯和培训，输出了差距分析报告，按照新版GMP的要求编制了A/5版质量手册，预计在2026年9月进行发布实施，确保2026年11月1日之前满足实施要求。")+'</p>';
+  h += '<p>'+escHtml("企业目前有"+fill(c.employees)+"人，其中检验员"+fill(c.inspectors)+"人，内审员有"+fill(c.auditors)+"人。企业目前有6位大专学历人员，暂无本科学历的管理人员，员工上岗前都通过岗位培训，年度的培训计划包含了法律法规、不良事件等相关的培训要求。对检验员岗位和关键岗位人员都进行了任命。")+'</p>';
+  h += '<p>'+escHtml("企业已建立并运行符合现行版《医疗器械生产质量管理规范》（2014年第64号）要求的质量管理体系。人员情况：现有员工"+fill(c.employees)+"人，其中检验员"+fill(c.inspectors)+"人。")+'</p>';
+  h += '<p>内销/外销情况：________________________________</p>';
+  h += '<h2>新版GMP实施情况</h2>';
+  h += '<p>'+escHtml("针对新版《医疗器械生产质量管理规范》（2025年第107号），企业已收集相关法规、完成宣贯培训、输出差距分析，正在编制新版质量手册，计划在法规规定期限内满足新版要求。")+'</p>';
+  h += '<h2>本次评估不符合项汇总</h2>';
+  h += '<p>'+escHtml("共"+total+"项，其中关键项"+keyN+"项、一般项"+genN+"项，现行法规建议项"+curN+"项，新版GMP建议项"+newN+"项。")+'</p>';
+  h += '<h2>二、风险点</h2>';
+  h += '<p>'+riskText().split("\n").map(x=>escHtml(x)).join('<br>')+'</p>';
+  h += '<h2>三、企业分类</h2>';
+  h += '<p>'+radioSpans(["A类","B类","C类","D类"], (k.category?k.category+"类":""))+'</p>';
+  h += '<h3>分级判定标准（综合质量管理体系的系统性、规范性、真实性和有效性）</h3>';
+  h += gradingTable();
+  h += '<h2>四、后续监管建议</h2>';
+  h += '<p>'+checkSpans(SUPERVISION, k.supervision)+'</p>';
+  return wordDoc("医疗器械生产质量管理规范检查报告（不给企业版）", h);
+}
+
+function buildReportB_HTML(){
+  const c=state.company, k=state.checks;
+  const nonConform = state.items.filter(i=>i.levelA!=="不构成不符合" && i.clauseA);
+  const sugCur = state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA);
+  const sugNew = state.items.filter(i=>i.clauseB);
+  const n1=nonConform.length, n2=sugCur.length, n3=sugNew.length, total=n1+n2+n3;
+  const CATS=["无菌医疗器械","植入性医疗器械","体外诊断试剂","定制式义齿","独立软件"];
+  let h='';
+  h += '<h2>一、企业基本信息</h2>';
+  h += kvTable([
+    ["企业名称",c.name],["统一社会信用代码",c.credit],["法定代表人",c.legal],
+    ["生产地址",c.address],["联系方式",c.contact],["评估日期",c.date],
+    ["核查产品范围",c.products],["企业状态",c.status],["生产状态",c.prodstatus]
+  ]);
+  h += '<p><b>产品类别：</b>'+checkSpans(CATS, c.categories||[])+'</p>';
+  h += '<p><b>评估依据：</b><span class="cb">☑《医疗器械生产质量管理规范》（2014年第64号）</span>　<span class="cb">☑各适用附录</span>　<span class="cb">☑《医疗器械生产质量管理规范》（2025年第107号）</span></p>';
+  h += '<h2>二、总体评估</h2>';
+  h += '<p>'+escHtml(fill(c.name)+"位于"+fill(c.address)+"，主要生产"+fill(c.products)+"。本次现场检查共发现不符合项及建议项共"+total+"项，其中现行版GMP不符合项"+n1+"项、现行法规建议项"+n2+"项、新版GMP建议项"+n3+"项。企业质量管理体系运行总体情况见下列各表，具体问题详见不符合项及建议项内容。")+'</p>';
+  h += '<h2>三、不符合项（现行版GMP 2014年第64号）</h2>';
+  h += nonconformTable(nonConform);
+  h += '<h2>四、现行法规建议项</h2>';
+  h += suggestTable(sugCur, i=>i.clauseA);
+  h += '<h2>五、新版GMP建议项</h2>';
+  h += suggestTable(sugNew, i=>i.clauseB);
+  h += '<h2>六、评估结果判定</h2>';
+  h += '<p>'+checkSpans(RESULT, k.result)+'</p>';
+  h += '<h2>七、评估后处理意见</h2>';
+  h += '<p>'+checkSpans(HANDLING, k.handling)+'</p>';
+  h += '<h2>八、整改期限</h2>';
+  h += '<p>'
+    + '<span class="cb">'+(k.rectification.includes("30日内提交电子版整改资料")?'☑':'□')+' 30日内提交电子版整改资料</span>　'
+    + '<span class="cb">'+(k.rectification.includes("__日内现场复查")?'☑':'□')+' '+escHtml(fill(k.rectDays))+'日内现场复查</span>　'
+    + '<span class="cb">'+(k.rectification.includes("其他")?'☑':'□')+' 其他</span>'
+    + '</p>';
+  h += '<h2>九、对被评估企业的建议</h2>';
+  h += '<p>'+escHtml("1. 建议企业严格对照《医疗器械生产质量管理规范》（2014年第64号）及各适用附录要求，逐项整改本次检查发现的不符合项，举一反三、全面排查同类问题，确保质量管理体系持续有效运行。")+'</p>';
+  h += '<p>'+escHtml("2. 建议企业提前对标新版《医疗器械生产质量管理规范》（2025年第107号），按计划完成新版质量手册等体系文件的编制与宣贯培训，在规定期限内满足新版法规要求，持续提升质量管理水平。")+'</p>';
+  h += '<h2>十、签字</h2>';
+  h += '<p>评估组成员：____________________________</p>';
+  h += '<p>观察员：____________________________</p>';
+  h += '<p>企业确认（签字/盖章）：____________________________</p>';
+  h += '<p>日期：____________________________</p>';
+  return wordDoc("医疗器械生产质量管理规范现场检查报告（企业盖章版）", h);
+}
+
+function exportWordA(){
+  save();
+  const c=collectCompany();
+  if(!c.name.trim()){ toast("请先填写企业名称"); return; }
+  const date=(c.date||todayStr()).replace(/-/g,"");
+  const fname=c.name.trim()+"_不给企业版报告_"+date+".doc";
+  exportWordDoc(buildReportA_HTML(), fname);
+}
+function exportWordB(){
+  save();
+  const c=collectCompany();
+  if(!c.name.trim()){ toast("请先填写企业名称"); return; }
+  const date=(c.date||todayStr()).replace(/-/g,"");
+  const fname=c.name.trim()+"_企业盖章版报告_"+date+".doc";
+  exportWordDoc(buildReportB_HTML(), fname);
+}
+
 /* ==================== 已录入列表 ==================== */
 function levelPill(l){
   if(l==="严重不符合") return '<span class="pill sev">严重</span>';
@@ -1064,6 +1223,8 @@ function bindEvents(){
   $("copyB_btn").addEventListener("click",()=>copyText($("reportB").value,"企业盖章版已复制"));
   $("exportA_btn").addEventListener("click",()=>exportTxt("GMP检查报告_不给企业版.txt",$("reportA").value));
   $("exportB_btn").addEventListener("click",()=>exportTxt("GMP检查报告_企业盖章版.txt",$("reportB").value));
+  $("exportWordA_btn").addEventListener("click",exportWordA);
+  $("exportWordB_btn").addEventListener("click",exportWordB);
 
   // 汇总库
   $("save_summary_btn").addEventListener("click",()=>{ save(); saveToSummary(); });

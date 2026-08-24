@@ -110,6 +110,26 @@
   .checks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;}
   @media(max-width:720px){ .checks-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));} }
   .checks-grid .chip span{width:100%;text-align:center;padding:9px 8px;}
+  .btn.success{background:var(--ok);}
+  .btn.success:hover{background:#13602a;}
+  .btn.primary{background:var(--blue);}
+  .btn.primary:hover{background:var(--blue-d);}
+  .modal-overlay{position:fixed;inset:0;background:rgba(16,42,67,.55);display:none;align-items:flex-start;justify-content:center;z-index:1000;padding:16px;overflow-y:auto;}
+  .modal-overlay.show{display:flex;}
+  .modal-box{background:#fff;border-radius:14px;width:100%;max-width:1120px;margin:16px auto;box-shadow:0 10px 40px rgba(0,0,0,.25);overflow:hidden;}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);}
+  .modal-head h3{margin:0;font-size:18px;color:var(--blue);}
+  .modal-body{padding:14px 18px 20px;}
+  .summary-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px;}
+  .summary-toolbar .count{font-size:15px;color:var(--muted);font-weight:600;}
+  .tb-select{padding:9px 12px;font-size:14px;border:1.5px solid #c7d2e2;border-radius:9px;background:#fff;color:var(--txt);}
+  .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;}
+  .summary-table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:960px;}
+  .summary-table th,.summary-table td{padding:8px 10px;border-bottom:1px solid #e2e8f2;text-align:left;white-space:nowrap;}
+  .summary-table th{background:#f2f6fc;color:#22303f;font-weight:700;position:sticky;top:0;}
+  .summary-table td{color:#33465e;}
+  .summary-table tr:last-child td{border-bottom:none;}
+  .modal-empty{text-align:center;color:var(--muted);padding:30px 0;font-size:14px;}
 </style>
 </head>
 <body>
@@ -118,6 +138,7 @@
   <header class="top">
     <h1>医疗器械GMP检查报告辅助工具</h1>
     <div class="sub">现场检查辅助 · 数据仅存本机浏览器 · 手机/电脑通用</div>
+    <button class="btn small" id="view_summary_btn" style="margin-top:10px;background:#fff;color:var(--blue);">📋 查看汇总</button>
   </header>
 
   <div class="notice">
@@ -282,6 +303,7 @@
     <h2>⑤ 报告预览与导出</h2>
     <div class="rowbtns" style="margin-bottom:12px;">
       <button class="btn" id="gen_header_btn">📄 生成两份报告首部</button>
+      <button class="btn success" id="save_summary_btn">📊 保存至汇总库</button>
       <button class="btn ghost" id="refresh_btn">🔄 刷新报告</button>
     </div>
     <div class="reports">
@@ -310,6 +332,51 @@
   </section>
 
 </div>
+
+<!-- ==================== 汇总库弹窗 ==================== -->
+<div class="modal-overlay" id="summary_overlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>📋 报告汇总库</h3>
+      <button class="btn small ghost" id="close_summary_btn">✕ 关闭</button>
+    </div>
+    <div class="modal-body">
+      <div class="summary-toolbar">
+        <span class="count" id="summary_count">共 0 家企业已汇总</span>
+        <select class="tb-select" id="summary_filter">
+          <option value="全部">全部分类</option>
+          <option value="A">A类</option>
+          <option value="B">B类</option>
+          <option value="C">C类</option>
+          <option value="D">D类</option>
+        </select>
+        <select class="tb-select" id="summary_sort">
+          <option value="time_desc">按保存时间↓</option>
+          <option value="date_desc">按评估日期↓</option>
+          <option value="date_asc">按评估日期↑</option>
+        </select>
+        <button class="btn small" id="export_csv_btn">⬇️ 导出CSV</button>
+        <button class="btn small secondary" id="export_json_btn">导出JSON</button>
+        <button class="btn small secondary" id="import_json_btn">导入JSON</button>
+        <button class="btn small danger" id="clear_summary_btn">清空汇总</button>
+        <input type="file" id="summary_import_file" accept=".json,application/json" style="display:none;">
+      </div>
+      <div class="table-scroll">
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>企业名称</th><th>评估日期</th><th>分类</th><th>不符合总数</th>
+              <th>严重</th><th>一般</th><th>现行建议</th><th>新版建议</th>
+              <th>主要风险点</th><th>检查人员</th><th>保存时间</th><th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="summary_tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -801,6 +868,137 @@ function exportTxt(filename, text){
   toast("已导出 "+filename);
 }
 
+/* ==================== 汇总库 ==================== */
+const SUMMARY_KEY = "gmp_report_list";
+function escHtml(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function summaryStats(){
+  const keyN = state.items.filter(i=>i.levelA==="严重不符合").length;
+  const genN = state.items.filter(i=>i.levelA==="一般不符合").length;
+  const curN = state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA).length;
+  const newN = state.items.filter(i=>i.clauseB).length;
+  return {keyN, genN, curN, newN, total: keyN+genN+curN+newN};
+}
+function riskTop3(){
+  const nc = state.items.filter(i=>i.levelA!=="不构成不符合" && i.clauseA);
+  if(!nc.length) return "无";
+  const counts = {};
+  nc.forEach(i=>{ const ch = i.chapterA||chapterOfA(i.clauseA); counts[ch]=(counts[ch]||0)+1; });
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  return sorted.map(([ch,n])=>ch+"("+n+")").join("、");
+}
+function collectSummary(){
+  const c = collectCompany();
+  const k = collectChecks();
+  const s = summaryStats();
+  return {
+    name: c.name.trim(), date: c.date, category: k.category,
+    total: s.total, keyN: s.keyN, genN: s.genN, curN: s.curN, newN: s.newN,
+    risk: riskTop3(), assessor: c.assessor,
+    savedAt: new Date().toLocaleString("zh-CN",{hour12:false})
+  };
+}
+function getSummaryList(){
+  try{ const raw=localStorage.getItem(SUMMARY_KEY); if(raw){ const d=JSON.parse(raw); if(Array.isArray(d)) return d; } }catch(e){}
+  return [];
+}
+function setSummaryList(list){ try{ localStorage.setItem(SUMMARY_KEY, JSON.stringify(list)); }catch(e){} }
+function saveToSummary(){
+  const c = collectCompany();
+  if(!c.name.trim() || !c.date){ toast("请先填写企业名称和评估日期"); return; }
+  const list = getSummaryList();
+  const idx = list.findIndex(r=>r.name===c.name.trim());
+  if(idx>=0){
+    if(!confirm("该企业已有汇总记录，是否覆盖？")) return;
+    list[idx] = collectSummary();
+  } else {
+    list.push(collectSummary());
+  }
+  setSummaryList(list);
+  toast("✅ 已保存至汇总库");
+}
+function openSummary(){ renderSummary(); $("summary_overlay").classList.add("show"); }
+function closeSummary(){ $("summary_overlay").classList.remove("show"); }
+function deleteSummary(idx){
+  if(!confirm("确定删除该条记录吗？")) return;
+  const list = getSummaryList(); list.splice(idx,1); setSummaryList(list); renderSummary();
+}
+function renderSummary(){
+  const list = getSummaryList();
+  const filter = $("summary_filter").value;
+  const sort = $("summary_sort").value;
+  let arr = list.map((r,idx)=>({r,idx}));
+  if(filter && filter!=="全部") arr = arr.filter(o=>o.r.category===filter);
+  if(sort==="date_desc") arr.sort((a,b)=>(b.r.date||"").localeCompare(a.r.date||""));
+  else if(sort==="date_asc") arr.sort((a,b)=>(a.r.date||"").localeCompare(b.r.date||""));
+  else if(sort==="time_desc") arr.sort((a,b)=>(b.r.savedAt||"").localeCompare(a.r.savedAt||""));
+  $("summary_count").textContent = "共 "+arr.length+" 家企业已汇总";
+  const tbody = $("summary_tbody");
+  if(!arr.length){ tbody.innerHTML='<tr><td colspan="12" class="modal-empty">暂无汇总记录</td></tr>'; return; }
+  tbody.innerHTML = arr.map(o=>{
+    const r=o.r;
+    return '<tr>'+
+      '<td>'+escHtml(r.name)+'</td>'+
+      '<td>'+escHtml(r.date)+'</td>'+
+      '<td>'+escHtml(r.category||"-")+'</td>'+
+      '<td>'+r.total+'</td>'+
+      '<td>'+r.keyN+'</td>'+
+      '<td>'+r.genN+'</td>'+
+      '<td>'+r.curN+'</td>'+
+      '<td>'+r.newN+'</td>'+
+      '<td>'+escHtml(r.risk)+'</td>'+
+      '<td>'+escHtml(r.assessor)+'</td>'+
+      '<td>'+escHtml(r.savedAt)+'</td>'+
+      '<td><button class="btn small danger" data-del="'+o.idx+'">删除</button></td>'+
+    '</tr>';
+  }).join("");
+  tbody.querySelectorAll("[data-del]").forEach(btn=>{
+    btn.addEventListener("click",()=>deleteSummary(parseInt(btn.getAttribute("data-del"),10)));
+  });
+}
+function exportSummaryCSV(){
+  const list = getSummaryList();
+  if(!list.length){ toast("暂无汇总数据"); return; }
+  const headers = ["企业名称","评估日期","企业分类","不符合项总数","严重不符合项","一般不符合项","现行法规建议项","新版GMP建议项","主要风险点","检查人员","保存时间"];
+  const rows = list.map(r=>[r.name,r.date,r.category,r.total,r.keyN,r.genN,r.curN,r.newN,r.risk,r.assessor,r.savedAt]);
+  const csv = [headers.join(",")].concat(rows.map(row=>row.map(c=>'"'+String(c==null?"":c).replace(/"/g,'""')+'"').join(","))).join("\r\n");
+  const blob = new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href=url; a.download="GMP报告汇总.csv"; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },100);
+  toast("已导出CSV");
+}
+function exportSummaryJSON(){
+  const list = getSummaryList();
+  if(!list.length){ toast("暂无汇总数据"); return; }
+  const blob = new Blob([JSON.stringify(list,null,2)],{type:"application/json;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href=url; a.download="GMP报告汇总.json"; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },100);
+  toast("已导出JSON");
+}
+function importSummaryJSON(){ $("summary_import_file").click(); }
+function handleImportFile(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const d = JSON.parse(reader.result);
+      if(!Array.isArray(d)){ toast("导入失败：文件格式不正确"); return; }
+      const merged = getSummaryList().concat(d);
+      setSummaryList(merged); renderSummary();
+      toast("已导入 "+d.length+" 条记录");
+    }catch(err){ toast("导入失败：JSON解析错误"); }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+}
+function clearSummary(){
+  if(!confirm("确定清空所有汇总数据吗？此操作不可恢复。")) return;
+  if(!confirm("再次确认：清空后无法恢复，确定继续吗？")) return;
+  setSummaryList([]); renderSummary(); toast("已清空汇总数据");
+}
+
 /* ==================== 事件绑定 ==================== */
 function updateProductList(){
   const ps=val("c_products").split(/[、，,;；\s]+/).filter(Boolean);
@@ -866,6 +1064,19 @@ function bindEvents(){
   $("copyB_btn").addEventListener("click",()=>copyText($("reportB").value,"企业盖章版已复制"));
   $("exportA_btn").addEventListener("click",()=>exportTxt("GMP检查报告_不给企业版.txt",$("reportA").value));
   $("exportB_btn").addEventListener("click",()=>exportTxt("GMP检查报告_企业盖章版.txt",$("reportB").value));
+
+  // 汇总库
+  $("save_summary_btn").addEventListener("click",()=>{ save(); saveToSummary(); });
+  $("view_summary_btn").addEventListener("click",openSummary);
+  $("close_summary_btn").addEventListener("click",closeSummary);
+  $("summary_overlay").addEventListener("click",e=>{ if(e.target.id==="summary_overlay") closeSummary(); });
+  $("summary_filter").addEventListener("change",renderSummary);
+  $("summary_sort").addEventListener("change",renderSummary);
+  $("export_csv_btn").addEventListener("click",exportSummaryCSV);
+  $("export_json_btn").addEventListener("click",exportSummaryJSON);
+  $("import_json_btn").addEventListener("click",importSummaryJSON);
+  $("summary_import_file").addEventListener("change",handleImportFile);
+  $("clear_summary_btn").addEventListener("click",clearSummary);
 
   // 清空
   $("clear_btn").addEventListener("click",()=>{

@@ -141,6 +141,7 @@
       <div class="field full"><label>主营产品 <span class="req">*</span></label><input id="c_products" placeholder="多个产品用顿号、逗号或空格分隔，例：医用外科口罩、一次性注射器"></div>
       <div class="field"><label>员工总数</label><input id="c_employees" type="number" inputmode="numeric" placeholder="例：120"></div>
       <div class="field"><label>检验员人数</label><input id="c_inspectors" type="number" inputmode="numeric" placeholder="例：8"></div>
+      <div class="field"><label>内审员人数</label><input id="c_auditors" type="number" inputmode="numeric" placeholder="例：7"></div>
       <div class="field full"><label>联系方式（联系人/电话/邮箱）</label><input id="c_contact" placeholder="例：张三 13800000000 zhangsan@xx.com"></div>
 
       <div class="field full"><label>产品类别（可多选）</label>
@@ -505,14 +506,14 @@ function collectCompany(){
     name:val("c_name"), credit:val("c_credit"), legal:val("c_legal"), manager:val("c_manager"),
     quality:val("c_quality"), address:val("c_address"), license:val("c_license"), sales:val("c_sales"),
     cert3:val("c_cert3"), cert2:val("c_cert2"), products:val("c_products"), employees:val("c_employees"),
-    inspectors:val("c_inspectors"), contact:val("c_contact"), categories:cats, status:val("c_status"),
+    inspectors:val("c_inspectors"), auditors:val("c_auditors"), contact:val("c_contact"), categories:cats, status:val("c_status"),
     prodstatus:val("c_prodstatus"), date:val("c_date"), year:val("c_year"), assessor:val("c_assessor")
   };
 }
 function fillCompany(c){
   const map={name:"c_name",credit:"c_credit",legal:"c_legal",manager:"c_manager",quality:"c_quality",
     address:"c_address",license:"c_license",sales:"c_sales",cert3:"c_cert3",cert2:"c_cert2",products:"c_products",
-    employees:"c_employees",inspectors:"c_inspectors",contact:"c_contact",status:"c_status",prodstatus:"c_prodstatus",date:"c_date",year:"c_year",assessor:"c_assessor"};
+    employees:"c_employees",inspectors:"c_inspectors",auditors:"c_auditors",contact:"c_contact",status:"c_status",prodstatus:"c_prodstatus",date:"c_date",year:"c_year",assessor:"c_assessor"};
   for(const k in map){ const e=$(map[k]); if(e) e.value = c[k]||""; }
   if(!c.date) $("c_date").value = todayStr();
   const cats=c.categories||[];
@@ -639,7 +640,7 @@ function buildReportA(){
     fill(c.name)+"成立于"+fill(c.year)+"年，持有III类医疗器械注册证"+fill(c.cert3)+"张、II类医疗器械注册证"+fill(c.cert2)+"张，主营产品为"+fill(c.products)+"，生产许可证有效期至"+fill(c.license)+"。法定代表人为"+fill(c.legal)+"，企业负责人为"+fill(c.manager)+"，质量负责人为"+fill(c.quality)+"，生产地址位于"+fill(c.address)+"。2025年销售额约"+fill(c.sales)+"万元。",
     "企业于2022年根据ISO 13485标准和相应法律法规要求建立了质量管理体系，于2024年11月5日发布了A/3版质量手册。组织能按策划要求定期开展“内审和管理评审”活动，企业于2025-11-12~13完成最近一次内审，本次内审发现2项不符合，对不符合进行了整改。管理评审改进计划也在按计划实施，最近一次管理评审于2025-12-18实施，上次管理评审生产的改进项，均已经完成改进。组织在质量手册中制定了“质量方针”：满足并努力超越顾客的最大需求；制定了公司层级的“质量目标”，并将质量目标分解到了各部门。本次抽查产品为定制式固定义齿（注册证编号：沪械注准20232170130），证书有效期至2028年5月16日。",
     "新版《医疗器械生产质量管理规范》（2025年第107号）（以下简称为“新版GMP”）实施情况：企业收集了新版GMP法规，已经完成了对其的宣贯和培训，输出了差距分析报告，按照新版GMP的要求编制了A/5版质量手册，预计在2026年9月进行发布实施，确保2026年11月1日之前满足实施要求。",
-    "企业目前有"+fill(c.employees)+"人，其中检验员"+fill(c.inspectors)+"人，内审员有7人。企业目前有6位大专学历人员，暂无本科学历的管理人员，员工上岗前都通过岗位培训，年度的培训计划包含了法律法规、不良事件等相关的培训要求。对检验员岗位和关键岗位人员都进行了任命。",
+    "企业目前有"+fill(c.employees)+"人，其中检验员"+fill(c.inspectors)+"人，内审员有"+fill(c.auditors)+"人。企业目前有6位大专学历人员，暂无本科学历的管理人员，员工上岗前都通过岗位培训，年度的培训计划包含了法律法规、不良事件等相关的培训要求。对检验员岗位和关键岗位人员都进行了任命。",
     "企业已建立并运行符合现行版《医疗器械生产质量管理规范》（2014年第64号）要求的质量管理体系。人员情况：现有员工"+fill(c.employees)+"人，其中检验员"+fill(c.inspectors)+"人。",
     "内销/外销情况：________________________________",
     "",

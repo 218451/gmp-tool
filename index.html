@@ -124,6 +124,9 @@
       <div class="field"><label>生产状态</label>
         <select id="c_prodstatus"><option value="连续生产">连续生产</option><option value="一年内间歇性生产">一年内间歇性生产</option><option value="连续停产一年以上">连续停产一年以上</option></select>
       </div>
+      <div class="field full"><label>重大违法情形</label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" id="majorViolation"><span>存在重大违法行为（如无证生产、隐瞒产品质量问题、不召回）</span></label>
+      </div>
       <div class="field"><label>评估日期</label><input id="c_date" type="date"></div>
       <div class="field"><label>企业成立年份（留空手填）</label><input id="c_year" type="number" inputmode="numeric" placeholder="例：2010"></div>
       <div class="field full"><label>评估人员（姓名）</label><input id="c_assessor" placeholder="例：张三、李四"></div>
@@ -151,13 +154,8 @@
   <section class="card">
     <h2>③ 报告选项 <span class="tag">勾选后自动反映到报告</span></h2>
     <div class="field" style="margin-bottom:14px;">
-      <label>企业分类（单选）</label>
-      <div class="chips" id="opt_category">
-        <label class="chip"><input type="radio" name="cat" value="A"><span>A类</span></label>
-        <label class="chip"><input type="radio" name="cat" value="B"><span>B类</span></label>
-        <label class="chip"><input type="radio" name="cat" value="C"><span>C类</span></label>
-        <label class="chip"><input type="radio" name="cat" value="D"><span>D类</span></label>
-      </div>
+      <label>企业分类（自动计算评级）</label>
+      <div id="gradeDisplay" class="matchbox" style="font-size:15px;"></div>
     </div>
     <div class="field" style="margin-bottom:14px;">
       <label>后续监管建议（可多选）</label>
@@ -250,6 +248,7 @@
         <div class="bar">
           <button class="btn small" id="copyA_btn">📋 复制内容</button>
           <button class="btn small secondary" id="exportA_btn">⬇️ 导出为TXT</button>
+          <button class="btn small secondary" id="wordA_btn">📝 导出为Word</button>
         </div>
       </div>
       <div class="report-col">
@@ -258,6 +257,7 @@
         <div class="bar">
           <button class="btn small" id="copyB_btn">📋 复制内容</button>
           <button class="btn small secondary" id="exportB_btn">⬇️ 导出为TXT</button>
+          <button class="btn small secondary" id="wordB_btn">📝 导出为Word</button>
         </div>
       </div>
     </div>
@@ -621,7 +621,7 @@ const KEYWORD_MAP_A = [
 
 /* ==================== 选项常量 ==================== */
 const SUPERVISION = ["质量保证","机构与人员","厂房设施设备","文件管理","设计开发","采购物料","生产管理","验证确认","质量控制","变更偏差CAPA","委托生产","销售不良事件","新版GMP升级","其他"];
-const RESULT = ["关键性缺陷","系统性缺陷","真实性缺陷","未发现不符合项","存在一般缺陷","存在严重缺陷","涉嫌违法违规","其他"];
+const RESULT = ["关键性缺陷","系统性缺陷","真实性缺陷","未发现不符合项","存在一般缺陷","存在严重缺陷","涉嫌违法违规行为","其他"];
 const RESULT_DESC = {
   "关键性缺陷":"存在可能直接导致产品安全风险的严重缺陷",
   "系统性缺陷":"质量体系层面存在系统性、普遍性问题",
@@ -629,7 +629,7 @@ const RESULT_DESC = {
   "未发现不符合项":"本次评估未发现不符合项",
   "存在一般缺陷":"存在一般不符合项",
   "存在严重缺陷":"存在严重不符合项",
-  "涉嫌违法违规":"涉嫌违反法律法规行为",
+  "涉嫌违法违规行为":"涉嫌违反法律法规行为",
   "其他":"其他情况"
 };
 const HANDLING = ["企业自行整改","现场复查","报告转交药监部门","其他"];
@@ -654,7 +654,8 @@ const STORE_KEY = "gmpTool_v3";
 let state = {
   company: {},
   fill: {},
-  checks: { category:"", supervision:[], result:[], handling:[], rectification:[], rectDays:"" },
+  checks: { supervision:[], result:[], handling:[], rectification:[], rectDays:"" },
+  flags: { majorViolation: false },
   items: []
 };
 
@@ -702,24 +703,24 @@ function fillFill(f){
   for(const k in map){ const e=$(map[k]); if(e) e.value = (f&&f[k])||""; }
 }
 function collectChecks(){
-  const cat=(document.querySelector('input[name="cat"]:checked')||{}).value||"";
   const g=(sel)=>[...document.querySelectorAll(sel+":checked")].map(e=>e.value);
-  return { category:cat, supervision:g("#opt_supervision input"), result:g("#opt_result input"),
+  return { supervision:g("#opt_supervision input"), result:g("#opt_result input"),
     handling:g("#opt_handling input"), rectification:g("#opt_rectification input"), rectDays:val("opt_rectdays") };
 }
+function collectFlags(){ return { majorViolation: $("majorViolation").checked }; }
+function fillFlags(f){ f=f||{}; const e=$("majorViolation"); if(e) e.checked = !!f.majorViolation; }
 function fillChecks(c){
   c=c||{};
-  if(c.category){ const r=document.querySelector('input[name="cat"][value="'+c.category+'"]'); if(r) r.checked=true; }
   const set=(sel,arr)=>{ document.querySelectorAll(sel+" input").forEach(e=>{ e.checked=(arr||[]).includes(e.value); }); };
   set("#opt_supervision",c.supervision); set("#opt_result",c.result); set("#opt_handling",c.handling); set("#opt_rectification",c.rectification);
   $("opt_rectdays").value=c.rectDays||"";
 }
 function save(){
-  state.company=collectCompany(); state.fill=collectFill(); state.checks=collectChecks();
+  state.company=collectCompany(); state.fill=collectFill(); state.checks=collectChecks(); state.flags=collectFlags();
   try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
 }
 function load(){
-  try{ const raw=localStorage.getItem(STORE_KEY); if(raw){ const d=JSON.parse(raw); if(d&&typeof d==="object") state=Object.assign({company:{},fill:{},checks:{},items:[]},d); } }catch(e){}
+  try{ const raw=localStorage.getItem(STORE_KEY); if(raw){ const d=JSON.parse(raw); if(d&&typeof d==="object") state=Object.assign({company:{},fill:{},checks:{},flags:{majorViolation:false},items:[]},d); } }catch(e){}
 }
 
 /* ==================== 条款工具 ==================== */
@@ -806,17 +807,51 @@ function appendixSelections(c){
   const map=[["无菌医疗器械","无菌医疗器械附录"],["植入性医疗器械","植入性医疗器械附录"],["体外诊断试剂","体外诊断试剂附录"],["定制式义齿","定制式义齿附录"],["独立软件","独立软件附录"]];
   return map.map(([cat,label])=> (cats.includes(cat)?"☑":"□")+label );
 }
-function riskText(){
-  const nc=state.items.filter(i=>i.levelA!=="不构成不符合" && i.clauseA);
-  if(!nc.length) return "1. 未发现需重点关注的系统性风险。";
+function getNonconformities(){ return state.items.filter(i=>i.levelA!=="不构成不符合" && i.clauseA); }
+function getRiskPoints(){
+  const nc=getNonconformities();
+  if(!nc.length) return [];
   const counts={};
   nc.forEach(i=>{ const ch=i.chapterA||chapterOfA(i.clauseA); counts[ch]=(counts[ch]||0)+1; });
-  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  return Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3);
+}
+function riskText(){
+  const sorted=getRiskPoints();
   if(!sorted.length) return "1. 未发现需重点关注的系统性风险。";
   return sorted.map(([ch,n],idx)=>{
     const risk=RISK_TMPL[ch]||"需重点关注";
     return "风险点"+(idx+1)+"：现场发现企业"+risk+"；若不及时整改，可能导致生产过程出现偏差，进而影响产品质量；目前暂未发现已造成产品不良后果的情况。";
   }).join("\n");
+}
+
+/* ==================== 企业分类自动评级 ==================== */
+const GRADE_LABEL = { A:"A类（优）", B:"B类（一般）", C:"C类（差）", D:"D类（立即通知）", "待评定":"待评定" };
+function autoCalculateGrade(){
+  const nonconformities=getNonconformities();
+  const severeCount=nonconformities.filter(n=>n.levelA==="严重不符合").length;
+  const totalCount=nonconformities.length;
+  const riskCount=getRiskPoints().length;
+  const hasMajorViolation=!!(state.flags && state.flags.majorViolation);
+  if(hasMajorViolation) return { grade:"D", label:GRADE_LABEL.D, reason:"企业存在重大违法行为" };
+  if(nonconformities.length===0) return { grade:"待评定", label:GRADE_LABEL["待评定"], reason:"尚未录入不符合项，请录入后再进行评级" };
+  if(severeCount===0 && totalCount<=5 && riskCount<=3) return { grade:"A", label:GRADE_LABEL.A, reason:"严重不符合项"+severeCount+"项，总不符合项"+totalCount+"项，风险点"+riskCount+"个 → 符合A类条件" };
+  if(severeCount===0 && totalCount<=10 && riskCount<=5 && (totalCount>5 || riskCount>3)) return { grade:"B", label:GRADE_LABEL.B, reason:"严重不符合项"+severeCount+"项，总不符合项"+totalCount+"项，风险点"+riskCount+"个 → 符合B类条件" };
+  if(severeCount>=1 || totalCount>10 || riskCount>5) return { grade:"C", label:GRADE_LABEL.C, reason:"严重不符合项"+severeCount+"项，总不符合项"+totalCount+"项，风险点"+riskCount+"个 → 符合C类条件" };
+  return { grade:"待评定", label:GRADE_LABEL["待评定"], reason:"请录入不符合项后再进行评级" };
+}
+function autoResultChecks(grade){ if(grade==="A"||grade==="B") return ["存在一般缺陷"]; if(grade==="C") return ["存在严重缺陷"]; if(grade==="D") return ["涉嫌违法违规行为"]; return []; }
+function autoHandlingChecks(grade){ return grade==="D" ? ["报告转交药监部门"] : []; }
+function updateGradeDisplay(){
+  const g=autoCalculateGrade();
+  const el=$("gradeDisplay");
+  if(!el) return;
+  if(g.grade==="待评定"){ el.innerHTML='<div class="empty">待评定</div>'; return; }
+  el.innerHTML='<div style="font-weight:700;color:var(--blue);font-size:16px;">☑ '+esc(g.label)+'</div><div style="color:#5a6b82;font-size:13px;margin-top:4px;">判定依据：'+esc(g.reason)+'</div>';
+}
+function categoryBlock(){
+  const g=autoCalculateGrade();
+  if(g.grade==="待评定") return "三、企业分类\n\n待评定\n\n判定依据："+g.reason;
+  return "三、企业分类\n\n☑ "+g.label+"\n\n判定依据："+g.reason+"\n\n针对质量管理体系的整体情况和具体的流程所发现的不符合项，综合判断质量管理体系的系统性、规范性、真实性和有效性，本次评估最终分类为"+g.label+"。";
 }
 
 function buildReportA(){
@@ -852,9 +887,7 @@ function buildReportA(){
     "二、风险点",
     riskText(),
     "",
-    "三、企业分类",
-    "（企业分类判定标准按评估模板执行）",
-    ["A","B","C","D"].map(x=>(k.category===x?"☑":"□")+x+"类").join("　"),
+    categoryBlock(),
     "",
     "四、后续监管建议",
     sup,
@@ -870,6 +903,9 @@ function buildReportB(){
   const sugCur=state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA);
   const sugNew=state.items.filter(i=>i.clauseB);
   const n1=nonConform.length, n2=sugCur.length, n3=sugNew.length, total=n1+n2+n3;
+  const grade=autoCalculateGrade();
+  const effResult=Array.from(new Set([...(k.result||[]), ...autoResultChecks(grade.grade)]));
+  const effHandling=Array.from(new Set([...(k.handling||[]), ...autoHandlingChecks(grade.grade)]));
 
   function rows(arr, kind){
     if(!arr.length) return "（无）";
@@ -884,7 +920,7 @@ function buildReportB(){
   }
 
   const appendix = appendixSelections(c).join("\n");
-  const result = RESULT.map(s=>(k.result.includes(s)?"☑":"□")+" "+s+"（"+(RESULT_DESC[s]||"")+"）").join("\n");
+  const result = RESULT.map(s=>(effResult.includes(s)?"☑":"□")+" "+s+"（"+(RESULT_DESC[s]||"")+"）").join("\n");
 
   return [
     "医疗器械生产质量管理规范现场检查评估报告（盖章版）",
@@ -930,7 +966,7 @@ function buildReportB(){
     result,
     "",
     "八、评估后处理意见",
-    HANDLING.map(s=>(k.handling.includes(s)?"☑":"□")+s).join("  "),
+    HANDLING.map(s=>(effHandling.includes(s)?"☑":"□")+s).join("  "),
     "",
     "九、整改期限",
     [
@@ -957,6 +993,7 @@ function buildReportB(){
 function renderReports(){
   $("reportA").value = buildReportA();
   $("reportB").value = buildReportB();
+  updateGradeDisplay();
 }
 
 /* ==================== 已录入列表 ==================== */
@@ -992,6 +1029,35 @@ function fallbackCopy(text, cb){
 }
 function exportTxt(filename, text){
   const blob=new Blob(["\ufeff"+text],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },100); toast("已导出 "+filename);
+}
+
+/* Word 导出（Word 兼容 HTML 方式，无需后端，可直接用 Word/WPS 打开） */
+function escHtml(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function toWordHtml(text){
+  const lines=String(text||"").split("\n");
+  const headingRe=/^(一|二|三|四|五|六|七|八|九|十|十一)、|^【/;
+  let body="";
+  lines.forEach((line,idx)=>{
+    const t=line.trim();
+    if(t===""){ body+='<p style="margin:0;line-height:1.5;">&nbsp;</p>'; return; }
+    if(idx===0){ body+='<h1>'+escHtml(t)+'</h1>'; return; }
+    if(idx===1){ body+='<p style="text-align:center;margin:0 0 14pt;font-size:15pt;">'+escHtml(t)+'</p>'; return; }
+    if(headingRe.test(t)){ body+='<h2>'+escHtml(t)+'</h2>'; }
+    else{ body+='<p style="margin:0;line-height:1.6;">'+escHtml(t)+'</p>'; }
+  });
+  return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+    +'<head><meta charset="utf-8">'
+    +'<style>@page{size:595.3pt 841.9pt;margin:72pt 72pt 72pt 72pt;}'
+    +'body{font-family:仿宋,仿宋_GB2312,FangSong,宋体,SimSun,serif;font-size:14pt;color:#000;}'
+    +'h1{font-family:黑体,SimHei,sans-serif;font-size:22pt;text-align:center;font-weight:bold;margin:0 0 16pt;}'
+    +'h2{font-family:黑体,SimHei,sans-serif;font-size:16pt;font-weight:bold;margin:10pt 0 6pt;}'
+    +'</style></head><body>'+body+'</body></html>';
+}
+function exportWord(filename, text){
+  const html=toWordHtml(text);
+  const blob=new Blob(["\ufeff"+html],{type:"application/msword;charset=utf-8"});
   const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click();
   setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },100); toast("已导出 "+filename);
 }
@@ -1055,12 +1121,14 @@ function bindEvents(){
   $("copyB_btn").addEventListener("click",()=>copyText($("reportB").value,"盖章版已复制"));
   $("exportA_btn").addEventListener("click",()=>exportTxt("GMP评估报告_提交版.txt",$("reportA").value));
   $("exportB_btn").addEventListener("click",()=>exportTxt("GMP评估报告_盖章版.txt",$("reportB").value));
+  $("wordA_btn").addEventListener("click",()=>exportWord("GMP评估报告_提交版.doc",$("reportA").value));
+  $("wordB_btn").addEventListener("click",()=>exportWord("GMP评估报告_盖章版.doc",$("reportB").value));
 
   $("clear_btn").addEventListener("click",()=>{
     if(!confirm("确定清空所有已填写的数据吗？此操作不可恢复。")) return;
     try{ localStorage.removeItem(STORE_KEY); }catch(e){}
-    state={company:{},fill:{},checks:{category:"",supervision:[],result:[],handling:[],rectification:[],rectDays:""},items:[]};
-    fillCompany({}); fillFill({}); fillChecks({});
+    state={company:{},fill:{},checks:{supervision:[],result:[],handling:[],rectification:[],rectDays:""},flags:{majorViolation:false},items:[]};
+    fillCompany({}); fillFill({}); fillChecks({}); fillFlags({});
     $("desc").value=""; $("product").value=""; $("clauseA").value=""; $("clauseB").value="";
     resetMatchBoxes(); renderItems(); renderReports(); toast("已清空");
   });
@@ -1070,7 +1138,7 @@ function bindEvents(){
     el.addEventListener("change", ()=>{ save(); renderReports(); });
   });
   $("c_products").addEventListener("input", updateProductList);
-  document.querySelectorAll("#opt_category input, #opt_supervision input, #opt_result input, #opt_handling input, #opt_rectification input, #opt_rectdays").forEach(el=>{
+  document.querySelectorAll("#majorViolation, #opt_supervision input, #opt_result input, #opt_handling input, #opt_rectification input, #opt_rectdays").forEach(el=>{
     el.addEventListener("change", ()=>{ save(); renderReports(); });
   });
 }
@@ -1081,7 +1149,7 @@ function init(){
   $("opt_result").innerHTML=RESULT.map(s=>'<label class="chip" title="'+(RESULT_DESC[s]||"")+'"><input type="checkbox" value="'+esc(s)+'"><span>'+esc(s)+'</span></label>').join("");
   $("opt_handling").innerHTML=HANDLING.map(s=>'<label class="chip"><input type="checkbox" value="'+esc(s)+'"><span>'+esc(s)+'</span></label>').join("");
   load();
-  fillCompany(state.company); fillFill(state.fill); fillChecks(state.checks);
+  fillCompany(state.company); fillFill(state.fill); fillChecks(state.checks); fillFlags(state.flags);
   updateProductList(); renderItems(); renderReports(); bindEvents();
 }
 init();

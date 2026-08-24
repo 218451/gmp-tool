@@ -12,30 +12,14 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;}
-  body{
-    font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;
-    background:var(--bg); color:var(--txt); line-height:1.6;
-    font-size:16px; -webkit-text-size-adjust:100%;
-  }
+  body{font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.6;font-size:16px;-webkit-text-size-adjust:100%;}
   .wrap{max-width:1180px;margin:0 auto;padding:12px;}
-  header.top{
-    background:linear-gradient(135deg,var(--blue) 0%,var(--blue-d) 100%);
-    color:#fff;padding:18px 20px;border-radius:14px;margin-bottom:14px;
-  }
+  header.top{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-d) 100%);color:#fff;padding:18px 20px;border-radius:14px;margin-bottom:14px;}
   header.top h1{margin:0;font-size:24px;font-weight:700;letter-spacing:1px;}
   header.top .sub{margin-top:6px;font-size:14px;opacity:.92;}
-  .notice{
-    background:#fff7e6;border:1px solid #f0d9a8;color:#7a5b12;
-    padding:10px 14px;border-radius:10px;font-size:14px;margin-bottom:14px;
-  }
-  .card{
-    background:var(--card);border:1px solid var(--line);border-radius:14px;
-    padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(16,42,67,.05);
-  }
-  .card h2{
-    margin:0 0 12px;font-size:19px;color:var(--blue);
-    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-  }
+  .notice{background:#fff7e6;border:1px solid #f0d9a8;color:#7a5b12;padding:10px 14px;border-radius:10px;font-size:14px;margin-bottom:14px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(16,42,67,.05);}
+  .card h2{margin:0 0 12px;font-size:19px;color:var(--blue);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
   .card h2 .tag{font-size:12px;background:var(--blue-l);color:var(--blue);padding:2px 8px;border-radius:20px;font-weight:500;}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;}
   @media(max-width:720px){ .grid{grid-template-columns:1fr;} }
@@ -43,29 +27,16 @@
   .field.full{grid-column:1 / -1;}
   .field label{font-weight:600;font-size:15px;color:#22303f;}
   .field label .req{color:var(--danger);}
-  .field input,.field select,.field textarea{
-    width:100%;padding:11px 12px;font-size:16px;border:1.5px solid #c7d2e2;
-    border-radius:9px;background:#fff;color:var(--txt);min-height:46px;
-  }
-  .field input:focus,.field select:focus,.field textarea:focus{
-    outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(15,64,160,.12);
-  }
+  .field input,.field select,.field textarea{width:100%;padding:11px 12px;font-size:16px;border:1.5px solid #c7d2e2;border-radius:9px;background:#fff;color:var(--txt);min-height:46px;}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(15,64,160,.12);}
   .field textarea{min-height:90px;resize:vertical;line-height:1.55;}
   .hint{font-size:13px;color:var(--muted);}
   .chips{display:flex;flex-wrap:wrap;gap:8px;}
   .chip{position:relative;}
   .chip input{position:absolute;opacity:0;width:0;height:0;}
-  .chip span{
-    display:inline-block;padding:9px 14px;border:1.5px solid #c7d2e2;border-radius:22px;
-    font-size:15px;background:#fff;cursor:pointer;user-select:none;transition:.15s;
-  }
+  .chip span{display:inline-block;padding:9px 14px;border:1.5px solid #c7d2e2;border-radius:22px;font-size:15px;background:#fff;cursor:pointer;user-select:none;transition:.15s;}
   .chip input:checked + span{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600;}
-  .btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:6px;
-    background:var(--blue);color:#fff;border:none;border-radius:10px;
-    padding:13px 20px;font-size:16px;font-weight:600;cursor:pointer;min-height:50px;
-    transition:.15s;letter-spacing:.5px;
-  }
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:13px 20px;font-size:16px;font-weight:600;cursor:pointer;min-height:50px;transition:.15s;letter-spacing:.5px;}
   .btn:hover{background:var(--blue-d);}
   .btn:active{transform:translateY(1px);}
   .btn.secondary{background:#fff;color:var(--blue);border:1.5px solid var(--blue);}
@@ -78,8 +49,8 @@
   .matchbox .mtitle{font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600;}
   .match-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px dashed #d8e4f2;}
   .match-item:last-child{border-bottom:none;}
-  .match-item .mno{white-space:nowrap;font-weight:700;color:var(--blue);min-width:76px;font-size:15px;}
-  .match-item .mtxt{font-size:14px;color:#33465e;flex:1;}
+  .match-item .mno{white-space:nowrap;font-weight:700;color:var(--blue);min-width:110px;font-size:14px;}
+  .match-item .mtxt{font-size:13px;color:#33465e;flex:1;line-height:1.5;}
   .match-item .use{flex-shrink:0;}
   .empty{color:var(--muted);font-size:14px;}
   .item-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid #e2e8f2;border-radius:10px;margin-bottom:8px;background:#fbfcfe;}
@@ -94,42 +65,14 @@
   .reports{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
   @media(max-width:900px){ .reports{grid-template-columns:1fr;} }
   .report-col h3{margin:0 0 8px;font-size:17px;color:var(--blue);}
-  .report-col textarea{
-    width:100%;min-height:480px;font-family:Consolas,"Courier New",monospace;
-    font-size:13.5px;line-height:1.55;border:1.5px solid #c7d2e2;border-radius:10px;
-    padding:12px;background:#fff;color:#22303f;resize:vertical;white-space:pre;overflow:auto;
-  }
+  .report-col textarea{width:100%;min-height:520px;font-family:Consolas,"Courier New",monospace;font-size:13px;line-height:1.55;border:1.5px solid #c7d2e2;border-radius:10px;padding:12px;background:#fff;color:#22303f;resize:vertical;white-space:pre;overflow:auto;}
   .report-col .bar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
-  #toast{
-    position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);
-    background:#22303f;color:#fff;padding:12px 22px;border-radius:10px;font-size:15px;
-    opacity:0;pointer-events:none;transition:.25s;z-index:999;box-shadow:0 6px 20px rgba(0,0,0,.2);
-  }
+  #toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:#22303f;color:#fff;padding:12px 22px;border-radius:10px;font-size:15px;opacity:0;pointer-events:none;transition:.25s;z-index:999;box-shadow:0 6px 20px rgba(0,0,0,.2);}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .divider{height:1px;background:var(--line);margin:16px 0;}
   .checks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;}
   @media(max-width:720px){ .checks-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));} }
   .checks-grid .chip span{width:100%;text-align:center;padding:9px 8px;}
-  .btn.success{background:var(--ok);}
-  .btn.success:hover{background:#13602a;}
-  .btn.primary{background:var(--blue);}
-  .btn.primary:hover{background:var(--blue-d);}
-  .modal-overlay{position:fixed;inset:0;background:rgba(16,42,67,.55);display:none;align-items:flex-start;justify-content:center;z-index:1000;padding:16px;overflow-y:auto;}
-  .modal-overlay.show{display:flex;}
-  .modal-box{background:#fff;border-radius:14px;width:100%;max-width:1120px;margin:16px auto;box-shadow:0 10px 40px rgba(0,0,0,.25);overflow:hidden;}
-  .modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);}
-  .modal-head h3{margin:0;font-size:18px;color:var(--blue);}
-  .modal-body{padding:14px 18px 20px;}
-  .summary-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px;}
-  .summary-toolbar .count{font-size:15px;color:var(--muted);font-weight:600;}
-  .tb-select{padding:9px 12px;font-size:14px;border:1.5px solid #c7d2e2;border-radius:9px;background:#fff;color:var(--txt);}
-  .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;}
-  .summary-table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:960px;}
-  .summary-table th,.summary-table td{padding:8px 10px;border-bottom:1px solid #e2e8f2;text-align:left;white-space:nowrap;}
-  .summary-table th{background:#f2f6fc;color:#22303f;font-weight:700;position:sticky;top:0;}
-  .summary-table td{color:#33465e;}
-  .summary-table tr:last-child td{border-bottom:none;}
-  .modal-empty{text-align:center;color:var(--muted);padding:30px 0;font-size:14px;}
 </style>
 </head>
 <body>
@@ -138,14 +81,13 @@
   <header class="top">
     <h1>医疗器械GMP检查报告辅助工具</h1>
     <div class="sub">现场检查辅助 · 数据仅存本机浏览器 · 手机/电脑通用</div>
-    <button class="btn small" id="view_summary_btn" style="margin-top:10px;background:#fff;color:var(--blue);">📋 查看汇总</button>
   </header>
 
   <div class="notice">
     ⚠️ 本工具 AI 匹配的条款号与判定仅为<strong>辅助建议</strong>，最终以检查员依据现行法规核对确认的结论为准；日期、金额等数字请检查员自行核对。
   </div>
 
-  <!-- ==================== 一、企业信息 ==================== -->
+  <!-- 一、企业信息 -->
   <section class="card">
     <h2>① 企业基本信息 <span class="tag">必填为主</span></h2>
     <div class="grid">
@@ -159,10 +101,10 @@
       <div class="field"><label>2025年销售额（万元）</label><input id="c_sales" type="number" inputmode="decimal" placeholder="例：1200"></div>
       <div class="field"><label>III类注册证数量</label><input id="c_cert3" type="number" inputmode="numeric" placeholder="0"></div>
       <div class="field"><label>II类注册证数量</label><input id="c_cert2" type="number" inputmode="numeric" placeholder="0"></div>
-      <div class="field full"><label>主营产品 <span class="req">*</span></label><input id="c_products" placeholder="多个产品用顿号、逗号或空格分隔，例：医用外科口罩、一次性注射器"></div>
+      <div class="field full"><label>主营产品 <span class="req">*</span></label><input id="c_products" placeholder="多个产品用顿号、逗号或空格分隔"></div>
       <div class="field"><label>员工总数</label><input id="c_employees" type="number" inputmode="numeric" placeholder="例：120"></div>
       <div class="field"><label>检验员人数</label><input id="c_inspectors" type="number" inputmode="numeric" placeholder="例：8"></div>
-      <div class="field"><label>内审员人数</label><input id="c_auditors" type="number" inputmode="numeric" placeholder="例：7"></div>
+      <div class="field"><label>内审员人数</label><input id="c_auditors" type="number" inputmode="numeric" placeholder="例：3"></div>
       <div class="field full"><label>联系方式（联系人/电话/邮箱）</label><input id="c_contact" placeholder="例：张三 13800000000 zhangsan@xx.com"></div>
 
       <div class="field full"><label>产品类别（可多选）</label>
@@ -177,31 +119,37 @@
       </div>
 
       <div class="field"><label>企业状态</label>
-        <select id="c_status">
-          <option value="正常">正常</option>
-          <option value="去向不明">去向不明</option>
-          <option value="破产清算">破产清算</option>
-          <option value="营业执照注销">营业执照注销</option>
-          <option value="其他">其他</option>
-        </select>
+        <select id="c_status"><option value="正常">正常</option><option value="去向不明">去向不明</option><option value="破产清算">破产清算</option><option value="营业执照注销">营业执照注销</option><option value="其他">其他</option></select>
       </div>
       <div class="field"><label>生产状态</label>
-        <select id="c_prodstatus">
-          <option value="连续生产">连续生产</option>
-          <option value="一年内间歇性生产">一年内间歇性生产</option>
-          <option value="连续停产一年以上">连续停产一年以上</option>
-        </select>
+        <select id="c_prodstatus"><option value="连续生产">连续生产</option><option value="一年内间歇性生产">一年内间歇性生产</option><option value="连续停产一年以上">连续停产一年以上</option></select>
       </div>
       <div class="field"><label>评估日期</label><input id="c_date" type="date"></div>
       <div class="field"><label>企业成立年份（留空手填）</label><input id="c_year" type="number" inputmode="numeric" placeholder="例：2010"></div>
-      <div class="field"><label>评估人员（姓名）</label><input id="c_assessor" placeholder="例：张三、李四"></div>
+      <div class="field full"><label>评估人员（姓名）</label><input id="c_assessor" placeholder="例：张三、李四"></div>
     </div>
   </section>
 
-  <!-- ==================== 报告选项 ==================== -->
+  <!-- 二、报告填充字段 -->
   <section class="card">
-    <h2>② 报告选项 <span class="tag">勾选后自动反映到报告</span></h2>
+    <h2>② 报告填充字段 <span class="tag">计入正文、不计入表头</span></h2>
+    <div class="grid">
+      <div class="field"><label>质量手册版本</label><input id="f_manualVersion" placeholder="例：A/3"></div>
+      <div class="field"><label>质量手册发布日期</label><input id="f_manualDate" placeholder="例：2024-11-05"></div>
+      <div class="field"><label>最近一次内审日期（起止）</label><input id="f_auditPeriod" placeholder="例：2025-06-01~06-05"></div>
+      <div class="field"><label>最近一次内审不符合项数量</label><input id="f_auditNc" type="number" inputmode="numeric" placeholder="例：2"></div>
+      <div class="field"><label>最近一次管理评审日期</label><input id="f_reviewDate" placeholder="例：2025-08-10"></div>
+      <div class="field"><label>抽查产品名称</label><input id="f_sampleProduct" placeholder="例：一次性使用无菌注射器"></div>
+      <div class="field"><label>抽查产品注册证编号</label><input id="f_sampleCert" placeholder="例：国械注准2014315XXXX"></div>
+      <div class="field"><label>抽查产品证书有效期</label><input id="f_sampleExpiry" placeholder="例：2028-12-31"></div>
+      <div class="field"><label>内销占比（%）</label><input id="f_domestic" type="number" inputmode="decimal" placeholder="例：80"></div>
+      <div class="field"><label>外销占比（%）</label><input id="f_export" type="number" inputmode="decimal" placeholder="例：20"></div>
+    </div>
+  </section>
 
+  <!-- 三、报告选项 -->
+  <section class="card">
+    <h2>③ 报告选项 <span class="tag">勾选后自动反映到报告</span></h2>
     <div class="field" style="margin-bottom:14px;">
       <label>企业分类（单选）</label>
       <div class="chips" id="opt_category">
@@ -211,22 +159,18 @@
         <label class="chip"><input type="radio" name="cat" value="D"><span>D类</span></label>
       </div>
     </div>
-
     <div class="field" style="margin-bottom:14px;">
       <label>后续监管建议（可多选）</label>
       <div class="checks-grid chips" id="opt_supervision"></div>
     </div>
-
     <div class="field" style="margin-bottom:14px;">
       <label>评估结果判定（可多选）</label>
       <div class="checks-grid chips" id="opt_result"></div>
     </div>
-
     <div class="field" style="margin-bottom:14px;">
       <label>评估后处理意见（可多选）</label>
       <div class="checks-grid chips" id="opt_handling"></div>
     </div>
-
     <div class="field" style="margin-bottom:14px;">
       <label>整改期限（可多选）</label>
       <div class="chips" id="opt_rectification" style="align-items:center;">
@@ -238,30 +182,27 @@
     </div>
   </section>
 
-  <!-- ==================== 三、不符合项录入与判标 ==================== -->
+  <!-- 四、不符合项录入与判标 -->
   <section class="card">
-    <h2>③ 不符合项录入与判标 <span class="tag">核心功能</span></h2>
-
+    <h2>④ 不符合项录入与判标 <span class="tag">核心功能</span></h2>
     <div class="field" style="margin-bottom:12px;">
       <label>问题描述（大白话）<span class="req">*</span></label>
-      <textarea id="desc" placeholder="例：车间有几个工人没穿洁净服就进洁净区了，培训记录也没看到签字"></textarea>
+      <textarea id="desc" placeholder="例：洁净车间人员着装不规范，不能有效阻留人体脱落物"></textarea>
     </div>
     <div class="field" style="margin-bottom:12px;">
       <label>涉及产品</label>
       <input id="product" list="productList" placeholder="从主营产品选择，或手动输入">
       <datalist id="productList"></datalist>
     </div>
-
     <div class="rowbtns" style="margin-bottom:10px;">
       <button class="btn" id="matchA_btn">🔍 智能匹配现行版</button>
       <button class="btn secondary" id="matchB_btn">🔍 匹配新版GMP</button>
     </div>
-
     <div class="grid">
       <div class="field">
         <div class="matchbox" id="matchA_result">
-          <div class="mtitle">现行版匹配（指导原则X.X.X）</div>
-          <div class="empty">点击「智能匹配现行版」后在此显示推荐条款。</div>
+          <div class="mtitle">现行版匹配（指导原则X.X.X · 含条款原文）</div>
+          <div class="empty">点击「智能匹配现行版」后在此显示推荐条款及原文。</div>
         </div>
       </div>
       <div class="field">
@@ -271,9 +212,7 @@
         </div>
       </div>
     </div>
-
     <div class="divider"></div>
-
     <div class="grid">
       <div class="field"><label>现行版判定等级</label>
         <select id="levelA">
@@ -282,240 +221,283 @@
           <option value="不构成不符合">不构成不符合</option>
         </select>
       </div>
-      <div class="field"><label>现行版条款号（可手动修改）</label><input id="clauseA" placeholder="例：1.10.1"></div>
-      <div class="field"><label>新版GMP条款号（建议项，可手动修改）</label><input id="clauseB" placeholder="例：第29条（可留空）"></div>
+      <div class="field"><label>现行版条款号（自动带"指导原则"前缀）</label><input id="clauseA" placeholder="例：1.10.1"></div>
+      <div class="field"><label>新版GMP条款号（建议项，可留空）</label><input id="clauseB" placeholder="例：第32条"></div>
     </div>
-
     <div style="margin-top:14px;">
       <button class="btn" id="add_btn">➕ 生成并填入报告</button>
-      <span class="hint" style="margin-left:10px;">现行版(严重/一般)→不符合项表；现行版(不构成)→现行法规建议项表；新版→新版建议项表(固定建议项)</span>
+      <span class="hint" style="margin-left:10px;">自动润色描述并带入条款原文；现行版→不符合项表，新版→新版建议项表</span>
     </div>
   </section>
 
-  <!-- ==================== 已录入 ==================== -->
+  <!-- 五、已录入 -->
   <section class="card">
-    <h2>④ 已录入不符合项 <span class="tag" id="itemCount">0 项</span></h2>
+    <h2>⑤ 已录入不符合项 <span class="tag" id="itemCount">0 项</span></h2>
     <div id="items_list"><div class="empty">尚未录入不符合项。</div></div>
   </section>
 
-  <!-- ==================== 报告预览 ==================== -->
+  <!-- 六、报告预览 -->
   <section class="card">
-    <h2>⑤ 报告预览与导出</h2>
+    <h2>⑥ 报告预览与导出</h2>
     <div class="rowbtns" style="margin-bottom:12px;">
       <button class="btn" id="gen_header_btn">📄 生成两份报告首部</button>
-      <button class="btn success" id="save_summary_btn">📊 保存至汇总库</button>
       <button class="btn ghost" id="refresh_btn">🔄 刷新报告</button>
     </div>
     <div class="reports">
       <div class="report-col">
-        <h3>不给企业版报告</h3>
+        <h3>评估报告（提交版）— 不给企业</h3>
         <textarea id="reportA" readonly placeholder="点击上方「生成两份报告首部」后在此显示……"></textarea>
         <div class="bar">
           <button class="btn small" id="copyA_btn">📋 复制内容</button>
           <button class="btn small secondary" id="exportA_btn">⬇️ 导出为TXT</button>
-          <button class="btn small success" id="exportWordA_btn">📄 导出不给企业版Word</button>
         </div>
       </div>
       <div class="report-col">
-        <h3>企业盖章版报告（含不符合项表格）</h3>
+        <h3>评估报告（盖章版）— 给企业</h3>
         <textarea id="reportB" readonly placeholder="点击上方「生成两份报告首部」后在此显示……"></textarea>
         <div class="bar">
           <button class="btn small" id="copyB_btn">📋 复制内容</button>
           <button class="btn small secondary" id="exportB_btn">⬇️ 导出为TXT</button>
-          <button class="btn small success" id="exportWordB_btn">📄 导出企业盖章版Word</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ==================== 清空 ==================== -->
   <section style="text-align:center;padding-bottom:40px;">
     <button class="btn danger" id="clear_btn">🗑️ 清空所有数据</button>
   </section>
 
 </div>
-
-<!-- ==================== 汇总库弹窗 ==================== -->
-<div class="modal-overlay" id="summary_overlay">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h3>📋 报告汇总库</h3>
-      <button class="btn small ghost" id="close_summary_btn">✕ 关闭</button>
-    </div>
-    <div class="modal-body">
-      <div class="summary-toolbar">
-        <span class="count" id="summary_count">共 0 家企业已汇总</span>
-        <select class="tb-select" id="summary_filter">
-          <option value="全部">全部分类</option>
-          <option value="A">A类</option>
-          <option value="B">B类</option>
-          <option value="C">C类</option>
-          <option value="D">D类</option>
-        </select>
-        <select class="tb-select" id="summary_sort">
-          <option value="time_desc">按保存时间↓</option>
-          <option value="date_desc">按评估日期↓</option>
-          <option value="date_asc">按评估日期↑</option>
-        </select>
-        <button class="btn small" id="export_csv_btn">⬇️ 导出CSV</button>
-        <button class="btn small secondary" id="export_json_btn">导出JSON</button>
-        <button class="btn small secondary" id="import_json_btn">导入JSON</button>
-        <button class="btn small danger" id="clear_summary_btn">清空汇总</button>
-        <input type="file" id="summary_import_file" accept=".json,application/json" style="display:none;">
-      </div>
-      <div class="table-scroll">
-        <table class="summary-table">
-          <thead>
-            <tr>
-              <th>企业名称</th><th>评估日期</th><th>分类</th><th>不符合总数</th>
-              <th>严重</th><th>一般</th><th>现行建议</th><th>新版建议</th>
-              <th>主要风险点</th><th>检查人员</th><th>保存时间</th><th>操作</th>
-            </tr>
-          </thead>
-          <tbody id="summary_tbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div id="toast"></div>
 
 <script>
-/* ==================== 条款库 ==================== */
-
-// —— 条款库A：现行版GMP（2014年64号）指导原则 ——
-const LIB_A = [
-  // 1 机构与人员
-  {no:"1.1.1", ch:"机构与人员", kw:["组织机构","职责","岗位职责","部门设置","职责不清"], text:"企业应建立与生产相适应的组织机构，明确各部门和岗位的职责与权限。"},
-  {no:"1.2.1", ch:"机构与人员", kw:["负责人","管理人员","任职","资质","资格"], text:"生产管理负责人、质量管理负责人等关键岗位人员应具备相应资质和任职条件。"},
-  {no:"1.3.1", ch:"机构与人员", kw:["培训","上岗","教育","考核","未掌握","能力不足","不会","不懂","培训记录"], text:"与生产、质量相关的人员应经培训并考核合格后上岗，培训内容应覆盖岗位所需知识与技能。"},
-  {no:"1.4.1", ch:"机构与人员", kw:["健康","体检","健康证"], text:"从事生产操作和质量检验的人员应按规定进行健康检查并建立健康档案。"},
-  {no:"1.5.1", ch:"机构与人员", kw:["个人卫生","洗手","卫生习惯"], text:"生产操作人员应保持良好的个人卫生，按要求洗手、消毒。"},
-  {no:"1.6.1", ch:"机构与人员", kw:["质量意识"], text:"企业应持续加强人员的质量意识教育。"},
-  {no:"1.7.1", ch:"机构与人员", kw:["能力","胜任","岗位能力"], text:"人员应具备与岗位相适应的能力，能够胜任本职工作。"},
-  {no:"1.8.1", ch:"机构与人员", kw:["人员档案","人事档案"], text:"企业应建立人员档案，记录培训、健康、任职等情况。"},
-  {no:"1.9.1", ch:"机构与人员", kw:["外来人员","参观人员"], text:"外来人员进入生产区域应按规定登记、培训并遵守相关管理规定。"},
-  {no:"1.10.1", ch:"机构与人员", kw:["着装","工作服","洁净服","穿戴","更衣","口罩","鞋套"], text:"进入洁净区的人员应按规定着装，穿戴洁净服、帽、口罩、鞋等，并按要求更衣。"},
-  // 2 厂房与设施
-  {no:"2.1.1", ch:"厂房与设施", kw:["厂房","选址","厂区","环境"], text:"厂房选址和厂区环境应符合生产要求，避免污染和交叉污染。"},
-  {no:"2.2.1", ch:"厂房与设施", kw:["布局","区域划分","人流","物流"], text:"厂房应合理布局，划分生产、检验、仓储等区域，避免人流、物流交叉。"},
-  {no:"2.3.1", ch:"厂房与设施", kw:["洁净级别","洁净度","万级","十万级","百级","A级","B级","C级","D级"], text:"洁净区洁净级别应符合产品生产要求。"},
-  {no:"2.4.1", ch:"厂房与设施", kw:["温度","湿度","温湿度"], text:"生产环境的温湿度应符合规定并受控。"},
-  {no:"2.5.1", ch:"厂房与设施", kw:["墙面","地面","天花板","表面","易清洁","裂缝"], text:"洁净区墙面、地面、天花板等表面应平整光滑、易清洁、不产尘。"},
-  {no:"2.6.1", ch:"厂房与设施", kw:["照明","照度"], text:"生产区域照明应满足操作要求。"},
-  {no:"2.7.1", ch:"厂房与设施", kw:["通风","换气","新风"], text:"厂房通风换气应满足要求。"},
-  {no:"2.8.1", ch:"厂房与设施", kw:["空调","净化","高效过滤器","送风","回风","初中效"], text:"空调净化系统应满足洁净要求，高效过滤器应定期检测更换。"},
-  {no:"2.9.1", ch:"厂房与设施", kw:["压差","静压差","气压","正压","负压","5Pa","10Pa","帕"], text:"洁净区与非洁净区之间、不同级别洁净区之间应保持规定的静压差。"},
-  {no:"2.9.2", ch:"厂房与设施", kw:["压差","静压差","压差计","压差监测"], text:"洁净区压差应符合规定并持续监测，不同洁净级别间应保持适当压差梯度。"},
-  {no:"2.10.1", ch:"厂房与设施", kw:["IVD","体外诊断","试剂车间"], text:"体外诊断试剂生产环境应符合相应洁净度要求。"},
-  {no:"2.11.1", ch:"厂房与设施", kw:["无菌车间","无菌生产环境"], text:"无菌医疗器械生产厂房应符合无菌附录要求。"},
-  {no:"2.11.2", ch:"厂房与设施", kw:["无菌","洁净区监测","环境监测"], text:"无菌医疗器械洁净区环境监测应符合要求。"},
-  // 3 设备
-  {no:"3.1.1", ch:"设备", kw:["设备","设备清单","安装"], text:"企业应配备满足生产要求的设备，设备选型、安装应合理。"},
-  {no:"3.2.1", ch:"设备", kw:["设备维护","保养","维修","设备状态"], text:"生产设备应按规定进行维护保养并记录。"},
-  {no:"3.3.1", ch:"设备", kw:["计量","校准","检定","仪器","检验设备","有效期"], text:"检验、计量仪器设备应按规定校准或检定，并在有效期内使用。"},
-  {no:"3.4.1", ch:"设备", kw:["灭菌","无菌","灭菌设备","灭菌器"], text:"灭菌设备及灭菌工艺应经验证，灭菌过程应受控并记录。"},
-  // 4 文件管理
-  {no:"4.1.1", ch:"文件管理", kw:["文件","体系文件","文件控制","版本","作废"], text:"企业应建立文件控制程序，文件的起草、审核、批准、发放、修订、作废应受控。"},
-  {no:"4.2.1", ch:"文件管理", kw:["文件管理","体系文件"], text:"质量管理体系文件应齐全、现行有效、便于查阅。"},
-  {no:"4.3.1", ch:"文件管理", kw:["记录","可追溯","记录保存","填写","签字","未签字","批记录","记录缺失"], text:"生产、检验等记录应真实、完整、可追溯，并及时填写、签字。"},
-  // 5 设计开发
-  {no:"5.1.1", ch:"设计开发", kw:["设计开发","设计","研发"], text:"企业应建立设计开发控制程序，对设计开发全过程进行控制。"},
-  {no:"5.2.1", ch:"设计开发", kw:["设计输入","设计需求"], text:"设计开发输入应明确、完整。"},
-  {no:"5.3.1", ch:"设计开发", kw:["设计输出","设计文件"], text:"设计开发输出应满足输入要求。"},
-  {no:"5.4.1", ch:"设计开发", kw:["设计验证","设计确认","设计评审"], text:"设计开发应按规定进行评审、验证和确认。"},
-  // 6 采购
-  {no:"6.1.1", ch:"采购", kw:["采购程序","采购管理"], text:"企业应建立采购控制程序，明确采购要求。"},
-  {no:"6.2.1", ch:"采购", kw:["供应商","供方","采购","供应商评价","合格供方"], text:"企业应对供应商进行评价和管理，确保采购物料符合要求。"},
-  {no:"6.3.1", ch:"采购", kw:["进货检验","来料","物料验收","进货"], text:"采购物料应按规定进行进货检验或验证。"},
-  // 7 生产管理
-  {no:"7.1.1", ch:"生产管理", kw:["生产","工艺规程","批生产","操作规程"], text:"生产应按规定工艺规程和操作规程进行。"},
-  {no:"7.2.1", ch:"生产管理", kw:["验证","确认","清洗效果","清洁验证","消毒剂","浓度","工艺验证"], text:"关键工序及清洗、消毒等过程应进行验证或确认，清洗效果应验证。"},
-  {no:"7.3.1", ch:"生产管理", kw:["生产环境","环境监测","洁净监测","浮游菌","沉降菌"], text:"生产环境应按规定监测并记录。"},
-  {no:"7.4.1", ch:"生产管理", kw:["批号","批记录","追溯","物料平衡"], text:"每批产品应有唯一批号，批生产记录应完整可追溯。"},
-  {no:"7.5.1", ch:"生产管理", kw:["清场","清洁","清场记录"], text:"生产前后应按规定清场，防止混淆和交叉污染。"},
-  {no:"7.6.1", ch:"生产管理", kw:["标识","状态标识","标签","物料标识"], text:"生产过程中的物料、中间产品、成品应有明确标识。"},
-  {no:"7.7.1", ch:"生产管理", kw:["物料平衡","收率","偏差"], text:"应进行物料平衡计算，偏差应调查处理。"},
-  {no:"7.8.1", ch:"生产管理", kw:["灭菌工艺","灭菌过程"], text:"无菌产品灭菌工艺过程应符合无菌附录要求。"},
-  {no:"7.9.1", ch:"生产管理", kw:["无菌操作","无菌灌装"], text:"无菌操作过程应符合无菌附录要求。"},
-  // 8 质量控制
-  {no:"8.1.1", ch:"质量控制", kw:["检验","质量控制","质检","检验规程"], text:"企业应建立质量控制程序，按标准进行检验。"},
-  {no:"8.2.1", ch:"质量控制", kw:["出厂检验","成品检验","放行"], text:"产品出厂前应按规定检验，检验合格方可放行。"},
-  {no:"8.3.1", ch:"质量控制", kw:["留样","留样观察"], text:"应按规定进行留样管理。"},
-  {no:"8.4.1", ch:"质量控制", kw:["检验记录","检验报告"], text:"检验记录和报告应真实、完整、可追溯。"},
-  // 9 销售和售后服务
-  {no:"9.1.1", ch:"销售和售后服务", kw:["销售记录","销售","出库"], text:"企业应建立销售记录，确保产品可追溯。"},
-  {no:"9.2.1", ch:"销售和售后服务", kw:["售后服务","顾客","投诉"], text:"企业应建立售后服务制度，及时处理顾客反馈和投诉。"},
-  // 10 不合格品控制
-  {no:"10.1.1", ch:"不合格品控制", kw:["不合格品","不合格","不合格品标识"], text:"企业应建立不合格品控制程序，不合格品应标识、隔离、处置。"},
-  {no:"10.2.1", ch:"不合格品控制", kw:["不合格品处置","返工","报废"], text:"不合格品处置应按规定进行并记录。"},
-  // 11 不良事件监测
-  {no:"11.1.1", ch:"不良事件监测", kw:["不良事件","监测","不良事件监测"], text:"企业应建立医疗器械不良事件监测制度，及时收集、报告不良事件。"},
-  {no:"11.2.1", ch:"不良事件监测", kw:["不良事件报告","召回"], text:"应按规定报告不良事件，必要时实施召回。"},
-  // 12 分析和改进
-  {no:"12.1.1", ch:"分析和改进", kw:["数据分析","质量分析","统计"], text:"企业应对质量数据进行统计分析，识别改进机会。"},
-  {no:"12.2.1", ch:"分析和改进", kw:["纠正措施","预防措施","纠正预防"], text:"对发现的不符合应分析原因，采取纠正和预防措施。"},
-  {no:"12.3.1", ch:"分析和改进", kw:["管理评审","质量回顾","内审","内部审核"], text:"应定期进行管理评审、内部审核和质量回顾。"},
-  // 附录：无菌
-  {no:"1.5.1", ch:"无菌医疗器械附录", kw:["无菌","洁净服","更衣","无菌着装"], text:"无菌医疗器械生产人员应按规定着装、更衣，防止微生物污染。"},
-  {no:"2.11.1", ch:"无菌医疗器械附录", kw:["无菌","洁净环境"], text:"无菌医疗器械生产洁净环境应符合要求。"},
-  {no:"2.11.2", ch:"无菌医疗器械附录", kw:["无菌","环境监测","沉降菌"], text:"无菌医疗器械洁净区环境监测应符合要求。"},
-  {no:"3.4.1", ch:"无菌医疗器械附录", kw:["灭菌","灭菌设备","无菌"], text:"灭菌设备及灭菌工艺应验证并受控。"},
-  {no:"7.8.1", ch:"无菌医疗器械附录", kw:["灭菌工艺","无菌"], text:"灭菌工艺过程应符合无菌附录要求。"},
-  {no:"7.9.1", ch:"无菌医疗器械附录", kw:["无菌操作"], text:"无菌操作过程应符合无菌附录要求。"},
-  // 附录：植入
-  {no:"1.6.1", ch:"植入性医疗器械附录", kw:["植入","植入物"], text:"植入性医疗器械生产人员应具备相应能力。"},
-  {no:"2.12.1", ch:"植入性医疗器械附录", kw:["植入","洁净"], text:"植入性医疗器械生产环境应符合要求。"},
-  {no:"7.10.1", ch:"植入性医疗器械附录", kw:["植入","清洗","末道清洗"], text:"植入物清洗工艺应验证。"},
-  {no:"7.11.1", ch:"植入性医疗器械附录", kw:["植入","初包装","包装"], text:"植入物初包装应符合要求。"},
-  // 附录：IVD
-  {no:"2.10.1", ch:"体外诊断试剂附录", kw:["IVD","体外诊断","试剂"], text:"体外诊断试剂生产环境应符合要求。"},
-  {no:"3.11.2", ch:"体外诊断试剂附录", kw:["IVD","试剂","仪器校准"], text:"体外诊断试剂生产设备应校准。"},
-  {no:"7.12.1", ch:"体外诊断试剂附录", kw:["IVD","试剂","配制"], text:"体外诊断试剂配制过程应受控。"},
-  // 附录：义齿
-  {no:"1.7.1", ch:"定制式义齿附录", kw:["义齿","定制"], text:"定制式义齿生产人员应符合要求。"},
-  {no:"7.13.1", ch:"定制式义齿附录", kw:["义齿","定制"], text:"定制式义齿生产管理应符合要求。"},
-  {no:"7.14.1", ch:"定制式义齿附录", kw:["义齿","消毒","包装"], text:"定制式义齿消毒、包装应符合要求。"},
-  // 附录：独立软件
-  {no:"1.8.1", ch:"独立软件附录", kw:["软件","独立软件"], text:"独立软件生产企业人员应具备相应能力。"},
-  {no:"5.6.1", ch:"独立软件附录", kw:["软件","配置管理","版本控制"], text:"软件设计开发应进行配置管理和版本控制。"},
-  {no:"5.7.1", ch:"独立软件附录", kw:["软件","软件验证","软件确认"], text:"软件应进行验证和确认。"},
-  {no:"7.15.1", ch:"独立软件附录", kw:["软件","软件发布","发布管理"], text:"软件发布管理应符合要求。"}
-];
-
-// —— 新版GMP（2025年107号）条款数据库 ——
-const NEW_GMP_CLAUSES = {
-  "第6条": "鼓励企业推进数智化转型",
-  "第9条": "质量保证系统的九项要求（第(八)项：贮存、运输环节有保证措施）",
-  "第10条": "变更控制程序",
-  "第12条": "质量风险管理制度",
-  "第13条": "质量风险管理回顾",
-  "第15条": "质量管理部门独立履职",
-  "第22条": "放行审核人资质要求",
-  "第29条": "仓储区管理，明确原材料贮存条件（含贮存期要求，超过贮存期需复验，超过有效期按不合格品处理）",
-  "第30条": "检验场所和设施",
-  "第32条": "洁净区与非洁净区静压差要求（>10Pa）",
-  "第34条": "未经批准人员进入控制",
-  "第36条": "设备配备与有效运行",
-  "第37条": "设备和仪器档案",
-  "第38条": "设备使用、维护操作规程",
-  "第41条": "文件和数据管理体系",
-  "第43条": "电子记录与数据管理（含备份、保存期限）",
-  "第44条": "记录保存期限（至少与器械寿命期一致，且放行后不少于2年）",
-  "第56条": "验证与确认",
-  "第57条": "验证方案与报告",
-  "第63条": "委托生产控制程序",
-  "第64条": "受托方评价",
-  "第67条": "外协加工控制程序",
-  "第73条": "数据分析与应用",
-  "第76条": "纠正预防措施（CAPA）",
-  "第77条": "变更、偏差、CAPA有效性评估"
+/* ==================== 条款原文数据库（现行版 2014年64号 指导原则） ==================== */
+const CLAUSE_CONTENT = {
+  // —— 1 机构与人员 ——
+  "1.1.1":"应当建立与医疗器械生产相适应的管理机构，具备组织机构图。查看提供的质量手册，是否包括企业的组织机构图，是否明确各部门的相互关系。",
+  "1.1.2":"应当明确各部门的职责和权限，明确质量管理职能。查看企业的质量手册，程序文件或相关文件，是否对各部门的职责权限作出规定；质量管理部门应当能独立行使职能，查看质量管理部门的文件，是否明确规定对产品质量的相关事宜负有决策的权利。",
+  "1.1.3":"生产管理部门和质量管理部门负责人不得互相兼任。查看公司的任职文件或授权文件并对照相关生产、检验等履行职责的记录，核实是否与授权一致。",
+  "1.2.1":"企业负责人应当是医疗器械产品质量的主要责任人。",
+  "1.2.2":"企业负责人应当组织制定质量方针和质量目标。查看质量方针和质量目标的制定程序、批准人员。",
+  "1.2.3":"企业负责人应当确保质量管理体系有效运行所需的人力资源、基础设施和工作环境。",
+  "1.2.4":"企业负责人应当组织实施管理评审，定期对质量管理体系运行情况进行评估，并持续改进。查看管理评审文件和记录，核实企业负责人是否组织实施管理评审。",
+  "1.2.5":"企业负责人应当确保企业按照法律、法规和规章的要求组织生产。",
+  "1.3.1":"企业负责人应当确定一名管理者代表。查看管理者代表的任命文件。",
+  "1.3.2":"管理者代表应当负责建立、实施并保持质量管理体系，报告质量管理体系的运行情况和改进需求，提高员工满足法规、规章和顾客要求的意识。查看是否对上述职责作出明确规定。查看管理者代表报告质量管理体系运行情况和改进的相关记录。",
+  "1.4.1":"技术、生产、质量管理部门负责人应当熟悉医疗器械法律法规，具有质量管理的实践经验，应当有能力对生产管理和质量管理中实际问题作出正确判断和处理。查看相关部门负责人的任职资格要求，是否对专业知识、工作技能、工作经历作出规定；查看考核评价记录，现场询问，确定是否符合要求。",
+  "1.5.1":"应当配备与生产产品相适应的专业技术人员、管理人员和操作人员。查看相关人员的资格要求。",
+  "1.5.2":"应当具有相应的质量检验机构或专职检验人员。查看组织机构图、部门职责要求、岗位人员任命等文件确认是否符合要求。",
+  "1.6.1":"从事影响产品质量工作的人员，应当经过与其岗位要求相适应的培训，具有相关的理论知识和实际操作技能。应当确定影响医疗器械质量的岗位，规定这些岗位人员所必须具备的专业知识水平（包括学历要求）、工作技能、工作经验。查看培训内容、培训记录和考核记录，是否符合要求。",
+  "1.7.1":"应当对从事与产品质量有影响人员的健康进行管理，建立健康档案。",
+  "1.8.1":"凡在洁净室（区）工作的人员应当定期进行卫生和微生物学基础知识、洁净作业等方面培训。查看培训计划和记录，是否能够证实对在洁净室（区）工作的人员定期进行了卫生和微生物学基础知识、洁净技术等方面的培训。",
+  "1.9.1":"应当制定人员健康要求，建立人员健康档案。查看人员健康要求的文件，是否对人员健康的要求作出规定，并建立人员健康档案。",
+  "1.9.2":"直接接触物料和产品的人员每年至少体检一次。患有传染性和感染性疾病的人员不得从事直接接触产品的工作。查看洁净间直接接触物料和产品的人员的体检报告或健康证明，是否按规定时间进行体检，患有传染性和感染性疾病的人员未从事直接接触产品的工作。",
+  "1.10.1":"应当明确人员服装要求，制定洁净和无菌工作服的管理规定。工作服及其质量应当与生产操作的要求及操作区的洁净度级别相适应，其式样和穿着方式应当能够满足保护产品和人员的要求。无菌工作服应当能够包盖全部头发、胡须及脚部，并能阻留人体脱落物。查看洁净和无菌工作服的管理规定；现场观察服装的符合性及人员穿戴的符合性。",
+  "1.10.2":"洁净工作服和无菌工作服不得脱落纤维和颗粒性物质。查看洁净工作服和无菌工作服是否选择质地光滑、不易产生静电、不脱落纤维和颗粒性物质的材料制作。",
+  // —— 2 厂房与设施 ——
+  "2.1.1":"厂房与设施应当符合生产要求。",
+  "2.2.1":"厂房与设施应当根据所生产产品的特性、工艺流程及相应的洁净级别要求进行合理设计、布局和使用。",
+  "2.2.2":"生产环境应当整洁、符合产品质量需要及相关技术标准的要求。",
+  "2.2.3":"产品有特殊要求的，应当确保厂房的外部环境不能对产品质量产生影响，必要时应当进行验证。",
+  "2.3.1":"厂房应当确保生产和贮存产品质量以及相关设备性能不会直接或间接地受到影响。",
+  "2.3.2":"厂房应当有适当的照明、温度、湿度和通风控制条件。",
+  "2.4.1":"厂房与设施的设计和安装应当根据产品特性采取必要措施，有效防止昆虫或其他动物进入。现场查看是否配备了相关设施。",
+  "2.4.2":"对厂房与设施的维护和维修不应影响产品质量。",
+  "2.5.1":"生产区应当有足够空间，并与产品生产规模、品种相适应。",
+  "2.6.1":"仓储区应当能够满足原材料、包装材料、中间品、产品等贮存条件和要求。",
+  "2.6.2":"仓储区应当按照待验、合格、不合格、退货或召回等进行有序、分区存放各类材料和产品，便于检查和监控。现场查看是否设置了相关区域并进行了标识，对各类物料是否按规定区域存放，应当有各类物品的贮存记录。",
+  "2.7.1":"应当配备与产品生产规模、品种、检验要求相适应的检验场所和设施。对照产品生产工艺的要求和产品检验要求以及检验方法，核实企业是否具备相关检测条件。",
+  "2.9.1":"应当根据所生产的无菌医疗器械的质量要求，确定在相应级别洁净室（区）内进行生产的过程，避免生产中的污染。查看相关文件，是否明确了生产过程的洁净度级别；现场查看是否在相应级别洁净室（区）内进行生产，是否能避免生产中的污染。",
+  "2.9.2":"空气洁净级别不同的洁净室（区）之间的静压差应大于5帕，洁净室（区）与室外大气的静压差应大于10帕，并应有指示压差的装置。现场查看是否配备了指示压差的装置，空气洁净级别不同的洁净室（区）之间以及洁净室（区）与室外大气的静压差是否符合要求。",
+  "2.10.1":"洁净室（区）的门窗及管道穿过处应当密封。",
+  // —— 3 设备 ——
+  "3.1.1":"应当配备与所生产产品和规模相匹配的生产设备、工艺装备，应当确保有效运行。对照生产工艺流程图，查看设备清单，所列设备是否满足生产需要；核查现场设备是否与设备清单相关内容一致；应当制定设备管理制度。",
+  "3.2.1":"生产设备的设计、选型、安装、维修和维护应当符合预定用途，便于操作、清洁和维护。查看生产设备验证记录，确认是否满足预定要求。现场查看生产设备是否便于操作、清洁和维护。",
+  "3.2.2":"生产设备应当有明显的状态标识，防止非预期使用。现场查看生产设备标识。",
+  "3.2.3":"应当建立生产设备使用、清洁、维护和维修的操作规程，并保存相应的设备操作记录。",
+  "3.3.1":"应当配备与产品检验要求相适应的检验仪器和设备，主要检验仪器和设备应当具有明确的操作规程。对照产品检验要求和检验方法，核实企业是否具备相关检测设备。主要检测设备是否制定了操作规程。",
+  "3.4.1":"应当建立检验仪器和设备的使用记录，记录内容应当包括使用、校准、维护和维修等情况。",
+  "3.5.1":"应当配备适当的计量器具，计量器具的量程和精度应当满足使用要求，计量器具应当标明其校准有效期，保存相应记录。查看计量器具的校准记录，确定是否在有效期内使用。",
+  // —— 4 文件管理 ——
+  "4.1.1":"应当建立健全质量管理体系文件，包括质量方针和质量目标、质量手册、程序文件、技术文件和记录，以及法规要求的其他文件。质量方针应当在企业内部得到沟通和理解；应当在持续适宜性方面得到评审。质量目标应当与质量方针保持一致；应当根据总的质量目标，在相关职能和层次上进行分解，建立各职能和层次的质量目标；应当包括满足产品要求所需的内容；应当可测量、可评估；应当有具体的方法和程序来保障。",
+  "4.1.2":"质量手册应当对质量管理体系作出规定。查看企业的质量手册，应当包括企业质量目标、组织机构及职责、质量体系的适用范围和要求。",
+  "4.1.3":"程序文件应当根据产品生产和质量管理过程中需要建立的各种工作程序而制定，包含本规范所规定的各项程序文件。",
+  "4.1.4":"技术文件应当包括产品技术要求及相关标准、生产工艺规程、作业指导书、检验和试验操作规程、安装和服务操作规程等相关文件。",
+  "4.2.1":"应当建立文件控制程序，系统地设计、制定、审核、批准和发放质量管理体系文件。",
+  "4.2.2":"文件的起草、修订、审核、批准、替换或撤销、复制、保管和销毁等应当按照控制程序管理，并有相应的文件分发、撤销、复制和销毁记录。",
+  "4.2.3":"文件更新或修订时应当按规定评审和批准，能够识别文件的更改和修订状态。查看相关记录确认文件的更新或修订是否经过评审和批准；其更改和修订状态是否能够得到识别。",
+  "4.2.4":"分发和使用的文件应当为适宜的文本，已撤销或作废的文件应当进行标识，防止误用。到工作现场抽查现场使用的文件，确认是否是有效版本。作废文件是否明确标识。",
+  "4.3.1":"应当确定作废的技术文件等必要的质量管理体系文件的保存期限，满足产品维修和产品质量责任追溯等需要。保存期限应当不少于企业所规定的医疗器械寿命期。",
+  "4.4.1":"应当建立记录控制程序，包括记录的标识、保管、检索、保存期限和处置要求等。",
+  "4.4.2":"记录应当保证产品生产、质量控制等活动可追溯性。",
+  "4.4.3":"记录应当清晰、完整，易于识别和检索，防止破损和丢失。",
+  "4.4.4":"记录不得随意涂改或销毁，更改记录应当签注姓名和日期，并使原有信息仍清晰可辨，必要时，应当说明更改的理由。",
+  "4.4.5":"记录的保存期限至少相当于生产企业所规定的医疗器械的寿命期，但从放行产品的日期起不少于2年，或符合相关法规要求，并可追溯。",
+  // —— 5 设计开发 ——
+  "5.1.1":"应当建立设计控制程序并形成文件，对医疗器械的设计和开发过程实施策划和控制。查看设计控制程序文件，应当清晰、可操作，能控制设计开发过程，至少包括以下内容：1.设计和开发的各个阶段的划分；2.适合于每个设计和开发阶段的评审、验证、确认和设计转换活动；3.设计和开发各阶段人员和部门的职责、权限和沟通；4.风险管理要求。",
+  "5.2.1":"在进行设计和开发策划时，应当确定设计和开发的阶段及对各阶段的评审、验证、确认和设计转换等活动，应当识别和确定各个部门设计和开发的活动和接口，明确职责和分工。查看设计和开发策划资料，应当根据产品的特点，对设计开发活动进行策划，并将策划结果形成文件。至少包括以下内容：1.设计和开发项目的目标和意义的描述，技术指标分析；2.确定了设计和开发各阶段，以及适合于每个设计和开发阶段的评审、验证、确认和设计转换活动；3.应当识别和确定各个部门设计和开发的活动和接口，明确各阶段的人员或组织的职责、评审人员的组成，以及各阶段预期的输出结果；4.主要任务和阶段性任务的策划安排与整个项目的一致；5.确定产品技术要求的制定、验证、确认和生产活动所需的测量装置；6.风险管理活动。应当按照策划实施设计和开发。当偏离计划而需要修改计划时，应当对计划重新评审和批准。",
+  "5.3.1":"设计和开发输入应当包括预期用途规定的功能、性能和安全要求、法规要求、风险管理控制措施和其他要求。",
+  "5.3.2":"应当对设计和开发输入进行评审并得到批准，保持相关记录。",
+  "5.4.1":"设计和开发输出应当满足输入要求，包括采购、生产和服务所需的相关信息、产品技术要求等。设计和开发输出应当得到批准，保持相关记录。",
+  "5.5.1":"应当在设计和开发过程中开展设计和开发到生产的转换活动，以使设计和开发的输出在成为最终产品规范前得以验证，确保设计和开发输出适用于生产。查看相关文件，至少符合以下要求：1.应当在设计和开发过程中开展设计转换活动以解决可生产性、部件及材料的可获得性、所需的生产设备、操作人员的培训等；2.设计转换活动应当将产品的每一技术要求正确转化成与产品实现相关的具体过程或程序；3.设计转换活动的记录应当表明设计和开发输出在成为最终产品规范前得到验证，并保留验证记录，以确保设计和开发的输出适于生产；4.应当对特殊过程的转换进行确认，确保其结果适用于生产，并保留确认记录。",
+  "5.6.1":"应当在设计和开发的适宜阶段安排评审，保持评审结果及任何必要措施的记录。查看相关文件和记录，至少符合以下要求：1.应当按设计开发策划的结果，在适宜的阶段进行设计和开发评审；2.应当保持设计和开发评审记录，包括评审结果和评审所采取必要措施的记录。",
+  "5.7.1":"应当对设计和开发进行验证，以确保设计和开发输出满足输入的要求，并保持验证结果和任何必要措施的记录。查看相关文件和记录，至少符合以下要求：1.应当结合策划的结果，在适宜的阶段进行设计和开发验证，确保设计开发输出满足输入的要求；2.应当保持设计和开发验证记录、验证结果和任何必要措施的记录；3.若设计和开发验证采用的是可供选择的计算方法或经证实的设计进行比较的方法，应当评审所用的方法的适宜性，确认方法是否科学和有效。",
+  "5.8.1":"应当对设计和开发进行确认，以确保产品满足规定的使用要求或者预期用途的要求，并保持确认结果和任何必要措施的记录。查看相关文件和记录，至少符合以下要求：1.应当在适宜阶段进行设计和开发确认，确保产品满足规定的使用要求或预期用途的要求；2.设计和开发确认活动应当在产品交付和实施之前进行；3.应当保持设计和开发确认记录，包括临床评价或临床试验的记录，保持确认结果和任何必要措施的记录。",
+  "5.9.1":"确认可采用临床评价或者性能评价。进行临床试验时应当符合医疗器械临床试验法规的要求。查看临床评价报告及其支持材料。若开展临床试验的，其临床试验应当符合法规要求并提供相应的证明材料。对于需要进行临床评价或性能评价的医疗器械，应当能够提供评价报告和（或）材料。",
+  "5.10.1":"应当对设计和开发的更改进行识别并保持记录。",
+  "5.10.2":"必要时，应当对设计和开发更改进行评审、验证和确认，并在实施前得到批准。查看设计和开发更改的评审记录，至少符合以下要求：1.应当包括更改对产品组成部分和已交付产品的影响；2.设计和开发更改的实施应符合医疗器械产品注册的有关规定；3.设计更改的内容和结果涉及到改变医疗器械产品注册证（备案凭证）所载明的内容时，企业应当进行风险分析，并按照相关法规的规定，申请变更注册（备案），以满足法规的要求。",
+  "5.10.3":"当选用的材料、零件或者产品功能的改变可能影响到医疗器械产品安全性、有效性时，应当评价因改动可能带来的风险，必要时采取措施将风险降低到可接受水平，同时应当符合相关法规的要求。",
+  "5.11.1":"应当在包括设计和开发在内的产品实现全过程中，制定风险管理的要求并形成文件，保持相关记录。查看风险管理文件和记录，至少符合以下要求：1.风险管理应当覆盖企业开发的产品实现的全过程；2.应当建立对医疗器械进行风险管理的文件，保持相关记录，以确定实施的证据；3.应当将医疗器械产品的风险控制在可接受水平。",
+  // —— 6 采购 ——
+  "6.1.1":"应当建立采购控制程序。采购程序内容至少包括：采购流程、合格供应商的选择、评价和再评价规定、采购物品检验或验证的要求、采购记录的要求。",
+  "6.1.2":"应当确保采购物品符合规定的要求，且不低于法律法规的相关规定和国家强制性标准的相关要求。",
+  "6.2.1":"应当根据采购物品对产品的影响，确定对采购物品实行控制的方式和程度。查看对采购物品实施控制方式和程度的规定，核实控制方式和程度能够满足产品要求。",
+  "6.3.1":"应当建立供应商审核制度，对供应商进行审核评价。必要时，应当进行现场审核。是否符合《医疗器械生产企业供应商审核指南》的要求。",
+  "6.3.2":"应当保留供方评价的结果和评价过程的记录。",
+  "6.4.1":"应当与主要原材料供应商签订质量协议，明确双方所承担的质量责任。",
+  "6.5.1":"采购时应当明确采购信息，清晰表述采购要求，包括采购物品类别、验收准则、规格型号、规程、图样等内容。从采购清单中抽查相关采购物品的采购要求，确认是否符合本条要求。",
+  "6.5.2":"应当建立采购记录，包括采购合同、原材料清单、供应商资质证明文件、质量标准、检验报告及验收标准等。",
+  "6.5.3":"采购记录应当满足可追溯要求。",
+  "6.6.1":"应当对采购物品进行检验或验证，确保满足生产要求。查看采购物品的检验或验证记录。",
+  // —— 7 生产管理 ——
+  "7.1.1":"应当按照建立的质量管理体系进行生产，以保证产品符合强制性标准和经注册或者备案的产品技术要求。",
+  "7.2.1":"应当编制生产工艺规程、作业指导书等，明确关键工序和特殊过程。查看相关文件；是否明确关键工序和特殊过程，对关键工序和特殊过程的重要参数是否做验证或确认的规定。",
+  "7.3.1":"在生产过程中需要对原材料、中间品等进行清洁处理的，应当明确清洁方法和要求，并对清洁效果进行验证。",
+  "7.4.1":"应当根据生产工艺特点对环境进行监测，并保存记录。",
+  "7.5.1":"应当对生产的特殊过程进行确认，并保存记录，包括确认方案，确认方法、操作人员、结果评价、再确认等内容。",
+  "7.5.2":"生产过程中采用的计算机软件对产品质量有影响的，应当进行验证或确认。",
+  "7.6.1":"每批（台）产品均应当有生产记录，并满足可追溯的要求。",
+  "7.6.2":"生产记录应当包括：产品名称、规格型号、原材料批号、生产批号或产品编号、生产日期、数量、主要设备、工艺参数、操作人员等内容。",
+  "7.7.1":"应当建立产品标识控制程序，用适宜的方法对产品进行标识，以便识别，防止混用和错用。",
+  "7.8.1":"应当在生产过程中标识产品的检验状态，防止不合格中间产品流向下道工序。查看是否对检验状态标识方法作出规定，现场查看生产过程中的检验状态标识，是否符合文件规定。",
+  "7.9.1":"应当建立产品的可追溯性程序，规定产品追溯范围、程度、标识和必要的记录。",
+  "7.10.1":"产品的说明书、标签应当符合相关法律法规及标准要求。",
+  "7.11.1":"应当建立产品防护程序，规定产品及其组成部分的防护要求，包括污染防护、静电防护、粉尘防护、腐蚀防护、运输防护等要求。防护应当包括标识、搬运、包装、贮存和保护等。现场查看产品防护程序是否符合规范要求；现场查看并抽查相关记录，确认产品防护符合要求。",
+  "7.12.1":"生产过程中产生粉尘、烟雾、毒害物、射线和紫外线等有害物质的厂房、设备应当安装相应的防护装置，建立其工作环境条件的要求并形成文件，以进行有效控制。",
+  "7.13.1":"应当制定洁净室（区）的卫生管理文件，按照规定对洁净室（区）进行清洁处理和消毒，并保留记录。",
+  "7.13.2":"所用的消毒剂或消毒方法不得对设备、工艺装备、物料和产品造成污染。查看相关文件，是否对消毒剂或消毒方法作出规定，应包括消毒剂品种、使用时间、频次、更换周期等内容，应保留相关的记录。应当对所选择的消毒方法、选用的消毒剂进行效果评价或验证；所用的消毒剂或消毒方法不应当对设备、工艺装备、物料和产品造成污染。",
+  "7.13.3":"消毒剂品种应当定期更换，防止产生耐药菌株。",
+  "7.14.1":"生产设备所用的润滑剂、冷却剂、清洗剂及在洁净室（区）内通过模具成型后不需清洁处理的零配件所用的脱模剂，均不得对产品造成污染。查看验证报告，所使用的润滑剂、冷却剂、清洗剂等不会对产品造成污染，或有相应措施消除污染的影响。",
+  "7.15.1":"应当制定工位器具的管理文件，所选用的工位器具应当能避免产品在存放和搬运中被污染和损坏。查看工位器具的管理文件，是否符合要求。现场查看工位器具是否满足产品防护要求，表面是否光洁、平整、易于清洗和消毒、无物质脱落；是否能够避免产品在存放和搬运中被污染和损坏；工位器具是否按区域存放，不同区域的工位器具是否严格区别和分开，有明显标识。",
+  "7.16.1":"进入洁净室（区）的物品，包括原料和零配件等必须按程序进行净化处理。",
+  "7.16.2":"对于需清洁处理的无菌医疗器械的零配件，末道清洁处理应当在相应级别的洁净室（区）内进行，末道清洁处理介质应当满足产品质量的要求。",
+  "7.17.1":"应当建立清场的管理规定，以防止产品的交叉污染，并作好清场记录。是否根据生产工艺制定清场的管理规定及记录。现场查看上次生产遗留物的处理是否符合规定。",
+  "7.18.1":"应当建立批号管理规定，明确生产批号和灭菌批号的关系，规定每批产品应形成的记录。查看是否建立了批号管理文件，是否明确了原材料批、生产批、灭菌批、中间品批等批号的编写方法，规定生产批和灭菌批组批方法，是否明确了生产批号和灭菌批号的关系，生产批的划分是否符合企业相关文件的规定。是否明确了每批应形成的记录。",
+  "7.19.1":"应当选择适宜的方法对产品进行灭菌或采用适宜的无菌加工技术以保证产品无菌，并执行相关法规和标准的要求。查看企业提供的对所选用的灭菌方法或无菌加工技术进行分析、论证的文件，评价是否适宜于所生产的无菌医疗器械。",
+  "7.20.1":"应当建立植入性无菌医疗器械灭菌过程确认程序并形成文件。",
+  "7.20.2":"灭菌过程应当按照相关标准要求在初次实施前进行确认，必要时再确认，并保持灭菌过程确认记录。",
+  "7.21.1":"应当制定灭菌过程控制文件，保持每一灭菌批的灭菌过程参数记录，灭菌记录应当可追溯到产品的每一生产批。",
+  "7.22.1":"应当建立可追溯性程序并形成文件，规定植入性医疗器械可追溯的范围、程度、唯一性标识和要求的记录。",
+  "7.22.2":"在规定可追溯性要求的记录时，应当包括可能导致最终产品不满足其规定要求的所用的原材料、生产设备、操作人员和生产环境等记录。",
+  "7.23.1":"植入性医疗器械应当标记生产企业名称或商标、批代码（批号）或系列号，以保证其可追溯性。",
+  "7.24.1":"应当根据对产品质量影响的程度规定各种植入性无菌医疗器械产品和材料的贮存条件，贮存场所应当具有相应的环境监控设施，应当控制和记录贮存条件，贮存条件应当在标签或使用说明书中注明。",
+  "7.25.1":"以非无菌状态提供的植入性医疗器械，应当在确认过的清洁条件或净化条件下进行末道清洗和包装，清洗水质至少为纯化水，同时采取适当的措施，避免或降低微生物污染。",
+  "7.25.2":"以非无菌状态提供的植入性医疗器械，包装应当能保持其产品不发生锈蚀、霉变、蜕变等性质变化，应适宜企业所用的灭菌方法。",
+  // —— 8 质量控制 ——
+  "8.1.1":"应当建立质量控制程序，规定产品检验部门、人员、操作等要求。查看质量控制程序，是否对产品的检验部门职责、人员资质、检验操作规程等作出规定。",
+  "8.1.2":"应当规定检验仪器和设备的使用、校准等要求，以及产品放行的程序。查看质量控制程序，是否对检验仪器、设备的使用和校准作出规定。",
+  "8.2.1":"应当定期对检验仪器和设备进行校准或检定，并予以标识。查看检验仪器和设备是否按规定实施了校准或检定，是否进行了标识。",
+  "8.2.2":"应当规定检验仪器和设备在搬运、维护、贮存期间的防护要求，防止检验结果失准。",
+  "8.2.3":"当发现检验仪器和设备不符合要求时，应当对以往检验结果进行评价，并保存验证记录。查看设备使用、维护记录，当检验仪器设备不符合要求的情况，是否对以往检测的结果进行了评价，并保存相关记录。",
+  "8.2.4":"对用于检验的计算机软件，应当进行确认。",
+  "8.3.1":"应当根据强制性标准以及经注册或者备案的产品技术要求制定产品的检验规程，并出具相应的检验报告或证书。查看产品检验规程是否涵盖强制性标准以及经注册或者备案的产品技术要求的性能指标；确认检验记录是否能够证实产品符合要求；查看是否根据检验规程及检验结果出具相应的检验报告或证书。",
+  "8.3.2":"需要常规控制的进货检验、过程检验和成品检验项目原则上不得进行委托检验。对于检验条件和设备要求较高，确需委托检验的项目，可委托具有资质的机构进行检验，以证明产品符合强制性标准和经注册或者备案的产品技术要求。",
+  "8.4.1":"每批（台）产品均应当有批检验记录，并满足可追溯要求。",
+  "8.4.2":"检验记录应当包括进货检验、过程检验和成品检验的检验记录、检验报告或证书等。",
+  "8.5.1":"应当规定产品放行程序、条件和放行批准要求。查看产品放行程序，是否明确了放行的条件和放行批准的要求。应当规定有权放行产品人员及其职责权限，并应当保持批准的记录。",
+  "8.5.2":"放行的产品应当附有合格证明。",
+  "8.6.1":"应当根据产品和工艺特点制定留样管理规定，按规定进行留样，并保持留样观察记录。",
+  "8.7.1":"无菌医疗器械生产企业应当具备无菌、微生物限度和阳性对照的检测能力和条件。现场查看是否具备无菌、微生物限度和阳性对照的检测条件，是否配备了相应的设备和检测人员（如：超净工作台、恒温培养箱、生化培养箱、压力蒸汽灭菌器、薄膜过滤设备、生物安全柜等）。",
+  "8.8.1":"应当对工艺用水进行监控和定期检测，并保持监控记录和检测报告。",
+  "8.9.1":"应当按照医疗器械相关行业标准要求对洁净室（区）的尘粒、浮游菌或沉降菌、换气次数或风速、静压差、温度和相对湿度进行定期检（监）测，并保存检（监）测记录。",
+  "8.10.1":"应当根据产品质量要求确定产品的初始污染菌和微粒污染的控制水平并形成文件，明确中间品的存储环境要求和存放时间。",
+  "8.10.2":"按文件要求定期检测并保持相关记录。",
+  "8.10.3":"应当定期对检测记录进行汇总和趋势分析。",
+  "8.11.1":"应当建立与生产产品相适应的检验机构，对产品按批进行出厂检验项目的检验。检验记录应当载明检验和试验人员的姓名、职务和检验日期。",
+  "8.12.1":"应根据产品留样目的确定留样数量和留样方式（按生产批或灭菌批等留样），制定留样管理办法。",
+  "8.12.2":"应当作好留样观察或检验记录。",
+  // —— 9 销售和售后服务 ——
+  "9.1.1":"应当建立产品销售记录，并满足可追溯要求。",
+  "9.1.2":"销售记录至少应当包括：医疗器械名称、规格、型号、数量、生产批号、有效期、销售日期、购货单位名称、地址、联系方式等内容。",
+  "9.2.1":"直接销售自产产品或者选择医疗器械经营企业，应当符合医疗器械相关法规和规范要求。",
+  "9.2.2":"发现医疗器械经营企业存在违法违规经营行为时，应当及时向当地食品药品监督管理部门报告。",
+  "9.3.1":"应当具备与所生产产品相适应的售后服务能力，建立健全售后服务制度。",
+  "9.3.2":"应当规定售后服务要求并建立售后服务记录，并满足可追溯的要求。",
+  "9.4.1":"需要由企业安装的医疗器械，应当确定安装要求和安装验证的接收标准，建立安装和验收记录。",
+  "9.4.2":"由使用单位或其他企业进行安装、维修的，应当提供安装要求、标准和维修零部件、资料、密码等，并进行指导。",
+  "9.5.1":"应当建立顾客反馈处理程序，对顾客反馈信息进行跟踪分析。查看程序文件是否对上述活动的实施作出了规定，并对顾客反馈信息进行了跟踪和分析。",
+  "9.6.1":"应当要求其代理商或经销商保存医疗器械分销记录以便追溯。",
+  "9.6.2":"应当保存货运包装收件人的名字和地址的记录。",
+  // —— 10 不合格品控制 ——
+  "10.1.1":"应当建立不合格品控制程序，规定不合格品控制的部门和人员的职责与权限。",
+  "10.2.1":"应当对不合格品进行标识、记录、隔离、评审，根据评审结果，应当对不合格品采取相应的处置措施。现场查看不合格品的标识、隔离是否符合程序文件的规定，抽查不合格品处理记录，是否按文件的规定进行评审。",
+  "10.3.1":"在产品销售后发现产品不合格时，应及时采取相应措施，如召回、销毁等措施。",
+  "10.4.1":"不合格品可以返工的，企业应当编制返工控制文件。返工控制文件应当包括作业指导书、重新检验和重新验证等内容。查看返工控制文件，是否对可以返工的不合格品作出规定；抽查返工活动记录，确认是否符合返工控制文件的要求。",
+  "10.4.2":"不能返工的，应当建立相关处置制度。",
+  // —— 11 不良事件监测与改进 ——
+  "11.1.1":"应当指定相关部门负责接收、调查、评价和处理顾客投诉，并保持相关记录。查看有关职责权限的文件，确定是否对上述活动作出了规定。",
+  "11.2.1":"应当按照有关法规要求建立医疗器械不良事件监测制度，开展不良事件监测和再评价工作，保持相关记录。查看企业建立的不良事件的监测制度，是否规定了可疑不良事件管理人员的职责、报告原则、上报程序、上报时限，制定了启动实施医疗器械再评价的程序和文件等，并符合法规要求。查看相关记录，确认是否存在不良事件，并按规定要求实施。",
+  "11.3.1":"应当建立数据分析程序，收集分析与产品质量、不良事件、顾客反馈和质量管理体系运行有关的数据，验证产品安全性和有效性，并保持相关记录。查看数据分析的实施记录，是否按程序规定进行，是否应用了统计技术并保留了数据分析结果的记录。",
+  "11.4.1":"应当建立纠正措施程序，确定产生问题的原因，采取有效措施，防止相关问题再次发生。",
+  "11.4.2":"应当建立预防措施程序，确定潜在问题的原因，采取有效措施，防止问题发生。",
+  "11.5.1":"对存在安全隐患的医疗器械，应当按照有关法规要求采取召回等措施，并按规定向有关部门报告。",
+  "11.6.1":"应当建立产品信息告知程序，及时将产品变动、使用等补充信息通知使用单位、相关企业或消费者。",
+  "11.7.1":"应当建立质量管理体系内部审核程序，规定审核的准则、范围、频次、参加人员、方法、记录要求、纠正预防措施有效性的评定等内容，以确保质量管理体系符合本规范的要求。查看内部审核程序是否包括了上述内容。查看内审资料，实施内审的人员是否经过培训，内审的记录是否符合要求，针对内审发现的问题是否采取了纠正措施，是否有效。",
+  "11.8.1":"应当定期开展管理评审，对质量管理体系进行评价和审核，以确保其持续的适宜性、充分性和有效性。查看管理评审文件和记录，应包括管理评审计划、管理评审报告以及相关改进措施，管理评审报告中是否包括了对法规符合性的评价。是否在规定时间内进行了管理评审，是否提出了改进措施并落实具体职责和要求，是否按计划实施。",
+  // —— 附录条款 ——
+  "无菌.1.5.1":"[无菌] 从事无菌医疗器械生产的人员应当接受微生物学基础知识培训。",
+  "无菌.2.11.1":"[无菌] 洁净室（区）的空气净化系统应当保持连续运行。",
+  "无菌.2.11.2":"[无菌] 无菌医疗器械生产应当确定在相应级别洁净室（区）内进行。",
+  "无菌.3.4.1":"[无菌] 灭菌设备应当有自动监测和记录装置。",
+  "无菌.7.8.1":"[无菌] 应当对洁净室（区）进行尘粒和微生物监测。",
+  "无菌.7.9.1":"[无菌] 无菌医疗器械的包装应当满足产品防护要求。",
+  "植入.1.6.1":"[植入] 从事植入性医疗器械生产的人员应当接受相关培训。",
+  "植入.2.12.1":"[植入] 植入性医疗器械的生产环境应当符合要求。",
+  "植入.7.10.1":"[植入] 植入性医疗器械应当对特殊过程进行确认。",
+  "植入.7.11.1":"[植入] 植入性医疗器械应当对关键工序进行验证。",
+  "IVD.2.10.1":"[IVD] 应当根据体外诊断试剂的生产过程控制，确定在相应级别的洁净室（区）内进行。",
+  "IVD.3.11.2":"[IVD] 冷藏、冷冻体外诊断试剂应当配备符合其温度要求的运输设施设备。",
+  "IVD.7.12.1":"[IVD] 体外诊断试剂的生产应当对原材料、中间品进行质量控制。",
+  "义齿.1.7.1":"[义齿] 定制式义齿生产人员应当经过专业培训。",
+  "义齿.7.13.1":"[义齿] 定制式义齿的生产应当有工艺规程。",
+  "义齿.7.14.1":"[义齿] 定制式义齿的成品应当进行消毒和包装。",
+  "软件.1.8.1":"[软件] 独立软件开发人员应当具备相应的专业能力。",
+  "软件.5.6.1":"[软件] 独立软件的设计开发应当包括软件需求分析、架构设计、编码、测试等。",
+  "软件.5.7.1":"[软件] 独立软件应当进行黑盒测试，保证同一软件项的开发人员和测试人员不得互相兼任。"
 };
 
-// —— 新版GMP关键词映射：关键词 → 匹配条款号数组 ——
+/* ==================== 新版GMP（2025年107号）条款数据库 ==================== */
+const NEW_GMP_CLAUSES = {
+  "第6条":"鼓励企业推进数智化转型",
+  "第9条":"质量保证系统九项要求（含第(八)项：贮存、运输环节保证措施）",
+  "第10条":"变更控制程序",
+  "第12条":"质量风险管理制度",
+  "第13条":"质量风险管理回顾",
+  "第15条":"质量管理部门独立履职",
+  "第22条":"放行审核人资质要求",
+  "第29条":"仓储区管理——明确原材料贮存条件（含贮存期设定要求，超过贮存期需复验，超过有效期按不合格品处理）",
+  "第30条":"检验场所和设施",
+  "第32条":"洁净区与非洁净区、洁净区与室外大气静压差要求（>10Pa）",
+  "第34条":"未经批准人员进入控制",
+  "第36条":"设备配备与有效运行",
+  "第37条":"设备和仪器档案",
+  "第38条":"设备使用、维护操作规程",
+  "第41条":"文件和数据管理体系",
+  "第43条":"电子记录与数据管理（含备份、保存期限）",
+  "第44条":"记录保存期限（至少与器械寿命期一致，且放行后不少于2年）",
+  "第56条":"验证与确认",
+  "第57条":"验证方案与报告",
+  "第63条":"委托生产控制程序",
+  "第64条":"受托方评价",
+  "第67条":"外协加工控制程序",
+  "第73条":"数据分析与应用",
+  "第76条":"纠正预防措施（CAPA）",
+  "第77条":"变更、偏差、CAPA有效性评估"
+};
+
+/* ==================== 新版GMP关键词映射 ==================== */
 const NEW_GMP_KEYWORD_MAP = [
-  { kw:["贮存期","有效期","复验","超期","过期","物料贮存","仓储"], clauses:["第29条","第9条"] },
+  { kw:["贮存期","有效期","复验","超期","过期","物料贮存","仓储条件"], clauses:["第29条","第9条"] },
   { kw:["数智化","数字化转型","智能制造"], clauses:["第6条"] },
   { kw:["质量保证","QMS","质量目标"], clauses:["第9条"] },
   { kw:["变更控制","变更管理"], clauses:["第10条"] },
@@ -529,11 +511,129 @@ const NEW_GMP_KEYWORD_MAP = [
   { kw:["CAPA","纠正预防","纠正措施"], clauses:["第76条"] }
 ];
 
-// —— 选项常量 ——
+/* ==================== 现行版关键词映射 ==================== */
+const KEYWORD_MAP_A = [
+  { kw:["组织机构","职责","权限","部门设置"], clauses:["1.1.1","1.1.2"] },
+  { kw:["兼任"], clauses:["1.1.3"] },
+  { kw:["质量方针","质量目标"], clauses:["1.2.2","4.1.1"] },
+  { kw:["管理者代表"], clauses:["1.3.1","1.3.2"] },
+  { kw:["负责人","任职资格","管理人员"], clauses:["1.4.1"] },
+  { kw:["专业人员","技术人员","操作人员","配备"], clauses:["1.5.1"] },
+  { kw:["检验机构","专职检验人员"], clauses:["1.5.2"] },
+  { kw:["培训","上岗","教育","考核","技能","培训记录"], clauses:["1.6.1"] },
+  { kw:["健康档案","健康管理"], clauses:["1.7.1","1.9.1"] },
+  { kw:["洁净室培训","微生物学培训"], clauses:["1.8.1"] },
+  { kw:["体检","每年体检"], clauses:["1.9.2"] },
+  { kw:["着装","工作服","洁净服","穿戴","阻留","头发","胡须","更衣"], clauses:["1.10.1"] },
+  { kw:["脱落纤维","脱落颗粒","静电"], clauses:["1.10.2"] },
+  { kw:["厂房","选址","厂区","布局","设计"], clauses:["2.1.1","2.2.1"] },
+  { kw:["照明","温度","湿度","通风"], clauses:["2.3.2"] },
+  { kw:["昆虫","动物","防虫"], clauses:["2.4.1"] },
+  { kw:["仓储","仓库","贮存","存放","分区"], clauses:["2.6.1","2.6.2"] },
+  { kw:["检验场所","检验设施"], clauses:["2.7.1"] },
+  { kw:["洁净级别","洁净室","洁净区"], clauses:["2.9.1"] },
+  { kw:["压差","静压差","5帕","10帕","压差计"], clauses:["2.9.2"] },
+  { kw:["门窗","管道","密封"], clauses:["2.10.1"] },
+  { kw:["设备","生产设备","工艺装备"], clauses:["3.1.1"] },
+  { kw:["状态标识","设备标识"], clauses:["3.2.2"] },
+  { kw:["设备维护","保养","维修","操作规程"], clauses:["3.2.3","3.2.1"] },
+  { kw:["检验仪器","检测设备"], clauses:["3.3.1"] },
+  { kw:["使用记录","校准记录","维护记录"], clauses:["3.4.1"] },
+  { kw:["计量","计量器具","校准有效期"], clauses:["3.5.1"] },
+  { kw:["质量手册","程序文件","技术文件","体系文件"], clauses:["4.1.2","4.1.3","4.1.4","4.1.1"] },
+  { kw:["文件控制","文件管理"], clauses:["4.2.1","4.2.2"] },
+  { kw:["文件修订","文件更改","修订状态"], clauses:["4.2.3"] },
+  { kw:["作废文件","文件版本","有效版本"], clauses:["4.2.4"] },
+  { kw:["记录控制","记录标识"], clauses:["4.4.1"] },
+  { kw:["记录","可追溯","记录保存","填写","签字","未签字","记录缺失","涂改"], clauses:["4.4.2","4.4.3","4.4.4","4.4.5","4.3.1"] },
+  { kw:["设计开发","设计控制"], clauses:["5.1.1"] },
+  { kw:["设计输入","设计策划"], clauses:["5.2.1","5.3.1","5.3.2"] },
+  { kw:["设计输出"], clauses:["5.4.1"] },
+  { kw:["设计转换"], clauses:["5.5.1"] },
+  { kw:["设计评审"], clauses:["5.6.1"] },
+  { kw:["设计验证"], clauses:["5.7.1"] },
+  { kw:["设计确认","临床评价"], clauses:["5.8.1","5.9.1"] },
+  { kw:["设计更改","设计变更"], clauses:["5.10.1","5.10.2"] },
+  { kw:["风险管理"], clauses:["5.11.1"] },
+  { kw:["采购","采购控制"], clauses:["6.1.1"] },
+  { kw:["供应商","供方","供应商审核","合格供方"], clauses:["6.2.1","6.3.1","6.3.2"] },
+  { kw:["质量协议"], clauses:["6.4.1"] },
+  { kw:["采购记录","采购信息"], clauses:["6.5.1","6.5.2","6.5.3"] },
+  { kw:["进货检验","采购检验"], clauses:["6.6.1"] },
+  { kw:["工艺规程","作业指导书","关键工序","特殊过程"], clauses:["7.2.1"] },
+  { kw:["清洁","清洁效果","清洗"], clauses:["7.3.1"] },
+  { kw:["环境监测"], clauses:["7.4.1"] },
+  { kw:["过程确认","特殊过程确认"], clauses:["7.5.1"] },
+  { kw:["计算机软件","软件验证"], clauses:["7.5.2"] },
+  { kw:["生产记录","批记录"], clauses:["7.6.1","7.6.2"] },
+  { kw:["产品标识","标识控制"], clauses:["7.7.1"] },
+  { kw:["检验状态","状态标识"], clauses:["7.8.1"] },
+  { kw:["可追溯","追溯"], clauses:["7.9.1"] },
+  { kw:["说明书","标签"], clauses:["7.10.1"] },
+  { kw:["产品防护"], clauses:["7.11.1"] },
+  { kw:["粉尘","烟雾","射线","紫外线"], clauses:["7.12.1"] },
+  { kw:["洁净室卫生","清洁消毒"], clauses:["7.13.1"] },
+  { kw:["消毒剂","消毒方法"], clauses:["7.13.2","7.13.3"] },
+  { kw:["润滑剂","冷却剂","清洗剂","脱模剂"], clauses:["7.14.1"] },
+  { kw:["工位器具"], clauses:["7.15.1"] },
+  { kw:["净化处理","进入洁净室"], clauses:["7.16.1"] },
+  { kw:["末道清洁"], clauses:["7.16.2"] },
+  { kw:["清场"], clauses:["7.17.1"] },
+  { kw:["批号","生产批","灭菌批"], clauses:["7.18.1"] },
+  { kw:["灭菌","无菌加工"], clauses:["7.19.1"] },
+  { kw:["灭菌过程确认"], clauses:["7.20.1","7.20.2"] },
+  { kw:["灭菌记录","灭菌参数"], clauses:["7.21.1"] },
+  { kw:["可追溯性程序","植入"], clauses:["7.22.1","7.22.2"] },
+  { kw:["标记","批代码"], clauses:["7.23.1"] },
+  { kw:["贮存条件","环境监控"], clauses:["7.24.1"] },
+  { kw:["末道清洗","初包装","包装"], clauses:["7.25.1","7.25.2"] },
+  { kw:["质量控制","检验规程","检验部门"], clauses:["8.1.1","8.1.2"] },
+  { kw:["校准","检定","检验设备"], clauses:["8.2.1"] },
+  { kw:["检验设备防护"], clauses:["8.2.2"] },
+  { kw:["检验设备不符合"], clauses:["8.2.3"] },
+  { kw:["检验软件","软件确认"], clauses:["8.2.4"] },
+  { kw:["检验规程","检验报告"], clauses:["8.3.1","8.3.2"] },
+  { kw:["批检验记录","检验记录"], clauses:["8.4.1","8.4.2"] },
+  { kw:["产品放行","放行程序"], clauses:["8.5.1","8.5.2"] },
+  { kw:["留样"], clauses:["8.6.1","8.12.1","8.12.2"] },
+  { kw:["无菌检测","微生物限度","阳性对照"], clauses:["8.7.1"] },
+  { kw:["工艺用水","纯化水"], clauses:["8.8.1"] },
+  { kw:["尘粒","浮游菌","沉降菌","换气次数"], clauses:["8.9.1"] },
+  { kw:["初始污染菌","微粒污染"], clauses:["8.10.1","8.10.2","8.10.3"] },
+  { kw:["出厂检验"], clauses:["8.11.1"] },
+  { kw:["销售记录","销售"], clauses:["9.1.1","9.1.2"] },
+  { kw:["售后服务"], clauses:["9.3.1","9.3.2"] },
+  { kw:["安装","安装验证"], clauses:["9.4.1","9.4.2"] },
+  { kw:["顾客反馈"], clauses:["9.5.1"] },
+  { kw:["分销记录","代理商","经销商"], clauses:["9.6.1","9.6.2"] },
+  { kw:["不合格品"], clauses:["10.1.1","10.2.1"] },
+  { kw:["不合格品处置","返工","销毁","召回"], clauses:["10.3.1","10.4.1","10.4.2"] },
+  { kw:["顾客投诉","投诉"], clauses:["11.1.1"] },
+  { kw:["不良事件","不良事件监测"], clauses:["11.2.1"] },
+  { kw:["数据分析"], clauses:["11.3.1"] },
+  { kw:["纠正措施"], clauses:["11.4.1"] },
+  { kw:["预防措施"], clauses:["11.4.2"] },
+  { kw:["召回"], clauses:["11.5.1"] },
+  { kw:["产品信息告知"], clauses:["11.6.1"] },
+  { kw:["内部审核","内审"], clauses:["11.7.1"] },
+  { kw:["管理评审"], clauses:["11.8.1"] }
+];
+
+/* ==================== 选项常量 ==================== */
 const SUPERVISION = ["质量保证","机构与人员","厂房设施设备","文件管理","设计开发","采购物料","生产管理","验证确认","质量控制","变更偏差CAPA","委托生产","销售不良事件","新版GMP升级","其他"];
 const RESULT = ["关键性缺陷","系统性缺陷","真实性缺陷","未发现不符合项","存在一般缺陷","存在严重缺陷","涉嫌违法违规","其他"];
+const RESULT_DESC = {
+  "关键性缺陷":"存在可能直接导致产品安全风险的严重缺陷",
+  "系统性缺陷":"质量体系层面存在系统性、普遍性问题",
+  "真实性缺陷":"存在记录造假、数据不真实等问题",
+  "未发现不符合项":"本次评估未发现不符合项",
+  "存在一般缺陷":"存在一般不符合项",
+  "存在严重缺陷":"存在严重不符合项",
+  "涉嫌违法违规":"涉嫌违反法律法规行为",
+  "其他":"其他情况"
+};
 const HANDLING = ["企业自行整改","现场复查","报告转交药监部门","其他"];
-const CH_NAMES = {1:"机构与人员",2:"厂房与设施",3:"设备",4:"文件管理",5:"设计开发",6:"采购",7:"生产管理",8:"质量控制",9:"销售和售后服务",10:"不合格品控制",11:"不良事件监测",12:"分析和改进"};
+const CH_NAMES = {1:"机构与人员",2:"厂房与设施",3:"设备",4:"文件管理",5:"设计开发",6:"采购",7:"生产管理",8:"质量控制",9:"销售和售后服务",10:"不合格品控制",11:"不良事件监测与改进",12:"分析和改进"};
 const RISK_TMPL = {
   "机构与人员":"人员培训、着装及岗位能力方面存在不足",
   "厂房与设施":"洁净区环境控制（压差、温湿度、洁净级别）方面存在薄弱环节",
@@ -545,14 +645,15 @@ const RISK_TMPL = {
   "质量控制":"检验放行与质量控制方面存在薄弱环节",
   "销售和售后服务":"销售记录与售后服务方面存在不足",
   "不合格品控制":"不合格品控制与处置方面存在风险",
-  "不良事件监测":"不良事件监测与报告方面存在薄弱环节",
+  "不良事件监测与改进":"不良事件监测与纠正预防措施方面存在薄弱环节",
   "分析和改进":"纠正预防措施与质量改进方面存在不足"
 };
 
 /* ==================== 状态 ==================== */
-const STORE_KEY = "gmpTool_v2";
+const STORE_KEY = "gmpTool_v3";
 let state = {
   company: {},
+  fill: {},
   checks: { category:"", supervision:[], result:[], handling:[], rectification:[], rectDays:"" },
   items: []
 };
@@ -562,43 +663,49 @@ function $(id){ return document.getElementById(id); }
 function val(id){ const e=$(id); return e ? e.value : ""; }
 function todayStr(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 function esc(s){ return String(s==null?"":s); }
+function fill(v,blank){ return (v===""||v==null)?(blank||"____"):esc(v); }
 
 let toastTimer=null;
 function toast(msg){
   const t=$("toast"); t.textContent=msg; t.classList.add("show");
-  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove("show"),2200);
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove("show"),2400);
 }
 
+/* ==================== 采集/回填 ==================== */
 function collectCompany(){
   const cats=[...document.querySelectorAll("#c_categories input:checked")].map(e=>e.value);
-  return {
-    name:val("c_name"), credit:val("c_credit"), legal:val("c_legal"), manager:val("c_manager"),
+  return { name:val("c_name"), credit:val("c_credit"), legal:val("c_legal"), manager:val("c_manager"),
     quality:val("c_quality"), address:val("c_address"), license:val("c_license"), sales:val("c_sales"),
     cert3:val("c_cert3"), cert2:val("c_cert2"), products:val("c_products"), employees:val("c_employees"),
-    inspectors:val("c_inspectors"), auditors:val("c_auditors"), contact:val("c_contact"), categories:cats, status:val("c_status"),
-    prodstatus:val("c_prodstatus"), date:val("c_date"), year:val("c_year"), assessor:val("c_assessor")
-  };
+    inspectors:val("c_inspectors"), auditors:val("c_auditors"), contact:val("c_contact"), categories:cats,
+    status:val("c_status"), prodstatus:val("c_prodstatus"), date:val("c_date"), year:val("c_year"), assessor:val("c_assessor") };
 }
 function fillCompany(c){
   const map={name:"c_name",credit:"c_credit",legal:"c_legal",manager:"c_manager",quality:"c_quality",
     address:"c_address",license:"c_license",sales:"c_sales",cert3:"c_cert3",cert2:"c_cert2",products:"c_products",
-    employees:"c_employees",inspectors:"c_inspectors",auditors:"c_auditors",contact:"c_contact",status:"c_status",prodstatus:"c_prodstatus",date:"c_date",year:"c_year",assessor:"c_assessor"};
+    employees:"c_employees",inspectors:"c_inspectors",auditors:"c_auditors",contact:"c_contact",status:"c_status",
+    prodstatus:"c_prodstatus",date:"c_date",year:"c_year",assessor:"c_assessor"};
   for(const k in map){ const e=$(map[k]); if(e) e.value = c[k]||""; }
   if(!c.date) $("c_date").value = todayStr();
   const cats=c.categories||[];
   document.querySelectorAll("#c_categories input").forEach(e=>{ e.checked = cats.includes(e.value); });
 }
+function collectFill(){
+  return { manualVersion:val("f_manualVersion"), manualDate:val("f_manualDate"), auditPeriod:val("f_auditPeriod"),
+    auditNc:val("f_auditNc"), reviewDate:val("f_reviewDate"), sampleProduct:val("f_sampleProduct"),
+    sampleCert:val("f_sampleCert"), sampleExpiry:val("f_sampleExpiry"), domestic:val("f_domestic"), export:val("f_export") };
+}
+function fillFill(f){
+  const map={manualVersion:"f_manualVersion",manualDate:"f_manualDate",auditPeriod:"f_auditPeriod",
+    auditNc:"f_auditNc",reviewDate:"f_reviewDate",sampleProduct:"f_sampleProduct",sampleCert:"f_sampleCert",
+    sampleExpiry:"f_sampleExpiry",domestic:"f_domestic",export:"f_export"};
+  for(const k in map){ const e=$(map[k]); if(e) e.value = (f&&f[k])||""; }
+}
 function collectChecks(){
   const cat=(document.querySelector('input[name="cat"]:checked')||{}).value||"";
   const g=(sel)=>[...document.querySelectorAll(sel+":checked")].map(e=>e.value);
-  return {
-    category:cat,
-    supervision:g("#opt_supervision input"),
-    result:g("#opt_result input"),
-    handling:g("#opt_handling input"),
-    rectification:g("#opt_rectification input"),
-    rectDays:val("opt_rectdays")
-  };
+  return { category:cat, supervision:g("#opt_supervision input"), result:g("#opt_result input"),
+    handling:g("#opt_handling input"), rectification:g("#opt_rectification input"), rectDays:val("opt_rectdays") };
 }
 function fillChecks(c){
   c=c||{};
@@ -607,93 +714,121 @@ function fillChecks(c){
   set("#opt_supervision",c.supervision); set("#opt_result",c.result); set("#opt_handling",c.handling); set("#opt_rectification",c.rectification);
   $("opt_rectdays").value=c.rectDays||"";
 }
-
 function save(){
-  state.company=collectCompany();
-  state.checks=collectChecks();
+  state.company=collectCompany(); state.fill=collectFill(); state.checks=collectChecks();
   try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
 }
 function load(){
-  try{
-    const raw=localStorage.getItem(STORE_KEY);
-    if(raw){ const d=JSON.parse(raw); if(d && typeof d==="object") state=Object.assign({company:{},checks:{},items:[]},d); }
-  }catch(e){}
+  try{ const raw=localStorage.getItem(STORE_KEY); if(raw){ const d=JSON.parse(raw); if(d&&typeof d==="object") state=Object.assign({company:{},fill:{},checks:{},items:[]},d); } }catch(e){}
 }
 
+/* ==================== 条款工具 ==================== */
+function isAppendixKey(k){ return /^[\u4e00-\u9fa5]/.test(k); }
+function clauseLabel(k){
+  if(isAppendixKey(k)){ const i=k.indexOf("."); const tag=k.slice(0,i), num=k.slice(i+1); return "指导原则"+num+"（"+tag+"附录）"; }
+  return "指导原则"+k;
+}
+function clauseText(k){ return CLAUSE_CONTENT[k] || ""; }
+function summary(text){ text=text||""; return text.length>40 ? text.slice(0,40)+"…" : text; }
+
 /* ==================== 匹配 ==================== */
-function matchLib(lib, text){
-  const t=text||"";
-  const scored=[];
-  for(const e of lib){
-    let s=0;
-    for(const k of e.kw){ if(t.indexOf(k)>=0){ s += (k.length>=3?2:1); } }
-    if(s>0) scored.push({e,s});
-  }
-  scored.sort((a,b)=>b.s-a.s);
-  return scored.slice(0,3).map(x=>x.e);
+function matchCurrent(text){
+  const t=text||""; const hits=[];
+  for(const m of KEYWORD_MAP_A){ if(m.kw.some(k=>t.indexOf(k)>=0)){ for(const c of m.clauses){ if(hits.indexOf(c)<0) hits.push(c); } } }
+  return hits.slice(0,3);
 }
 function matchNewGMP(text){
-  const t=text||"";
-  const hits=[];
-  for(const m of NEW_GMP_KEYWORD_MAP){
-    if(m.kw.some(k=>t.indexOf(k)>=0)){
-      for(const cno of m.clauses){
-        if(hits.indexOf(cno)<0) hits.push(cno);
-      }
-    }
-  }
+  const t=text||""; const hits=[];
+  for(const m of NEW_GMP_KEYWORD_MAP){ if(m.kw.some(k=>t.indexOf(k)>=0)){ for(const c of m.clauses){ if(hits.indexOf(c)<0) hits.push(c); } } }
   return hits.slice(0,3);
 }
 function renderMatch(boxId, results, onPick){
-  const box=$(boxId);
-  const mtitle = box.querySelector(".mtitle");
-  if(!results.length){ box.innerHTML=(mtitle?mtitle.outerHTML:"")+'<div class="empty">未匹配到条款，请补充更具体的关键词描述。</div>'; return; }
-  box.innerHTML = (mtitle?mtitle.outerHTML:"") + results.map((e,i)=>{
-    return '<div class="match-item">'+
-      '<div class="mno">'+esc(e.no)+'</div>'+
-      '<div class="mtxt">'+esc(e.text)+'</div>'+
-      '<button class="btn small secondary use" data-i="'+i+'">选用</button>'+
-    '</div>';
+  const box=$(boxId); const mtitle=box.querySelector(".mtitle");
+  const titleHtml = mtitle ? mtitle.outerHTML : "";
+  if(!results.length){ box.innerHTML=titleHtml+'<div class="empty">未匹配到条款，请补充更具体的关键词描述。</div>'; return; }
+  box.innerHTML = titleHtml + results.map((e,i)=>{
+    return '<div class="match-item"><div class="mno">'+esc(e.no)+'</div><div class="mtxt">'+esc(e.text)+'</div><button class="btn small secondary use" data-i="'+i+'">选用</button></div>';
   }).join("");
-  box.querySelectorAll(".use").forEach(btn=>{
-    btn.addEventListener("click",()=>{ onPick(results[+btn.dataset.i]); });
-  });
+  box.querySelectorAll(".use").forEach(btn=>{ btn.addEventListener("click",()=>{ onPick(results[+btn.dataset.i]); }); });
+}
+
+/* ==================== 判标 + 润色 ==================== */
+function classify(desc){
+  const t=desc||"";
+  const critical=["验证","确认","未做","过期","未验证","未确认"];
+  const keyProcess=["关键工序","特殊过程","灭菌","无菌","清洗","末道","工艺"];
+  const recordMissing=["记录缺失","未签字","数据不全","没有记录","没记录","未填写","没填写","记录不全"];
+  const training=["培训不够","意识不足","未培训","没培训","不会","不懂","未掌握","培训不足"];
+  const newOnly=["数据完整性","计算机化系统","贮存期","审计追踪","电子记录","数智化","电子数据"];
+  if(critical.some(k=>t.includes(k)) && keyProcess.some(k=>t.includes(k))) return "严重不符合";
+  if(recordMissing.some(k=>t.includes(k))) return "一般不符合";
+  if(training.some(k=>t.includes(k))) return "一般不符合";
+  if(newOnly.some(k=>t.includes(k))) return "不构成不符合";
+  return "一般不符合";
+}
+function formalize(s){
+  s=(s||"").trim().replace(/[ \t　]+/g," ");
+  const rep=[["没写","未记录"],["没有写","未记录"],["没签字","未签字"],["没有签字","未签字"],
+    ["没培训","未开展培训"],["没有培训","未开展培训"],["没做","未开展"],["没有做","未开展"],
+    ["没验证","未验证"],["没确认","未确认"],["不会","未能掌握"],["不懂","未能掌握"],
+    ["过期","已过期"],["不干净","清洁不到位"],["没穿","未穿戴"],["没戴","未佩戴"]];
+  for(const [a,b] of rep){ s=s.split(a).join(b); }
+  if(!/[。！？.!?]$/.test(s)) s+="。";
+  return s;
+}
+function formalDescFor(item, clauseNo, isSuggestion){
+  const date=todayStr();
+  const fact=item.formalDesc;
+  const verb=isSuggestion?"建议完善":"不符合";
+  const sm = item.summary||"";
+  return date+"，现场检查发现："+fact+verb+clauseNo+"「"+sm+"」的要求。";
 }
 
 /* ==================== 章节映射 ==================== */
 function chapterOfA(no){
-  no=String(no||"").replace(/^\*/,"").trim();
-  const e=LIB_A.find(x=>x.no===no);
-  if(e) return e.ch;
+  no=String(no||"").replace(/^\*/,"").replace(/^指导原则/,"").trim();
+  if(isAppendixKey(no)){ const tag=no.slice(0,no.indexOf(".")); return tag+"附录"; }
   const m=no.match(/^(\d+)/);
   if(m) return CH_NAMES[+m[1]]||"其他";
   return "其他";
 }
 
 /* ==================== 报告文本 ==================== */
-function fill(v,blank){ return (v===""||v==null)?(blank||"____"):esc(v); }
-
+function companyClass(c){
+  const c3=parseInt(c.cert3)||0, c2=parseInt(c.cert2)||0;
+  if(c3>0&&c2>0) return "III类、II类";
+  if(c3>0) return "III类";
+  if(c2>0) return "II类";
+  return "____类";
+}
+function appendixSelections(c){
+  const cats=c.categories||[];
+  const map=[["无菌医疗器械","无菌医疗器械附录"],["植入性医疗器械","植入性医疗器械附录"],["体外诊断试剂","体外诊断试剂附录"],["定制式义齿","定制式义齿附录"],["独立软件","独立软件附录"]];
+  return map.map(([cat,label])=> (cats.includes(cat)?"☑":"□")+label );
+}
 function riskText(){
   const nc=state.items.filter(i=>i.levelA!=="不构成不符合" && i.clauseA);
-  if(!nc.length) return "未发现需重点关注的系统性风险。";
+  if(!nc.length) return "1. 未发现需重点关注的系统性风险。";
   const counts={};
   nc.forEach(i=>{ const ch=i.chapterA||chapterOfA(i.clauseA); counts[ch]=(counts[ch]||0)+1; });
   const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  if(!sorted.length) return "1. 未发现需重点关注的系统性风险。";
   return sorted.map(([ch,n],idx)=>{
-    return "风险点"+(idx+1)+"：主要集中在「"+ch+"」方面（涉及"+n+"项），"+(RISK_TMPL[ch]||"需重点关注")+"。";
+    const risk=RISK_TMPL[ch]||"需重点关注";
+    return "风险点"+(idx+1)+"：现场发现企业"+risk+"；若不及时整改，可能导致生产过程出现偏差，进而影响产品质量；目前暂未发现已造成产品不良后果的情况。";
   }).join("\n");
 }
 
 function buildReportA(){
-  const c=state.company, k=state.checks;
-  const keyN = state.items.filter(i=>i.levelA==="严重不符合").length;
-  const genN = state.items.filter(i=>i.levelA==="一般不符合").length;
-  const curN = state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA).length;
-  const newN = state.items.filter(i=>i.clauseB).length;
-  const total = keyN+genN+curN+newN;
-  const sup = SUPERVISION.map(s=> (k.supervision.includes(s)?"☑":"□")+s ).join("  ");
-  const header = [
-    "【表头信息】",
+  const c=state.company, f=state.fill, k=state.checks;
+  const keyN=state.items.filter(i=>i.levelA==="严重不符合").length;
+  const genN=state.items.filter(i=>i.levelA==="一般不符合").length;
+  const curN=state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA).length;
+  const newN=state.items.filter(i=>i.clauseB).length;
+  const total=keyN+genN+curN+newN;
+  const sup=SUPERVISION.map(s=>(k.supervision.includes(s)?"☑":"□")+s).join("  ");
+  const header=[
+    "【企业基本信息】",
     "企业名称："+fill(c.name),
     "生产地址："+fill(c.address),
     "评估产品："+fill(c.products),
@@ -701,71 +836,58 @@ function buildReportA(){
     "评估人员："+fill(c.assessor)
   ].join("\n");
   return [
-    "医疗器械生产质量管理规范检查报告（不给企业版）",
+    "医疗器械生产质量管理规范现场检查评估报告（提交版）",
+    "（不提交企业）",
     "",
     header,
     "",
     "一、总体评价",
-    fill(c.name)+"成立于"+fill(c.year)+"年，持有III类医疗器械注册证"+fill(c.cert3)+"张、II类医疗器械注册证"+fill(c.cert2)+"张，主营产品为"+fill(c.products)+"，生产许可证有效期至"+fill(c.license)+"。法定代表人为"+fill(c.legal)+"，企业负责人为"+fill(c.manager)+"，质量负责人为"+fill(c.quality)+"，生产地址位于"+fill(c.address)+"。2025年销售额约"+fill(c.sales)+"万元。",
-    "企业于2022年根据ISO 13485标准和相应法律法规要求建立了质量管理体系，于2024年11月5日发布了A/3版质量手册。组织能按策划要求定期开展“内审和管理评审”活动，企业于2025-11-12~13完成最近一次内审，本次内审发现2项不符合，对不符合进行了整改。管理评审改进计划也在按计划实施，最近一次管理评审于2025-12-18实施，上次管理评审生产的改进项，均已经完成改进。组织在质量手册中制定了“质量方针”：满足并努力超越顾客的最大需求；制定了公司层级的“质量目标”，并将质量目标分解到了各部门。本次抽查产品为定制式固定义齿（注册证编号：沪械注准20232170130），证书有效期至2028年5月16日。",
-    "新版《医疗器械生产质量管理规范》（2025年第107号）（以下简称为“新版GMP”）实施情况：企业收集了新版GMP法规，已经完成了对其的宣贯和培训，输出了差距分析报告，按照新版GMP的要求编制了A/5版质量手册，预计在2026年9月进行发布实施，确保2026年11月1日之前满足实施要求。",
-    "企业目前有"+fill(c.employees)+"人，其中检验员"+fill(c.inspectors)+"人，内审员有"+fill(c.auditors)+"人。企业目前有6位大专学历人员，暂无本科学历的管理人员，员工上岗前都通过岗位培训，年度的培训计划包含了法律法规、不良事件等相关的培训要求。对检验员岗位和关键岗位人员都进行了任命。",
-    "企业已建立并运行符合现行版《医疗器械生产质量管理规范》（2014年第64号）要求的质量管理体系。人员情况：现有员工"+fill(c.employees)+"人，其中检验员"+fill(c.inspectors)+"人。",
-    "内销/外销情况：________________________________",
-    "",
-    "新版GMP实施情况：",
-    "针对新版《医疗器械生产质量管理规范》（2025年第107号），企业已收集相关法规、完成宣贯培训、输出差距分析，正在编制新版质量手册，计划在法规规定期限内满足新版要求。",
-    "",
-    "本次评估不符合项汇总：",
-    "共"+total+"项，其中关键项"+keyN+"项、一般项"+genN+"项，现行法规建议项"+curN+"项，新版GMP建议项"+newN+"项。",
+    "1. 企业成立于"+fill(c.year)+"年，主要为"+companyClass(c)+"医疗器械生产企业，现有III类注册证"+fill(c.cert3)+"张、II类注册证"+fill(c.cert2)+"张，主营产品有"+fill(c.products)+"，均正常生产。《医疗器械生产许可证》有效期至"+fill(c.license)+"，法定代表人："+fill(c.legal)+"，企业负责人："+fill(c.manager)+"，质量负责人："+fill(c.quality)+"，目前生产地址为："+fill(c.address)+"。",
+    "2. 2025年销售额约"+fill(c.sales)+"余万元，内销占比约"+fill(f.domestic)+"%，外销占比约"+fill(f.export)+"%。",
+    "3. 企业于____年____月根据ISO 13485标准和相应法律法规要求建立了质量管理体系，于"+fill(f.manualDate)+"发布了"+fill(f.manualVersion)+"版质量手册。组织能按策划要求定期开展\"内审和管理评审\"活动，企业于"+fill(f.auditPeriod)+"完成最近一次内审，本次内审发现"+fill(f.auditNc)+"项不符合，对不符合进行了整改。管理评审改进计划也在按计划实施，最近一次管理评审于"+fill(f.reviewDate)+"实施，上次管理评审产生的改进项，均已经完成改进。本次抽查产品为"+fill(f.sampleProduct)+"（注册证编号："+fill(f.sampleCert)+"），证书有效期至"+fill(f.sampleExpiry)+"。",
+    "4. 新版GMP实施情况：企业已收集新版GMP法规，已完成宣贯和培训，输出了差距分析报告，按照新版GMP的要求编制了新版质量手册，预计在____年____月进行发布实施，确保2026年11月1日之前满足实施要求。",
+    "5. 企业目前共"+fill(c.employees)+"人，其中检验员"+fill(c.inspectors)+"人，内审员"+fill(c.auditors)+"人。",
+    "6. 本次评估共开具不符合项："+total+"项，其中关键项："+keyN+"项，一般项："+genN+"项；现行法规建议项："+curN+"项，新版GMP建议项："+newN+"项。",
     "",
     "二、风险点",
     riskText(),
     "",
     "三、企业分类",
+    "（企业分类判定标准按评估模板执行）",
     ["A","B","C","D"].map(x=>(k.category===x?"☑":"□")+x+"类").join("　"),
     "",
-    "分级判定标准（综合质量管理体系的系统性、规范性、真实性和有效性）：",
-    "",
-    "【A类（优）】不符合项数量和风险点（同时满足）：严重不符合项=0；不符合项数量≤5个；风险点≤3个。｜规范性：好；真实性：无真实性问题；有效性：体系有效。",
-    "",
-    "【B类】不符合项数量和风险点（同时满足）：严重不符合项=0；满足其一（总不符合项＞5个或风险点＞3个）；总不符合项≤10个、风险点≤5个。｜规范性：良；真实性：无真实性问题；有效性：体系基本有效。",
-    "",
-    "【C类】满足任意1条即判定C：关键不符合项≥1个；总不符合项＞10个；风险点＞5个。｜规范性：差；真实性：有真实性问题；有效性：有效性差。",
-    "",
-    "【D类（差）】有重大违法行为，如无证生产、隐瞒产品质量问题，并不进行召回（立即通知相关行政监管部门）。",
-    "",
     "四、后续监管建议",
-    sup
+    sup,
+    "",
+    "注：1．本表不需要提交企业。2．本表需评估组内部形成统一意见后由组长填写。"
   ].join("\n");
 }
 
 function buildReportB(){
-  const c=state.company, k=state.checks;
-  const prodCats = (c.categories&&c.categories.length)? c.categories.map(x=>"☑"+x).join("  ") : "□无菌医疗器械 □植入性医疗器械 □体外诊断试剂 □定制式义齿 □独立软件 □其他";
-  const nonConform = state.items.filter(i=>i.levelA!=="不构成不符合" && i.clauseA);
-  const sugCur = state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA);
-  const sugNew = state.items.filter(i=>i.clauseB);
+  const c=state.company, f=state.fill, k=state.checks;
+  const prodCats=(c.categories&&c.categories.length)? c.categories.map(x=>"☑"+x).join("  ") : "□无菌 □植入 □独立软件 □IVD □定制式义齿 □其他";
+  const nonConform=state.items.filter(i=>i.levelA!=="不构成不符合" && i.clauseA);
+  const sugCur=state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA);
+  const sugNew=state.items.filter(i=>i.clauseB);
   const n1=nonConform.length, n2=sugCur.length, n3=sugNew.length, total=n1+n2+n3;
 
-  const tbl=(arr,keyFn)=>{
+  function rows(arr, kind){
     if(!arr.length) return "（无）";
-    return arr.map((i,idx)=>(idx+1)+".【"+keyFn(i)+"】"+esc(i.desc)).join("\n");
-  };
-  const ncTbl = tbl(nonConform, i=> (i.levelA==="严重不符合"?"*":"")+i.clauseA );
-  const scTbl = tbl(sugCur, i=> i.clauseA );
-  const snTbl = tbl(sugNew, i=> i.clauseB );
+    return arr.map((it,idx)=>{
+      let clauseNo, isSug;
+      if(kind==="nc"){ clauseNo="指导原则"+(it.levelA==="严重不符合"?"*":"")+it.clauseA; isSug=false; }
+      else if(kind==="cur"){ clauseNo="指导原则"+it.clauseA; isSug=true; }
+      else { clauseNo=it.clauseB; isSug=true; }
+      const desc=formalDescFor(it, clauseNo, isSug);
+      return (idx+1)+".【"+clauseNo+"】"+desc;
+    }).join("\n");
+  }
 
-  const result = RESULT.map(s=>(k.result.includes(s)?"☑":"□")+s).join("  ");
-  const handling = HANDLING.map(s=>(k.handling.includes(s)?"☑":"□")+s).join("  ");
-  const rect = [
-    (k.rectification.includes("30日内提交电子版整改资料")?"☑":"□")+"30日内提交电子版整改资料",
-    (k.rectification.includes("__日内现场复查")?"☑":"□")+(fill(k.rectDays)+"日内现场复查"),
-    (k.rectification.includes("其他")?"☑":"□")+"其他"
-  ].join("  ");
+  const appendix = appendixSelections(c).join("\n");
+  const result = RESULT.map(s=>(k.result.includes(s)?"☑":"□")+" "+s+"（"+(RESULT_DESC[s]||"")+"）").join("\n");
 
   return [
-    "医疗器械生产质量管理规范现场检查报告（企业盖章版）",
+    "医疗器械生产质量管理规范现场检查评估报告（盖章版）",
     "",
     "一、企业基本信息",
     "企业名称："+fill(c.name),
@@ -778,210 +900,63 @@ function buildReportB(){
     "核查产品范围："+fill(c.products),
     "企业状态："+fill(c.status),
     "生产状态："+fill(c.prodstatus),
-    "评估依据：☑《医疗器械生产质量管理规范》（2014年第64号）  ☑各适用附录  ☑《医疗器械生产质量管理规范》（2025年第107号）",
+    "评估依据：",
+    "☑ 医疗器械生产质量管理规范（2014年第64号）",
+    appendix,
+    "☑ 医疗器械生产质量管理规范（2025年第107号）",
     "",
-    "二、总体评估",
+    "注：涉及不符合现行版法规可开具不符合项；不构成不符合项，但企业体系有提升空间可开具建议项；凡涉及不符合新版法规之处均不构成不符合判定，仅开具建议项。",
+    "",
+    "二、企业主要人员",
+    "部门/职务　　　姓名",
+    "＿＿＿＿＿＿　　＿＿＿＿＿＿",
+    "＿＿＿＿＿＿　　＿＿＿＿＿＿",
+    "＿＿＿＿＿＿　　＿＿＿＿＿＿",
+    "",
+    "三、总体评估",
     fill(c.name)+"位于"+fill(c.address)+"，主要生产"+fill(c.products)+"。本次现场检查共发现不符合项及建议项共"+total+"项，其中现行版GMP不符合项"+n1+"项、现行法规建议项"+n2+"项、新版GMP建议项"+n3+"项。企业质量管理体系运行总体情况见下列各表，具体问题详见不符合项及建议项内容。",
     "",
-    "三、不符合项（现行版GMP 2014年第64号）",
-    ncTbl,
+    "四、不符合项",
+    rows(nonConform,"nc"),
+    "注：不符合项仅依据现行版《医疗器械生产质量管理规范》（2014年第64号）及适用附录开具；条款号前缀\"指导原则\"，关键项前加*。",
     "",
-    "四、现行法规建议项",
-    scTbl,
+    "五、现行法规建议项",
+    rows(sugCur,"cur"),
     "",
-    "五、新版GMP建议项",
-    snTbl,
+    "六、新版GMP建议项",
+    rows(sugNew,"new"),
     "",
-    "六、评估结果判定",
+    "七、评估结果判定",
     result,
     "",
-    "七、评估后处理意见",
-    handling,
+    "八、评估后处理意见",
+    HANDLING.map(s=>(k.handling.includes(s)?"☑":"□")+s).join("  "),
     "",
-    "八、整改期限",
-    rect,
+    "九、整改期限",
+    [
+      (k.rectification.includes("30日内提交电子版整改资料")?"☑":"□")+"30日内提交电子版整改资料",
+      (k.rectification.includes("__日内现场复查")?"☑":"□")+fill(k.rectDays)+"日内现场复查",
+      (k.rectification.includes("其他")?"☑":"□")+"其他"
+    ].join("  "),
     "",
-    "九、对被评估企业的建议",
+    "十、对被评估企业的建议",
     "1. 建议企业严格对照《医疗器械生产质量管理规范》（2014年第64号）及各适用附录要求，逐项整改本次检查发现的不符合项，举一反三、全面排查同类问题，确保质量管理体系持续有效运行。",
     "2. 建议企业提前对标新版《医疗器械生产质量管理规范》（2025年第107号），按计划完成新版质量手册等体系文件的编制与宣贯培训，在规定期限内满足新版法规要求，持续提升质量管理水平。",
     "",
-    "十、签字",
-    "评估组成员：____________________________",
-    "观察员：____________________________",
-    "企业确认（签字/盖章）：____________________________",
-    "日期：____________________________"
+    "十一、签字",
+    "评估组组长：＿＿＿＿＿＿＿＿＿＿",
+    "组员：＿＿＿＿＿＿＿＿＿＿",
+    "观察员：＿＿＿＿＿＿＿＿＿＿",
+    "企业确认检查结果：",
+    "企业负责人签字：＿＿＿＿＿＿＿＿＿＿",
+    "加盖企业公章",
+    "＿＿＿＿年＿＿月＿＿日"
   ].join("\n");
 }
 
 function renderReports(){
   $("reportA").value = buildReportA();
   $("reportB").value = buildReportB();
-}
-
-/* ==================== Word 导出 ==================== */
-function wordDoc(title, bodyHtml){
-  return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
-    + '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
-    + '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->'
-    + '<style>'
-    + '@page{size:21cm 29.7cm;margin:2.54cm 3.18cm;}'
-    + 'body{font-family:"宋体","SimSun",serif;font-size:14pt;line-height:1.6;color:#000;}'
-    + 'h1{font-family:"黑体","SimHei",sans-serif;font-size:22pt;text-align:center;margin:0 0 14pt 0;}'
-    + 'h2{font-family:"黑体","SimHei",sans-serif;font-size:14pt;margin:12pt 0 6pt 0;font-weight:bold;}'
-    + 'h3{font-family:"黑体","SimHei",sans-serif;font-size:14pt;margin:8pt 0 4pt 0;font-weight:bold;}'
-    + 'p{margin:4pt 0;}'
-    + 'table{border-collapse:collapse;width:100%;margin:6pt 0;}'
-    + 'table,th,td{border:1px solid #000;}'
-    + 'th,td{padding:5px;font-size:14pt;vertical-align:top;word-wrap:break-word;}'
-    + 'th{font-weight:bold;background:#f2f2f2;}'
-    + '.cb{white-space:nowrap;}'
-    + '</style></head><body>'
-    + '<h1>'+escHtml(title)+'</h1>'
-    + bodyHtml
-    + '</body></html>';
-}
-function exportWordDoc(html, filename){
-  const blob = new Blob([html], {type:'application/msword'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },100);
-  toast('已导出 '+filename);
-}
-function radioSpans(options, selected){
-  return options.map(opt=>'<span class="cb">'+(selected===opt?'☑':'□')+' '+escHtml(opt)+'</span>').join('　');
-}
-function checkSpans(options, selectedArr){
-  return options.map(opt=>'<span class="cb">'+((selectedArr||[]).includes(opt)?'☑':'□')+' '+escHtml(opt)+'</span>').join('　');
-}
-function checkGrid(options, selectedArr, cols){
-  cols = cols || 3;
-  const cells = options.map(opt=>'<td style="padding:3px 10px 3px 0;font-size:14pt;">'+((selectedArr||[]).includes(opt)?'☑':'□')+' '+escHtml(opt)+'</td>');
-  while(cells.length % cols !== 0) cells.push('<td style="padding:3px 10px 3px 0;"></td>');
-  let rows='';
-  for(let i=0;i<cells.length;i+=cols){ rows += '<tr>'+cells.slice(i,i+cols).join('')+'</tr>'; }
-  return '<table style="border:none;border-collapse:collapse;width:100%;margin:2pt 0;">'+rows+'</table>';
-}
-function kvTable(rows){
-  const trs = rows.map(r=>'<tr><td style="width:28%;font-weight:bold;">'+escHtml(r[0])+'</td><td>'+escHtml(r[1]==null?'':r[1])+'</td></tr>').join('');
-  return '<table>'+trs+'</table>';
-}
-function gradingTable(){
-  const head='<tr><th style="width:12%;">评级</th><th>不符合项数量和风险点</th><th style="width:9%;">规范性</th><th style="width:12%;">真实性</th><th style="width:12%;">有效性</th></tr>';
-  const data=[
-    ['A类（优）','同时满足：1.严重不符合项=0；2.不符合项数量≤5个；3.风险点≤3个','好','无真实性问题','体系有效'],
-    ['B类','同时满足：1.严重不符合项=0；2.满足其一（总不符合项＞5个或风险点＞3个）；3.总不符合项≤10个、风险点≤5个','良','无真实性问题','体系基本有效'],
-    ['C类','满足任意1条即判定C：1.关键不符合项≥1个；2.总不符合项＞10个；3.风险点＞5个','差','有真实性问题','有效性差'],
-    ['D类（差）','有重大违法行为，如无证生产、隐瞒产品质量问题，并不进行召回（立即通知相关行政监管部门）','—','—','—']
-  ];
-  const trs=data.map(r=>'<tr><td style="text-align:center;font-weight:bold;">'+escHtml(r[0])+'</td><td>'+escHtml(r[1])+'</td><td style="text-align:center;">'+escHtml(r[2])+'</td><td style="text-align:center;">'+escHtml(r[3])+'</td><td style="text-align:center;">'+escHtml(r[4])+'</td></tr>').join('');
-  return '<table>'+head+trs+'</table>';
-}
-function nonconformTable(arr){
-  if(!arr.length) return '<p>（无）</p>';
-  const head='<tr><th style="width:8%;">序号</th><th style="width:24%;">条款号</th><th>不符合项描述</th><th style="width:14%;">严重程度</th></tr>';
-  const trs=arr.map((i,idx)=>'<tr><td style="text-align:center;">'+(idx+1)+'</td><td>'+escHtml((i.levelA==="严重不符合"?"*":"")+i.clauseA)+'</td><td>'+escHtml(i.desc)+(i.product?('（'+escHtml(i.product)+'）'):'')+'</td><td style="text-align:center;">'+escHtml(i.levelA)+'</td></tr>').join('');
-  return '<table>'+head+trs+'</table>';
-}
-function suggestTable(arr, keyFn){
-  if(!arr.length) return '<p>（无）</p>';
-  const head='<tr><th style="width:8%;">序号</th><th style="width:24%;">条款号</th><th>建议项描述</th></tr>';
-  const trs=arr.map((i,idx)=>'<tr><td style="text-align:center;">'+(idx+1)+'</td><td>'+escHtml(keyFn(i))+'</td><td>'+escHtml(i.desc)+(i.product?('（'+escHtml(i.product)+'）'):'')+'</td></tr>').join('');
-  return '<table>'+head+trs+'</table>';
-}
-
-function buildReportA_HTML(){
-  const c=state.company, k=state.checks;
-  const keyN = state.items.filter(i=>i.levelA==="严重不符合").length;
-  const genN = state.items.filter(i=>i.levelA==="一般不符合").length;
-  const curN = state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA).length;
-  const newN = state.items.filter(i=>i.clauseB).length;
-  const total = keyN+genN+curN+newN;
-  let h='';
-  h += '<h2>表头信息</h2>';
-  h += kvTable([["企业名称",c.name],["生产地址",c.address],["评估产品",c.products],["评估日期",c.date],["评估人员",c.assessor]]);
-  h += '<h2>一、总体评价</h2>';
-  h += '<p>'+escHtml(fill(c.name)+"成立于"+fill(c.year)+"年，持有III类医疗器械注册证"+fill(c.cert3)+"张、II类医疗器械注册证"+fill(c.cert2)+"张，主营产品为"+fill(c.products)+"，生产许可证有效期至"+fill(c.license)+"。法定代表人为"+fill(c.legal)+"，企业负责人为"+fill(c.manager)+"，质量负责人为"+fill(c.quality)+"，生产地址位于"+fill(c.address)+"。2025年销售额约"+fill(c.sales)+"万元。")+'</p>';
-  h += '<p>'+escHtml("企业于2022年根据ISO 13485标准和相应法律法规要求建立了质量管理体系，于2024年11月5日发布了A/3版质量手册。组织能按策划要求定期开展“内审和管理评审”活动，企业于2025-11-12~13完成最近一次内审，本次内审发现2项不符合，对不符合进行了整改。管理评审改进计划也在按计划实施，最近一次管理评审于2025-12-18实施，上次管理评审生产的改进项，均已经完成改进。组织在质量手册中制定了“质量方针”：满足并努力超越顾客的最大需求；制定了公司层级的“质量目标”，并将质量目标分解到了各部门。本次抽查产品为定制式固定义齿（注册证编号：沪械注准20232170130），证书有效期至2028年5月16日。")+'</p>';
-  h += '<p>'+escHtml("新版《医疗器械生产质量管理规范》（2025年第107号）（以下简称为“新版GMP”）实施情况：企业收集了新版GMP法规，已经完成了对其的宣贯和培训，输出了差距分析报告，按照新版GMP的要求编制了A/5版质量手册，预计在2026年9月进行发布实施，确保2026年11月1日之前满足实施要求。")+'</p>';
-  h += '<p>'+escHtml("企业目前有"+fill(c.employees)+"人，其中检验员"+fill(c.inspectors)+"人，内审员有"+fill(c.auditors)+"人。企业目前有6位大专学历人员，暂无本科学历的管理人员，员工上岗前都通过岗位培训，年度的培训计划包含了法律法规、不良事件等相关的培训要求。对检验员岗位和关键岗位人员都进行了任命。")+'</p>';
-  h += '<p>'+escHtml("企业已建立并运行符合现行版《医疗器械生产质量管理规范》（2014年第64号）要求的质量管理体系。人员情况：现有员工"+fill(c.employees)+"人，其中检验员"+fill(c.inspectors)+"人。")+'</p>';
-  h += '<p>内销/外销情况：________________________________</p>';
-  h += '<h2>新版GMP实施情况</h2>';
-  h += '<p>'+escHtml("针对新版《医疗器械生产质量管理规范》（2025年第107号），企业已收集相关法规、完成宣贯培训、输出差距分析，正在编制新版质量手册，计划在法规规定期限内满足新版要求。")+'</p>';
-  h += '<h2>本次评估不符合项汇总</h2>';
-  h += '<p>'+escHtml("共"+total+"项，其中关键项"+keyN+"项、一般项"+genN+"项，现行法规建议项"+curN+"项，新版GMP建议项"+newN+"项。")+'</p>';
-  h += '<h2>二、风险点</h2>';
-  h += '<p>'+riskText().split("\n").map(x=>escHtml(x)).join('<br>')+'</p>';
-  h += '<h2>三、企业分类</h2>';
-  h += '<p>'+radioSpans(["A类","B类","C类","D类"], (k.category?k.category+"类":""))+'</p>';
-  h += '<h3>分级判定标准（综合质量管理体系的系统性、规范性、真实性和有效性）</h3>';
-  h += gradingTable();
-  h += '<h2>四、后续监管建议</h2>';
-  h += checkGrid(SUPERVISION, k.supervision, 3);
-  return wordDoc("医疗器械生产质量管理规范检查报告（不给企业版）", h);
-}
-
-function buildReportB_HTML(){
-  const c=state.company, k=state.checks;
-  const nonConform = state.items.filter(i=>i.levelA!=="不构成不符合" && i.clauseA);
-  const sugCur = state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA);
-  const sugNew = state.items.filter(i=>i.clauseB);
-  const n1=nonConform.length, n2=sugCur.length, n3=sugNew.length, total=n1+n2+n3;
-  const CATS=["无菌医疗器械","植入性医疗器械","体外诊断试剂","定制式义齿","独立软件"];
-  let h='';
-  h += '<h2>一、企业基本信息</h2>';
-  h += kvTable([
-    ["企业名称",c.name],["统一社会信用代码",c.credit],["法定代表人",c.legal],
-    ["生产地址",c.address],["联系方式",c.contact],["评估日期",c.date],
-    ["核查产品范围",c.products],["企业状态",c.status],["生产状态",c.prodstatus]
-  ]);
-  h += '<p><b>产品类别：</b></p>';
-  h += checkGrid(CATS, c.categories||[], 3);
-  h += '<p><b>评估依据：</b><span class="cb">☑《医疗器械生产质量管理规范》（2014年第64号）</span>　<span class="cb">☑各适用附录</span>　<span class="cb">☑《医疗器械生产质量管理规范》（2025年第107号）</span></p>';
-  h += '<h2>二、总体评估</h2>';
-  h += '<p>'+escHtml(fill(c.name)+"位于"+fill(c.address)+"，主要生产"+fill(c.products)+"。本次现场检查共发现不符合项及建议项共"+total+"项，其中现行版GMP不符合项"+n1+"项、现行法规建议项"+n2+"项、新版GMP建议项"+n3+"项。企业质量管理体系运行总体情况见下列各表，具体问题详见不符合项及建议项内容。")+'</p>';
-  h += '<h2>三、不符合项（现行版GMP 2014年第64号）</h2>';
-  h += nonconformTable(nonConform);
-  h += '<h2>四、现行法规建议项</h2>';
-  h += suggestTable(sugCur, i=>i.clauseA);
-  h += '<h2>五、新版GMP建议项</h2>';
-  h += suggestTable(sugNew, i=>i.clauseB);
-  h += '<h2>六、评估结果判定</h2>';
-  h += checkGrid(RESULT, k.result, 3);
-  h += '<h2>七、评估后处理意见</h2>';
-  h += checkGrid(HANDLING, k.handling, 2);
-  h += '<h2>八、整改期限</h2>';
-  h += '<p>'
-    + '<span class="cb">'+(k.rectification.includes("30日内提交电子版整改资料")?'☑':'□')+' 30日内提交电子版整改资料</span>　'
-    + '<span class="cb">'+(k.rectification.includes("__日内现场复查")?'☑':'□')+' '+escHtml(fill(k.rectDays))+'日内现场复查</span>　'
-    + '<span class="cb">'+(k.rectification.includes("其他")?'☑':'□')+' 其他</span>'
-    + '</p>';
-  h += '<h2>九、对被评估企业的建议</h2>';
-  h += '<p>'+escHtml("1. 建议企业严格对照《医疗器械生产质量管理规范》（2014年第64号）及各适用附录要求，逐项整改本次检查发现的不符合项，举一反三、全面排查同类问题，确保质量管理体系持续有效运行。")+'</p>';
-  h += '<p>'+escHtml("2. 建议企业提前对标新版《医疗器械生产质量管理规范》（2025年第107号），按计划完成新版质量手册等体系文件的编制与宣贯培训，在规定期限内满足新版法规要求，持续提升质量管理水平。")+'</p>';
-  h += '<h2>十、签字</h2>';
-  h += '<p>评估组成员：____________________________</p>';
-  h += '<p>观察员：____________________________</p>';
-  h += '<p>企业确认（签字/盖章）：____________________________</p>';
-  h += '<p>日期：____________________________</p>';
-  return wordDoc("医疗器械生产质量管理规范现场检查报告（企业盖章版）", h);
-}
-
-function exportWordA(){
-  save();
-  const c=collectCompany();
-  if(!c.name.trim()){ toast("请先填写企业名称"); return; }
-  const date=(c.date||todayStr()).replace(/-/g,"");
-  const fname=c.name.trim()+"_不给企业版报告_"+date+".doc";
-  exportWordDoc(buildReportA_HTML(), fname);
-}
-function exportWordB(){
-  save();
-  const c=collectCompany();
-  if(!c.name.trim()){ toast("请先填写企业名称"); return; }
-  const date=(c.date||todayStr()).replace(/-/g,"");
-  const fname=c.name.trim()+"_企业盖章版报告_"+date+".doc";
-  exportWordDoc(buildReportB_HTML(), fname);
 }
 
 /* ==================== 已录入列表 ==================== */
@@ -992,185 +967,43 @@ function levelPill(l){
 }
 function renderItems(){
   const list=$("items_list");
-  $("itemCount").textContent = state.items.length+" 项";
+  $("itemCount").textContent=state.items.length+" 项";
   if(!state.items.length){ list.innerHTML='<div class="empty">尚未录入不符合项。</div>'; return; }
-  list.innerHTML = state.items.map((it,idx)=>{
-    let tags = levelPill(it.levelA);
-    if(it.clauseA) tags += ' <span class="pill">现行 '+esc(it.clauseA)+'</span>';
-    if(it.clauseB) tags += ' <span class="pill new">新版 '+esc(it.clauseB)+'</span>';
-    return '<div class="item-row">'+
-      '<div class="meta">'+
-        '<div class="line">'+tags+'</div>'+
-        '<div class="desc">'+esc(it.desc)+(it.product?('　<em style="color:#5a6b82">('+esc(it.product)+')</em>'):"")+'</div>'+
-      '</div>'+
-      '<button class="btn small ghost" data-del="'+idx+'">删除</button>'+
-    '</div>';
+  list.innerHTML=state.items.map((it,idx)=>{
+    let tags=levelPill(it.levelA);
+    if(it.clauseA) tags+=' <span class="pill">现行 指导原则'+esc(it.clauseA)+'</span>';
+    if(it.clauseB) tags+=' <span class="pill new">新版 '+esc(it.clauseB)+'</span>';
+    return '<div class="item-row"><div class="meta"><div class="line">'+tags+'</div><div class="desc">'+esc(it.formalDesc)+(it.product?('　<em style="color:#5a6b82">('+esc(it.product)+')</em>'):"")+'</div></div><button class="btn small ghost" data-del="'+idx+'">删除</button></div>';
   }).join("");
   list.querySelectorAll("[data-del]").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      state.items.splice(+btn.dataset.del,1);
-      save(); renderItems(); renderReports();
-    });
+    btn.addEventListener("click",()=>{ state.items.splice(+btn.dataset.del,1); save(); renderItems(); renderReports(); });
   });
 }
 
 /* ==================== 复制/导出 ==================== */
 function copyText(text, okMsg){
   const done=()=>toast(okMsg||"已复制到剪贴板");
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));
-  } else { fallbackCopy(text,done); }
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done)); }
+  else fallbackCopy(text,done);
 }
 function fallbackCopy(text, cb){
-  const ta=document.createElement("textarea"); ta.value=text;
-  ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta);
-  ta.select();
-  try{ document.execCommand("copy"); cb(); }catch(e){ toast("复制失败，请手动全选复制"); }
-  document.body.removeChild(ta);
+  const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta);
+  ta.select(); try{ document.execCommand("copy"); cb(); }catch(e){ toast("复制失败，请手动全选复制"); } document.body.removeChild(ta);
 }
 function exportTxt(filename, text){
   const blob=new Blob(["\ufeff"+text],{type:"text/plain;charset=utf-8"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },100);
-  toast("已导出 "+filename);
+  const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },100); toast("已导出 "+filename);
 }
 
-/* ==================== 汇总库 ==================== */
-const SUMMARY_KEY = "gmp_report_list";
-function escHtml(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-function summaryStats(){
-  const keyN = state.items.filter(i=>i.levelA==="严重不符合").length;
-  const genN = state.items.filter(i=>i.levelA==="一般不符合").length;
-  const curN = state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA).length;
-  const newN = state.items.filter(i=>i.clauseB).length;
-  return {keyN, genN, curN, newN, total: keyN+genN+curN+newN};
-}
-function riskTop3(){
-  const nc = state.items.filter(i=>i.levelA!=="不构成不符合" && i.clauseA);
-  if(!nc.length) return "无";
-  const counts = {};
-  nc.forEach(i=>{ const ch = i.chapterA||chapterOfA(i.clauseA); counts[ch]=(counts[ch]||0)+1; });
-  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  return sorted.map(([ch,n])=>ch+"("+n+")").join("、");
-}
-function collectSummary(){
-  const c = collectCompany();
-  const k = collectChecks();
-  const s = summaryStats();
-  return {
-    name: c.name.trim(), date: c.date, category: k.category,
-    total: s.total, keyN: s.keyN, genN: s.genN, curN: s.curN, newN: s.newN,
-    risk: riskTop3(), assessor: c.assessor,
-    savedAt: new Date().toLocaleString("zh-CN",{hour12:false})
-  };
-}
-function getSummaryList(){
-  try{ const raw=localStorage.getItem(SUMMARY_KEY); if(raw){ const d=JSON.parse(raw); if(Array.isArray(d)) return d; } }catch(e){}
-  return [];
-}
-function setSummaryList(list){ try{ localStorage.setItem(SUMMARY_KEY, JSON.stringify(list)); }catch(e){} }
-function saveToSummary(){
-  const c = collectCompany();
-  if(!c.name.trim() || !c.date){ toast("请先填写企业名称和评估日期"); return; }
-  const list = getSummaryList();
-  const idx = list.findIndex(r=>r.name===c.name.trim());
-  if(idx>=0){
-    if(!confirm("该企业已有汇总记录，是否覆盖？")) return;
-    list[idx] = collectSummary();
-  } else {
-    list.push(collectSummary());
-  }
-  setSummaryList(list);
-  toast("✅ 已保存至汇总库");
-}
-function openSummary(){ renderSummary(); $("summary_overlay").classList.add("show"); }
-function closeSummary(){ $("summary_overlay").classList.remove("show"); }
-function deleteSummary(idx){
-  if(!confirm("确定删除该条记录吗？")) return;
-  const list = getSummaryList(); list.splice(idx,1); setSummaryList(list); renderSummary();
-}
-function renderSummary(){
-  const list = getSummaryList();
-  const filter = $("summary_filter").value;
-  const sort = $("summary_sort").value;
-  let arr = list.map((r,idx)=>({r,idx}));
-  if(filter && filter!=="全部") arr = arr.filter(o=>o.r.category===filter);
-  if(sort==="date_desc") arr.sort((a,b)=>(b.r.date||"").localeCompare(a.r.date||""));
-  else if(sort==="date_asc") arr.sort((a,b)=>(a.r.date||"").localeCompare(b.r.date||""));
-  else if(sort==="time_desc") arr.sort((a,b)=>(b.r.savedAt||"").localeCompare(a.r.savedAt||""));
-  $("summary_count").textContent = "共 "+arr.length+" 家企业已汇总";
-  const tbody = $("summary_tbody");
-  if(!arr.length){ tbody.innerHTML='<tr><td colspan="12" class="modal-empty">暂无汇总记录</td></tr>'; return; }
-  tbody.innerHTML = arr.map(o=>{
-    const r=o.r;
-    return '<tr>'+
-      '<td>'+escHtml(r.name)+'</td>'+
-      '<td>'+escHtml(r.date)+'</td>'+
-      '<td>'+escHtml(r.category||"-")+'</td>'+
-      '<td>'+r.total+'</td>'+
-      '<td>'+r.keyN+'</td>'+
-      '<td>'+r.genN+'</td>'+
-      '<td>'+r.curN+'</td>'+
-      '<td>'+r.newN+'</td>'+
-      '<td>'+escHtml(r.risk)+'</td>'+
-      '<td>'+escHtml(r.assessor)+'</td>'+
-      '<td>'+escHtml(r.savedAt)+'</td>'+
-      '<td><button class="btn small danger" data-del="'+o.idx+'">删除</button></td>'+
-    '</tr>';
-  }).join("");
-  tbody.querySelectorAll("[data-del]").forEach(btn=>{
-    btn.addEventListener("click",()=>deleteSummary(parseInt(btn.getAttribute("data-del"),10)));
-  });
-}
-function exportSummaryCSV(){
-  const list = getSummaryList();
-  if(!list.length){ toast("暂无汇总数据"); return; }
-  const headers = ["企业名称","评估日期","企业分类","不符合项总数","严重不符合项","一般不符合项","现行法规建议项","新版GMP建议项","主要风险点","检查人员","保存时间"];
-  const rows = list.map(r=>[r.name,r.date,r.category,r.total,r.keyN,r.genN,r.curN,r.newN,r.risk,r.assessor,r.savedAt]);
-  const csv = [headers.join(",")].concat(rows.map(row=>row.map(c=>'"'+String(c==null?"":c).replace(/"/g,'""')+'"').join(","))).join("\r\n");
-  const blob = new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href=url; a.download="GMP报告汇总.csv"; document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },100);
-  toast("已导出CSV");
-}
-function exportSummaryJSON(){
-  const list = getSummaryList();
-  if(!list.length){ toast("暂无汇总数据"); return; }
-  const blob = new Blob([JSON.stringify(list,null,2)],{type:"application/json;charset=utf-8"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href=url; a.download="GMP报告汇总.json"; document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },100);
-  toast("已导出JSON");
-}
-function importSummaryJSON(){ $("summary_import_file").click(); }
-function handleImportFile(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ()=>{
-    try{
-      const d = JSON.parse(reader.result);
-      if(!Array.isArray(d)){ toast("导入失败：文件格式不正确"); return; }
-      const merged = getSummaryList().concat(d);
-      setSummaryList(merged); renderSummary();
-      toast("已导入 "+d.length+" 条记录");
-    }catch(err){ toast("导入失败：JSON解析错误"); }
-  };
-  reader.readAsText(file);
-  e.target.value = "";
-}
-function clearSummary(){
-  if(!confirm("确定清空所有汇总数据吗？此操作不可恢复。")) return;
-  if(!confirm("再次确认：清空后无法恢复，确定继续吗？")) return;
-  setSummaryList([]); renderSummary(); toast("已清空汇总数据");
-}
-
-/* ==================== 事件绑定 ==================== */
+/* ==================== 事件 ==================== */
 function updateProductList(){
   const ps=val("c_products").split(/[、，,;；\s]+/).filter(Boolean);
-  $("productList").innerHTML = ps.map(p=>'<option value="'+esc(p)+'">').join("");
+  $("productList").innerHTML=ps.map(p=>'<option value="'+esc(p)+'">').join("");
+}
+function resetMatchBoxes(){
+  $("matchA_result").innerHTML='<div class="mtitle">现行版匹配（指导原则X.X.X · 含条款原文）</div><div class="empty">点击「智能匹配现行版」后在此显示推荐条款及原文。</div>';
+  $("matchB_result").innerHTML='<div class="mtitle">新版GMP匹配（第X条）</div><div class="empty">点击「匹配新版GMP」后在此显示推荐条款。</div>';
 }
 
 function addItem(){
@@ -1178,95 +1011,65 @@ function addItem(){
   if(!desc){ toast("请先填写问题描述"); $("desc").focus(); return; }
   const product=val("product").trim();
   const levelA=val("levelA");
-  const clauseA=val("clauseA").trim();
+  let clauseA=val("clauseA").trim().replace(/^指导原则/,"").replace(/^\*/,"");
   const clauseB=val("clauseB").trim();
   if(!clauseA && !clauseB){ toast("请至少填写现行版或新版条款号"); return; }
   if(levelA!=="不构成不符合" && !clauseA){ toast("现行版判定为不符合时，需填写现行版条款号"); return; }
 
-  state.items.push({
-    id:Date.now(), desc, product, levelA,
-    clauseA, chapterA: clauseA?chapterOfA(clauseA):"",
-    clauseB
-  });
+  const formalDesc=formalize(desc);
+  const item={ id:Date.now(), desc, formalDesc, product, levelA, clauseA,
+    chapterA: clauseA?chapterOfA(clauseA):"", clauseB, summary: clauseA?summary(clauseText(clauseA)):(clauseB?summary(NEW_GMP_CLAUSES[clauseB]||""):"") };
+  state.items.push(item);
   save(); renderItems(); renderReports();
   $("desc").value=""; $("product").value="";
   resetMatchBoxes();
   toast("已填入报告（当前共 "+state.items.length+" 项）");
   $("desc").focus();
 }
-function resetMatchBoxes(){
-  const a=$("matchA_result"), b=$("matchB_result");
-  a.innerHTML='<div class="mtitle">现行版匹配（指导原则X.X.X）</div><div class="empty">点击「智能匹配现行版」后在此显示推荐条款。</div>';
-  b.innerHTML='<div class="mtitle">新版GMP匹配（第X条）</div><div class="empty">点击「匹配新版GMP」后在此显示推荐条款。</div>';
-}
 
 function bindEvents(){
-  // 智能匹配
   $("matchA_btn").addEventListener("click",()=>{
     const t=val("desc");
     if(!t.trim()){ toast("请先填写问题描述"); return; }
-    const r=matchLib(LIB_A,t);
-    renderMatch("matchA_result", r, e=>{ $("clauseA").value=e.no; toast("已选用 "+e.no); });
+    const auto=classify(t);
+    $("levelA").value=auto;
+    toast("已自动判标："+auto+"（可手动修改）");
+    const hits=matchCurrent(t);
+    const results=hits.map(k=>({ no: clauseLabel(k), text: clauseText(k) }));
+    renderMatch("matchA_result", results, e=>{ $("clauseA").value=e.no.replace(/^指导原则/,"").replace(/（.*?附录）$/,""); toast("已选用 "+e.no); });
   });
   $("matchB_btn").addEventListener("click",()=>{
     const t=val("desc");
     if(!t.trim()){ toast("请先填写问题描述"); return; }
     const hits=matchNewGMP(t);
-    const results=hits.map(no=>({no, text: NEW_GMP_CLAUSES[no]||""}));
+    const results=hits.map(no=>({ no: no, text: NEW_GMP_CLAUSES[no]||"" }));
     renderMatch("matchB_result", results, e=>{ $("clauseB").value=e.no; toast("已选用 "+e.no); });
   });
-  // 添加
   $("add_btn").addEventListener("click", addItem);
   $("desc").addEventListener("keydown",e=>{ if((e.ctrlKey||e.metaKey)&&e.key==="Enter") addItem(); });
 
-  // 报告首部 / 刷新
-  $("gen_header_btn").addEventListener("click",()=>{
-    save(); renderReports();
-    toast("两份报告首部已生成");
-    $("reportA").scrollIntoView({behavior:"smooth",block:"start"});
-  });
+  $("gen_header_btn").addEventListener("click",()=>{ save(); renderReports(); toast("两份报告首部已生成"); $("reportA").scrollIntoView({behavior:"smooth",block:"start"}); });
   $("refresh_btn").addEventListener("click",()=>{ save(); renderReports(); toast("报告已刷新"); });
 
-  // 复制 / 导出
-  $("copyA_btn").addEventListener("click",()=>copyText($("reportA").value,"不给企业版已复制"));
-  $("copyB_btn").addEventListener("click",()=>copyText($("reportB").value,"企业盖章版已复制"));
-  $("exportA_btn").addEventListener("click",()=>exportTxt("GMP检查报告_不给企业版.txt",$("reportA").value));
-  $("exportB_btn").addEventListener("click",()=>exportTxt("GMP检查报告_企业盖章版.txt",$("reportB").value));
-  $("exportWordA_btn").addEventListener("click",exportWordA);
-  $("exportWordB_btn").addEventListener("click",exportWordB);
+  $("copyA_btn").addEventListener("click",()=>copyText($("reportA").value,"提交版已复制"));
+  $("copyB_btn").addEventListener("click",()=>copyText($("reportB").value,"盖章版已复制"));
+  $("exportA_btn").addEventListener("click",()=>exportTxt("GMP评估报告_提交版.txt",$("reportA").value));
+  $("exportB_btn").addEventListener("click",()=>exportTxt("GMP评估报告_盖章版.txt",$("reportB").value));
 
-  // 汇总库
-  $("save_summary_btn").addEventListener("click",()=>{ save(); saveToSummary(); });
-  $("view_summary_btn").addEventListener("click",openSummary);
-  $("close_summary_btn").addEventListener("click",closeSummary);
-  $("summary_overlay").addEventListener("click",e=>{ if(e.target.id==="summary_overlay") closeSummary(); });
-  $("summary_filter").addEventListener("change",renderSummary);
-  $("summary_sort").addEventListener("change",renderSummary);
-  $("export_csv_btn").addEventListener("click",exportSummaryCSV);
-  $("export_json_btn").addEventListener("click",exportSummaryJSON);
-  $("import_json_btn").addEventListener("click",importSummaryJSON);
-  $("summary_import_file").addEventListener("change",handleImportFile);
-  $("clear_summary_btn").addEventListener("click",clearSummary);
-
-  // 清空
   $("clear_btn").addEventListener("click",()=>{
     if(!confirm("确定清空所有已填写的数据吗？此操作不可恢复。")) return;
     try{ localStorage.removeItem(STORE_KEY); }catch(e){}
-    state={company:{},checks:{category:"",supervision:[],result:[],handling:[],rectification:[],rectDays:""},items:[]};
-    fillCompany({}); fillChecks({});
+    state={company:{},fill:{},checks:{category:"",supervision:[],result:[],handling:[],rectification:[],rectDays:""},items:[]};
+    fillCompany({}); fillFill({}); fillChecks({});
     $("desc").value=""; $("product").value=""; $("clauseA").value=""; $("clauseB").value="";
-    resetMatchBoxes();
-    renderItems(); renderReports(); toast("已清空");
+    resetMatchBoxes(); renderItems(); renderReports(); toast("已清空");
   });
 
-  // 自动保存 + 实时刷新报告
   document.querySelectorAll(".card input, .card select, .card textarea").forEach(el=>{
     el.addEventListener("input", ()=>{ updateProductList(); });
     el.addEventListener("change", ()=>{ save(); renderReports(); });
   });
   $("c_products").addEventListener("input", updateProductList);
-
-  // 报告选项勾选即刷新
   document.querySelectorAll("#opt_category input, #opt_supervision input, #opt_result input, #opt_handling input, #opt_rectification input, #opt_rectdays").forEach(el=>{
     el.addEventListener("change", ()=>{ save(); renderReports(); });
   });
@@ -1274,17 +1077,12 @@ function bindEvents(){
 
 /* ==================== 初始化 ==================== */
 function init(){
-  $("opt_supervision").innerHTML = SUPERVISION.map(s=>'<label class="chip"><input type="checkbox" value="'+esc(s)+'"><span>'+esc(s)+'</span></label>').join("");
-  $("opt_result").innerHTML = RESULT.map(s=>'<label class="chip"><input type="checkbox" value="'+esc(s)+'"><span>'+esc(s)+'</span></label>').join("");
-  $("opt_handling").innerHTML = HANDLING.map(s=>'<label class="chip"><input type="checkbox" value="'+esc(s)+'"><span>'+esc(s)+'</span></label>').join("");
-
+  $("opt_supervision").innerHTML=SUPERVISION.map(s=>'<label class="chip"><input type="checkbox" value="'+esc(s)+'"><span>'+esc(s)+'</span></label>').join("");
+  $("opt_result").innerHTML=RESULT.map(s=>'<label class="chip" title="'+(RESULT_DESC[s]||"")+'"><input type="checkbox" value="'+esc(s)+'"><span>'+esc(s)+'</span></label>').join("");
+  $("opt_handling").innerHTML=HANDLING.map(s=>'<label class="chip"><input type="checkbox" value="'+esc(s)+'"><span>'+esc(s)+'</span></label>').join("");
   load();
-  fillCompany(state.company);
-  fillChecks(state.checks);
-  updateProductList();
-  renderItems();
-  renderReports();
-  bindEvents();
+  fillCompany(state.company); fillFill(state.fill); fillChecks(state.checks);
+  updateProductList(); renderItems(); renderReports(); bindEvents();
 }
 init();
 </script>

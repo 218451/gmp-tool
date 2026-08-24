@@ -832,7 +832,7 @@ function wordDoc(title, bodyHtml){
     + 'p{margin:4pt 0;}'
     + 'table{border-collapse:collapse;width:100%;margin:6pt 0;}'
     + 'table,th,td{border:1px solid #000;}'
-    + 'th,td{padding:5pt;font-size:12pt;vertical-align:top;word-wrap:break-word;}'
+    + 'th,td{padding:5px;font-size:14pt;vertical-align:top;word-wrap:break-word;}'
     + 'th{font-weight:bold;background:#f2f2f2;}'
     + '.cb{white-space:nowrap;}'
     + '</style></head><body>'
@@ -852,6 +852,14 @@ function radioSpans(options, selected){
 }
 function checkSpans(options, selectedArr){
   return options.map(opt=>'<span class="cb">'+((selectedArr||[]).includes(opt)?'☑':'□')+' '+escHtml(opt)+'</span>').join('　');
+}
+function checkGrid(options, selectedArr, cols){
+  cols = cols || 3;
+  const cells = options.map(opt=>'<td style="padding:3px 10px 3px 0;font-size:14pt;">'+((selectedArr||[]).includes(opt)?'☑':'□')+' '+escHtml(opt)+'</td>');
+  while(cells.length % cols !== 0) cells.push('<td style="padding:3px 10px 3px 0;"></td>');
+  let rows='';
+  for(let i=0;i<cells.length;i+=cols){ rows += '<tr>'+cells.slice(i,i+cols).join('')+'</tr>'; }
+  return '<table style="border:none;border-collapse:collapse;width:100%;margin:2pt 0;">'+rows+'</table>';
 }
 function kvTable(rows){
   const trs = rows.map(r=>'<tr><td style="width:28%;font-weight:bold;">'+escHtml(r[0])+'</td><td>'+escHtml(r[1]==null?'':r[1])+'</td></tr>').join('');
@@ -909,7 +917,7 @@ function buildReportA_HTML(){
   h += '<h3>分级判定标准（综合质量管理体系的系统性、规范性、真实性和有效性）</h3>';
   h += gradingTable();
   h += '<h2>四、后续监管建议</h2>';
-  h += '<p>'+checkSpans(SUPERVISION, k.supervision)+'</p>';
+  h += checkGrid(SUPERVISION, k.supervision, 3);
   return wordDoc("医疗器械生产质量管理规范检查报告（不给企业版）", h);
 }
 
@@ -927,7 +935,8 @@ function buildReportB_HTML(){
     ["生产地址",c.address],["联系方式",c.contact],["评估日期",c.date],
     ["核查产品范围",c.products],["企业状态",c.status],["生产状态",c.prodstatus]
   ]);
-  h += '<p><b>产品类别：</b>'+checkSpans(CATS, c.categories||[])+'</p>';
+  h += '<p><b>产品类别：</b></p>';
+  h += checkGrid(CATS, c.categories||[], 3);
   h += '<p><b>评估依据：</b><span class="cb">☑《医疗器械生产质量管理规范》（2014年第64号）</span>　<span class="cb">☑各适用附录</span>　<span class="cb">☑《医疗器械生产质量管理规范》（2025年第107号）</span></p>';
   h += '<h2>二、总体评估</h2>';
   h += '<p>'+escHtml(fill(c.name)+"位于"+fill(c.address)+"，主要生产"+fill(c.products)+"。本次现场检查共发现不符合项及建议项共"+total+"项，其中现行版GMP不符合项"+n1+"项、现行法规建议项"+n2+"项、新版GMP建议项"+n3+"项。企业质量管理体系运行总体情况见下列各表，具体问题详见不符合项及建议项内容。")+'</p>';
@@ -938,9 +947,9 @@ function buildReportB_HTML(){
   h += '<h2>五、新版GMP建议项</h2>';
   h += suggestTable(sugNew, i=>i.clauseB);
   h += '<h2>六、评估结果判定</h2>';
-  h += '<p>'+checkSpans(RESULT, k.result)+'</p>';
+  h += checkGrid(RESULT, k.result, 3);
   h += '<h2>七、评估后处理意见</h2>';
-  h += '<p>'+checkSpans(HANDLING, k.handling)+'</p>';
+  h += checkGrid(HANDLING, k.handling, 2);
   h += '<h2>八、整改期限</h2>';
   h += '<p>'
     + '<span class="cb">'+(k.rectification.includes("30日内提交电子版整改资料")?'☑':'□')+' 30日内提交电子版整改资料</span>　'

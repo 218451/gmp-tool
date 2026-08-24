@@ -87,6 +87,18 @@
   .cl-item:hover{background:var(--blue-l);}
   .cl-item .cno{font-weight:700;color:var(--blue);}
   .cl-item .ctxt{font-size:13px;color:#33465e;margin-top:2px;}
+  .summary-card{background:#eef1f6;}
+  .summary-box{background:#fff;border:1px dashed #c7d2e2;border-radius:10px;padding:12px 16px;font-size:13px;line-height:1.55;color:#22303f;max-height:640px;overflow:auto;}
+  .summary-box .ssec{font-weight:bold;font-size:13.5px;color:var(--blue);margin:10px 0 4px;border-left:3px solid var(--blue);padding-left:8px;}
+  .summary-box .ssec:first-child{margin-top:0;}
+  .summary-box .skv{font-size:13px;margin:2px 0;}
+  .summary-box .skv .k{color:#5a6b82;}
+  .summary-box .skv b{color:#0a2f78;}
+  .summary-box table{border-collapse:collapse;width:100%;margin:4px 0;font-size:12.5px;}
+  .summary-box table td,.summary-box table th{border:1px solid #bbb;padding:4px 6px;vertical-align:top;text-align:left;}
+  .summary-box table th{background:#eef1f6;}
+  .summary-box .warn{color:#b45309;font-weight:600;}
+  .summary-box .ok{color:var(--ok);}
 </style>
 </head>
 <body>
@@ -347,6 +359,18 @@
           <button class="btn small secondary" id="exportB_btn">⬇️ 导出TXT</button>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- 七、报告汇总 -->
+  <section class="card summary-card">
+    <h2>7 报告汇总 <span class="tag">核对用</span></h2>
+    <div class="summary-box" id="summaryBox"></div>
+    <div class="bar" style="margin-top:12px;">
+      <button class="btn small" id="refreshSummary_btn">🔄 刷新汇总</button>
+      <button class="btn small" id="copySummary_btn">📋 复制汇总内容</button>
+      <button class="btn small secondary" id="exportSummaryWord_btn">📝 导出Word</button>
+      <button class="btn small secondary" id="exportSummaryTxt_btn">⬇️ 导出TXT</button>
     </div>
   </section>
 
@@ -1177,10 +1201,106 @@ function buildReportB(){
   return rptTitle("医疗器械企业质量管理规范执行情况评估报告") + mainTable(rows);
 }
 
+/* ==================== 报告汇总 ==================== */
+function sumVal(v){
+  v=(v==null)?"":String(v).trim();
+  return v ? escHtml(v) : '<span class="warn">⚠️ 待补充</span>';
+}
+function sumKV(label, value){ return '<div class="skv"><span class="k">'+label+'：</span>'+value+'</div>'; }
+function sumSec(title){ return '<div class="ssec">'+title+'</div>'; }
+function sumStatus(ok, text){ return '<div class="skv">'+(ok?'<span class="ok">✅</span>':'<span class="warn">⚠️</span>')+' '+text+'</div>'; }
+function buildSummary(){
+  const c=state.company, f=state.fill, k=state.checks, g=autoCalculateGrade();
+  const ncAll = state.items.filter(i=>i.ver==="current" && i.level!=="不构成不符合");
+  const keyN = ncAll.filter(i=>i.level==="严重不符合").length;
+  const genN = ncAll.filter(i=>i.level==="一般不符合").length;
+  const curN = state.items.filter(i=>i.ver==="current" && i.level==="不构成不符合").length;
+  const newN = state.items.filter(i=>i.ver==="new").length;
+  const total = keyN+genN+curN+newN;
+  const risks = getRiskPoints();
+  const status = statusHtml(c);
+
+  let h = "";
+  h += sumSec("一、企业基本信息摘要");
+  h += sumKV("企业名称", "<b>"+sumVal(c.name)+"</b>");
+  h += sumKV("生产地址", sumVal(c.address));
+  h += sumKV("法定代表人", sumVal(c.legal));
+  h += sumKV("企业负责人", sumVal(c.manager));
+  h += sumKV("质量负责人", sumVal(c.quality));
+  h += sumKV("生产许可证有效期", sumVal(c.license));
+  h += sumKV("2025年销售额", c.sales?("<b>"+escHtml(c.sales)+"</b> 万元"):'<span class="warn">⚠️ 待补充</span>');
+  h += sumKV("III类/II类注册证", "<b>"+(c.cert3||"0")+"</b> / <b>"+(c.cert2||"0")+"</b>");
+  h += sumKV("主营产品", sumVal(c.products));
+  h += sumKV("员工总数", c.employees?("<b>"+escHtml(c.employees)+"</b>"):'<span class="warn">⚠️ 待补充</span>');
+  h += sumKV("检验员/内审员", "<b>"+(c.inspectors||"0")+"</b> / <b>"+(c.auditors||"0")+"</b>");
+  h += sumKV("产品类别", (c.categories||[]).length?("<b>"+escHtml(c.categories.join("、"))+"</b>"):'<span class="warn">⚠️ 待补充</span>');
+  h += sumKV("企业状态", status!=="____"?("<b>"+escHtml(status)+"</b>"):'<span class="warn">⚠️ 待补充</span>');
+  h += sumKV("生产状态", sumVal(c.prodstatus));
+
+  h += sumSec("二、质量管理体系运行摘要");
+  h += sumKV("质量手册版本及日期", f.manualVersion?("<b>"+escHtml(f.manualVersion)+"</b>"+(f.manualDate?"（"+escHtml(f.manualDate)+"）":"")):'<span class="warn">⚠️ 待补充</span>');
+  h += sumKV("最近一次内审", (f.auditPeriod?escHtml(f.auditPeriod):'<span class="warn">⚠️ 待补充</span>')+"，"+(f.auditNc!==""&&f.auditNc!=null?("发现 <b>"+escHtml(f.auditNc)+"</b> 项不符合"):"不符合数未填"));
+  h += sumKV("最近管理评审", sumVal(f.reviewDate));
+  h += sumKV("抽查产品", sumVal(f.sampleProduct)+(f.sampleCert?"（"+escHtml(f.sampleCert)+"）":""));
+  h += sumKV("证书有效期", sumVal(f.sampleExpiry));
+
+  h += sumSec("三、不符合项汇总");
+  h += sumKV("不符合项总数", "<b>"+total+"</b>");
+  h += sumKV("关键项 / 一般项", "<b>"+keyN+"</b> / <b>"+genN+"</b>");
+  h += sumKV("现行法规建议项", "<b>"+curN+"</b>");
+  h += sumKV("新版GMP建议项", "<b>"+newN+"</b>");
+  h += sumKV("企业评级", "<b>"+escHtml(g.label)+"</b>");
+  h += sumKV("判定依据", escHtml(g.reason||"—"));
+
+  h += sumSec("四、不符合项清单");
+  if(state.items.length){
+    let tbl = '<table><tr><th style="width:6%;">序号</th><th style="width:22%;">条款号</th><th>简要描述</th><th style="width:16%;">判定等级</th></tr>';
+    state.items.forEach((it,idx)=>{
+      const clauseNo = it.ver==="current" ? ("指导原则"+it.clause) : it.clause;
+      const level = it.ver==="current" ? it.level : "新版建议项";
+      const desc = (it.formalDesc || it.desc || "");
+      const brief = desc.length>36 ? desc.slice(0,36)+"…" : desc;
+      tbl += '<tr><td>'+(idx+1)+'</td><td>'+escHtml(clauseNo)+'</td><td>'+escHtml(brief)+'</td><td>'+escHtml(level)+'</td></tr>';
+    });
+    tbl += '</table>';
+    h += tbl;
+  } else {
+    h += '<div class="skv">尚未录入不符合项</div>';
+  }
+
+  h += sumSec("五、风险点汇总");
+  if(risks.length){
+    risks.forEach((r,i)=>{
+      const tmpl = RISK_TMPL[r[0]] || "需重点关注";
+      h += '<div class="skv">风险点'+(i+1)+'：现场发现企业'+escHtml(tmpl)+'</div>';
+    });
+  } else {
+    h += '<div class="skv">暂无风险点（未录入不符合项）</div>';
+  }
+
+  h += sumSec("六、后续监管建议");
+  h += '<div class="skv">'+((k.supervision||[]).length?escHtml(k.supervision.join("、")):'<span class="warn">⚠️ 未勾选</span>')+'</div>';
+
+  h += sumSec("七、报告生成状态");
+  const reportsDone = !!( $("reportA") && $("reportA").innerHTML && $("reportB") && $("reportB").innerHTML );
+  h += sumStatus(!!c.name, c.name?"企业基本信息已填写":"企业基本信息未填写");
+  h += sumStatus(state.items.length>0, state.items.length>0?"不符合项已录入（"+state.items.length+"项）":"未录入不符合项");
+  h += sumStatus(risks.length>0, risks.length>0?"风险点已归纳（"+risks.length+"个）":"暂无风险点");
+  h += sumStatus(g.grade!=="待评定", g.grade!=="待评定"?"企业评级已自动计算（"+escHtml(g.label)+"）":"评级待评定");
+  h += sumStatus(reportsDone, reportsDone?"两份报告已生成":"报告未生成");
+
+  return h;
+}
+function renderSummary(){
+  const box = $("summaryBox");
+  if(box) box.innerHTML = buildSummary();
+}
+
 function renderReports(){
   $("reportA").innerHTML = buildReportA();
   $("reportB").innerHTML = buildReportB();
   updateGradeDisplay();
+  renderSummary();
 }
 
 /* ==================== 复制/导出 ==================== */
@@ -1331,6 +1451,11 @@ function bindEvents(){
   $("wordB_btn").addEventListener("click",()=>exportWord("评估报告(企业盖章).doc",$("reportB").innerHTML));
   $("exportA_btn").addEventListener("click",()=>exportTxt("评估报告(不给企业).txt",$("reportA").innerHTML));
   $("exportB_btn").addEventListener("click",()=>exportTxt("评估报告(企业盖章).txt",$("reportB").innerHTML));
+
+  $("refreshSummary_btn").addEventListener("click",()=>{ save(); renderReports(); toast("汇总已刷新"); });
+  $("copySummary_btn").addEventListener("click",()=>copyHtml($("summaryBox").innerHTML));
+  $("exportSummaryWord_btn").addEventListener("click",()=>exportWord("评估报告汇总.doc",$("summaryBox").innerHTML));
+  $("exportSummaryTxt_btn").addEventListener("click",()=>exportTxt("评估报告汇总.txt",$("summaryBox").innerHTML));
 
   $("clear_btn").addEventListener("click",()=>{
     if(!confirm("确定清空所有已填写的数据吗?此操作不可恢复。")) return;

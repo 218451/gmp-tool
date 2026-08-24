@@ -34,7 +34,7 @@
   }
   .card h2{
     margin:0 0 12px;font-size:19px;color:var(--blue);
-    display:flex;align-items:center;gap:8px;
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
   }
   .card h2 .tag{font-size:12px;background:var(--blue-l);color:var(--blue);padding:2px 8px;border-radius:20px;font-weight:500;}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;}
@@ -73,10 +73,9 @@
   .btn.ghost{background:#f0f4fa;color:#33465e;border:1.5px solid #c7d2e2;}
   .btn.danger{background:#fff;color:var(--danger);border:1.5px solid var(--danger);}
   .btn.small{min-height:40px;padding:8px 14px;font-size:14px;}
-  .btn:disabled{opacity:.5;cursor:not-allowed;}
   .rowbtns{display:flex;flex-wrap:wrap;gap:10px;}
   .matchbox{margin-top:10px;padding:10px 12px;background:#f6f9fd;border:1px solid #d8e4f2;border-radius:9px;}
-  .matchbox .mtitle{font-size:13px;color:var(--muted);margin-bottom:6px;}
+  .matchbox .mtitle{font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600;}
   .match-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px dashed #d8e4f2;}
   .match-item:last-child{border-bottom:none;}
   .match-item .mno{white-space:nowrap;font-weight:700;color:var(--blue);min-width:76px;font-size:15px;}
@@ -173,6 +172,7 @@
       </div>
       <div class="field"><label>评估日期</label><input id="c_date" type="date"></div>
       <div class="field"><label>企业成立年份（留空手填）</label><input id="c_year" type="number" inputmode="numeric" placeholder="例：2010"></div>
+      <div class="field"><label>评估人员（姓名）</label><input id="c_assessor" placeholder="例：张三、李四"></div>
     </div>
   </section>
 
@@ -232,15 +232,21 @@
 
     <div class="rowbtns" style="margin-bottom:10px;">
       <button class="btn" id="matchA_btn">🔍 智能匹配现行版</button>
-      <button class="btn secondary" id="matchB_btn">🔍 智能匹配新版</button>
+      <button class="btn secondary" id="matchB_btn">🔍 匹配新版GMP</button>
     </div>
 
     <div class="grid">
       <div class="field">
-        <div class="matchbox" id="matchA_result"><div class="empty">点击「智能匹配现行版」后在此显示推荐条款。</div></div>
+        <div class="matchbox" id="matchA_result">
+          <div class="mtitle">现行版匹配（指导原则X.X.X）</div>
+          <div class="empty">点击「智能匹配现行版」后在此显示推荐条款。</div>
+        </div>
       </div>
       <div class="field">
-        <div class="matchbox" id="matchB_result"><div class="empty">点击「智能匹配新版」后在此显示推荐条款。</div></div>
+        <div class="matchbox" id="matchB_result">
+          <div class="mtitle">新版GMP匹配（第X条）</div>
+          <div class="empty">点击「匹配新版GMP」后在此显示推荐条款。</div>
+        </div>
       </div>
     </div>
 
@@ -255,12 +261,12 @@
         </select>
       </div>
       <div class="field"><label>现行版条款号（可手动修改）</label><input id="clauseA" placeholder="例：1.10.1"></div>
-      <div class="field"><label>新版GMP条款号（建议项，可手动修改）</label><input id="clauseB" placeholder="例：第14.1条（可留空）"></div>
+      <div class="field"><label>新版GMP条款号（建议项，可手动修改）</label><input id="clauseB" placeholder="例：第29条（可留空）"></div>
     </div>
 
     <div style="margin-top:14px;">
       <button class="btn" id="add_btn">➕ 生成并填入报告</button>
-      <span class="hint" style="margin-left:10px;">现行版(严重/一般)→不符合项表；现行版(不构成)→现行法规建议项表；新版→新版建议项表</span>
+      <span class="hint" style="margin-left:10px;">现行版(严重/一般)→不符合项表；现行版(不构成)→现行法规建议项表；新版→新版建议项表(固定建议项)</span>
     </div>
   </section>
 
@@ -408,28 +414,49 @@ const LIB_A = [
   {no:"7.15.1", ch:"独立软件附录", kw:["软件","软件发布","发布管理"], text:"软件发布管理应符合要求。"}
 ];
 
-// —— 条款库B：新版GMP（2025年107号）条款 ——
-const LIB_B = [
-  {no:"第13.1条", ch:"第13章 委托生产与外协加工", kw:["委托生产","委托","外协","外协加工","受托方"], text:"企业应制定委托生产控制程序，明确委托生产的范围和要求。"},
-  {no:"第13.2条", ch:"第13章 委托生产与外协加工", kw:["受托方","委托生产","评价","委托方评价"], text:"应对受托方进行评价和选择，确保其具备相应能力。"},
-  {no:"第13.3条", ch:"第13章 委托生产与外协加工", kw:["委托协议","委托生产","协议","合同"], text:"应签订委托生产协议，明确双方质量责任。"},
-  {no:"第13.4条", ch:"第13章 委托生产与外协加工", kw:["委托生产","监督","监督职责","受托方监督"], text:"委托方应履行对受托方生产过程的监督职责。"},
-  {no:"第13.5条", ch:"第13章 委托生产与外协加工", kw:["外协","外协加工","委托"], text:"外协加工应纳入质量管理体系进行控制。"},
-  {no:"第14.1条", ch:"第14章 数据与记录管理", kw:["数据完整性","数据","完整性"], text:"企业应保证数据的完整性、准确性和可追溯性。"},
-  {no:"第14.2条", ch:"第14章 数据与记录管理", kw:["电子记录","电子","电子数据"], text:"电子记录应符合要求，保证真实、完整、可追溯。"},
-  {no:"第14.3条", ch:"第14章 数据与记录管理", kw:["审计追踪","审计","追踪"], text:"应建立审计追踪机制，记录数据的生成、修改和删除。"},
-  {no:"第14.4条", ch:"第14章 数据与记录管理", kw:["记录保存","保存","归档","备份"], text:"记录应按规定的期限保存，防止丢失、损坏。"},
-  {no:"第15.1条", ch:"第15章 计算机化系统", kw:["计算机化系统","计算机","软件验证","系统验证"], text:"计算机化系统应进行验证，确保其符合预期用途。"},
-  {no:"第15.2条", ch:"第15章 计算机化系统", kw:["权限","权限管理","访问控制","账户"], text:"计算机化系统应进行权限管理，控制人员访问。"},
-  {no:"第15.3条", ch:"第15章 计算机化系统", kw:["数据备份","备份","数据安全","灾难恢复"], text:"应定期备份计算机化系统数据，确保数据安全。"},
-  {no:"第15.4条", ch:"第15章 计算机化系统", kw:["系统变更","计算机化系统","变更"], text:"计算机化系统变更应受控并评估影响。"},
-  {no:"第7.8条", ch:"第7章 验证与确认", kw:["持续验证","工艺验证","持续工艺验证","再验证"], text:"应对关键工艺实施持续工艺验证，确保工艺稳定受控。"},
-  {no:"第11.5条", ch:"第11章 质量管理体系", kw:["质量风险管理","QRM","风险管理","风险评估"], text:"企业应运用质量风险管理方法，对风险进行识别、评估和控制。"},
-  {no:"第6.4条", ch:"第6章 采购与物料管理", kw:["供应商审核","供应商","审核"], text:"应对关键物料供应商进行审核和评价。"},
-  {no:"第12.1条", ch:"第12章 纠正预防措施", kw:["变更控制","变更","变更管理"], text:"应建立变更控制程序，对影响产品质量的变更进行管理。"},
-  {no:"第12.2条", ch:"第12章 纠正预防措施", kw:["偏差","偏差处理","偏差调查"], text:"应建立偏差处理程序，对偏差进行调查和处理。"},
-  {no:"第12.3条", ch:"第12章 纠正预防措施", kw:["CAPA","纠正措施","预防措施","纠正预防"], text:"应建立纠正和预防措施（CAPA）程序，防止问题再发生。"},
-  {no:"第12.4条", ch:"第12章 纠正预防措施", kw:["质量回顾","产品质量回顾","回顾"], text:"应定期进行产品质量回顾，评估质量趋势。"}
+// —— 新版GMP（2025年107号）条款数据库 ——
+const NEW_GMP_CLAUSES = {
+  "第6条": "鼓励企业推进数智化转型",
+  "第9条": "质量保证系统的九项要求（第(八)项：贮存、运输环节有保证措施）",
+  "第10条": "变更控制程序",
+  "第12条": "质量风险管理制度",
+  "第13条": "质量风险管理回顾",
+  "第15条": "质量管理部门独立履职",
+  "第22条": "放行审核人资质要求",
+  "第29条": "仓储区管理，明确原材料贮存条件（含贮存期要求，超过贮存期需复验，超过有效期按不合格品处理）",
+  "第30条": "检验场所和设施",
+  "第32条": "洁净区与非洁净区静压差要求（>10Pa）",
+  "第34条": "未经批准人员进入控制",
+  "第36条": "设备配备与有效运行",
+  "第37条": "设备和仪器档案",
+  "第38条": "设备使用、维护操作规程",
+  "第41条": "文件和数据管理体系",
+  "第43条": "电子记录与数据管理（含备份、保存期限）",
+  "第44条": "记录保存期限（至少与器械寿命期一致，且放行后不少于2年）",
+  "第56条": "验证与确认",
+  "第57条": "验证方案与报告",
+  "第63条": "委托生产控制程序",
+  "第64条": "受托方评价",
+  "第67条": "外协加工控制程序",
+  "第73条": "数据分析与应用",
+  "第76条": "纠正预防措施（CAPA）",
+  "第77条": "变更、偏差、CAPA有效性评估"
+};
+
+// —— 新版GMP关键词映射：关键词 → 匹配条款号数组 ——
+const NEW_GMP_KEYWORD_MAP = [
+  { kw:["贮存期","有效期","复验","超期","过期","物料贮存","仓储"], clauses:["第29条","第9条"] },
+  { kw:["数智化","数字化转型","智能制造"], clauses:["第6条"] },
+  { kw:["质量保证","QMS","质量目标"], clauses:["第9条"] },
+  { kw:["变更控制","变更管理"], clauses:["第10条"] },
+  { kw:["质量风险","风险管理","QRM"], clauses:["第12条"] },
+  { kw:["放行审核","放行人"], clauses:["第22条"] },
+  { kw:["洁净度","压差","静压差"], clauses:["第32条"] },
+  { kw:["电子记录","数据备份","审计追踪","数据完整性"], clauses:["第43条"] },
+  { kw:["记录保存","保存期限"], clauses:["第44条"] },
+  { kw:["验证","确认","验证方案"], clauses:["第56条"] },
+  { kw:["委托生产","外协加工","受托方"], clauses:["第63条"] },
+  { kw:["CAPA","纠正预防","纠正措施"], clauses:["第76条"] }
 ];
 
 // —— 选项常量 ——
@@ -479,13 +506,13 @@ function collectCompany(){
     quality:val("c_quality"), address:val("c_address"), license:val("c_license"), sales:val("c_sales"),
     cert3:val("c_cert3"), cert2:val("c_cert2"), products:val("c_products"), employees:val("c_employees"),
     inspectors:val("c_inspectors"), contact:val("c_contact"), categories:cats, status:val("c_status"),
-    prodstatus:val("c_prodstatus"), date:val("c_date"), year:val("c_year")
+    prodstatus:val("c_prodstatus"), date:val("c_date"), year:val("c_year"), assessor:val("c_assessor")
   };
 }
 function fillCompany(c){
   const map={name:"c_name",credit:"c_credit",legal:"c_legal",manager:"c_manager",quality:"c_quality",
     address:"c_address",license:"c_license",sales:"c_sales",cert3:"c_cert3",cert2:"c_cert2",products:"c_products",
-    employees:"c_employees",inspectors:"c_inspectors",contact:"c_contact",status:"c_status",prodstatus:"c_prodstatus",date:"c_date",year:"c_year"};
+    employees:"c_employees",inspectors:"c_inspectors",contact:"c_contact",status:"c_status",prodstatus:"c_prodstatus",date:"c_date",year:"c_year",assessor:"c_assessor"};
   for(const k in map){ const e=$(map[k]); if(e) e.value = c[k]||""; }
   if(!c.date) $("c_date").value = todayStr();
   const cats=c.categories||[];
@@ -535,10 +562,23 @@ function matchLib(lib, text){
   scored.sort((a,b)=>b.s-a.s);
   return scored.slice(0,3).map(x=>x.e);
 }
+function matchNewGMP(text){
+  const t=text||"";
+  const hits=[];
+  for(const m of NEW_GMP_KEYWORD_MAP){
+    if(m.kw.some(k=>t.indexOf(k)>=0)){
+      for(const cno of m.clauses){
+        if(hits.indexOf(cno)<0) hits.push(cno);
+      }
+    }
+  }
+  return hits.slice(0,3);
+}
 function renderMatch(boxId, results, onPick){
   const box=$(boxId);
-  if(!results.length){ box.innerHTML='<div class="empty">未匹配到条款，请补充更具体的关键词描述。</div>'; return; }
-  box.innerHTML = results.map((e,i)=>{
+  const mtitle = box.querySelector(".mtitle");
+  if(!results.length){ box.innerHTML=(mtitle?mtitle.outerHTML:"")+'<div class="empty">未匹配到条款，请补充更具体的关键词描述。</div>'; return; }
+  box.innerHTML = (mtitle?mtitle.outerHTML:"") + results.map((e,i)=>{
     return '<div class="match-item">'+
       '<div class="mno">'+esc(e.no)+'</div>'+
       '<div class="mtxt">'+esc(e.text)+'</div>'+
@@ -561,7 +601,6 @@ function chapterOfA(no){
 }
 
 /* ==================== 报告文本 ==================== */
-function fmtNum(v){ return (v===""||v==null)?"____":esc(v); }
 function fill(v,blank){ return (v===""||v==null)?(blank||"____"):esc(v); }
 
 function riskText(){
@@ -577,15 +616,34 @@ function riskText(){
 
 function buildReportA(){
   const c=state.company, k=state.checks;
+  const keyN = state.items.filter(i=>i.levelA==="严重不符合").length;
+  const genN = state.items.filter(i=>i.levelA==="一般不符合").length;
+  const curN = state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA).length;
+  const newN = state.items.filter(i=>i.clauseB).length;
+  const total = keyN+genN+curN+newN;
   const sup = SUPERVISION.map(s=> (k.supervision.includes(s)?"☑":"□")+s ).join("  ");
+  const header = [
+    "【表头信息】",
+    "企业名称："+fill(c.name),
+    "生产地址："+fill(c.address),
+    "评估产品："+fill(c.products),
+    "评估日期："+fill(c.date),
+    "评估人员："+fill(c.assessor)
+  ].join("\n");
   return [
     "医疗器械生产质量管理规范检查报告（不给企业版）",
-    "评估日期："+fill(c.date),
+    "",
+    header,
     "",
     "一、总体评价",
-    fill(c.name)+"成立于"+fill(c.year)+"年，持有III类医疗器械注册证"+fill(c.cert3)+"张、II类医疗器械注册证"+fill(c.cert2)+"张，主营产品为"+fill(c.products)+"，生产许可证有效期至"+fill(c.license)+"。法定代表人为"+fill(c.legal)+"，企业负责人为"+fill(c.manager)+"，质量负责人为"+fill(c.quality)+"，生产地址位于"+fill(c.address)+"。2025年销售额约"+fill(c.sales)+"万元。",
-    "企业已建立并运行符合现行版《医疗器械生产质量管理规范》（2014年第64号）要求的质量管理体系；针对新版《医疗器械生产质量管理规范》（2025年第107号），企业已收集相关法规、完成宣贯培训、输出差距分析，正在编制新版质量手册，计划在法规规定期限内满足新版要求。人员情况：现有员工"+fill(c.employees)+"人，其中检验员"+fill(c.inspectors)+"人。",
+    fill(c.name)+"成立于"+fill(c.year)+"年，持有III类医疗器械注册证"+fill(c.cert3)+"张、II类医疗器械注册证"+fill(c.cert2)+"张，主营产品为"+fill(c.products)+"，生产许可证有效期至"+fill(c.license)+"。法定代表人为"+fill(c.legal)+"，企业负责人为"+fill(c.manager)+"，质量负责人为"+fill(c.quality)+"，生产地址位于"+fill(c.address)+"。2025年销售额约"+fill(c.sales)+"万元。企业已建立并运行符合现行版《医疗器械生产质量管理规范》（2014年第64号）要求的质量管理体系。人员情况：现有员工"+fill(c.employees)+"人，其中检验员"+fill(c.inspectors)+"人。",
     "内销/外销情况：________________________________",
+    "",
+    "新版GMP实施情况：",
+    "针对新版《医疗器械生产质量管理规范》（2025年第107号），企业已收集相关法规、完成宣贯培训、输出差距分析，正在编制新版质量手册，计划在法规规定期限内满足新版要求。",
+    "",
+    "本次评估不符合项汇总：",
+    "共"+total+"项，其中关键项"+keyN+"项、一般项"+genN+"项，现行法规建议项"+curN+"项，新版GMP建议项"+newN+"项。",
     "",
     "二、风险点",
     riskText(),
@@ -601,7 +659,6 @@ function buildReportA(){
 function buildReportB(){
   const c=state.company, k=state.checks;
   const prodCats = (c.categories&&c.categories.length)? c.categories.map(x=>"☑"+x).join("  ") : "□无菌医疗器械 □植入性医疗器械 □体外诊断试剂 □定制式义齿 □独立软件 □其他";
-  // 分流
   const nonConform = state.items.filter(i=>i.levelA!=="不构成不符合" && i.clauseA);
   const sugCur = state.items.filter(i=>i.levelA==="不构成不符合" && i.clauseA);
   const sugNew = state.items.filter(i=>i.clauseB);
@@ -752,10 +809,14 @@ function addItem(){
   });
   save(); renderItems(); renderReports();
   $("desc").value=""; $("product").value="";
-  $("matchA_result").innerHTML='<div class="empty">已填入，可继续录入下一条。</div>';
-  $("matchB_result").innerHTML='<div class="empty">已填入，可继续录入下一条。</div>';
+  resetMatchBoxes();
   toast("已填入报告（当前共 "+state.items.length+" 项）");
   $("desc").focus();
+}
+function resetMatchBoxes(){
+  const a=$("matchA_result"), b=$("matchB_result");
+  a.innerHTML='<div class="mtitle">现行版匹配（指导原则X.X.X）</div><div class="empty">点击「智能匹配现行版」后在此显示推荐条款。</div>';
+  b.innerHTML='<div class="mtitle">新版GMP匹配（第X条）</div><div class="empty">点击「匹配新版GMP」后在此显示推荐条款。</div>';
 }
 
 function bindEvents(){
@@ -769,8 +830,9 @@ function bindEvents(){
   $("matchB_btn").addEventListener("click",()=>{
     const t=val("desc");
     if(!t.trim()){ toast("请先填写问题描述"); return; }
-    const r=matchLib(LIB_B,t);
-    renderMatch("matchB_result", r, e=>{ $("clauseB").value=e.no; toast("已选用 "+e.no); });
+    const hits=matchNewGMP(t);
+    const results=hits.map(no=>({no, text: NEW_GMP_CLAUSES[no]||""}));
+    renderMatch("matchB_result", results, e=>{ $("clauseB").value=e.no; toast("已选用 "+e.no); });
   });
   // 添加
   $("add_btn").addEventListener("click", addItem);
@@ -797,12 +859,11 @@ function bindEvents(){
     state={company:{},checks:{category:"",supervision:[],result:[],handling:[],rectification:[],rectDays:""},items:[]};
     fillCompany({}); fillChecks({});
     $("desc").value=""; $("product").value=""; $("clauseA").value=""; $("clauseB").value="";
-    $("matchA_result").innerHTML='<div class="empty">点击「智能匹配现行版」后在此显示推荐条款。</div>';
-    $("matchB_result").innerHTML='<div class="empty">点击「智能匹配新版」后在此显示推荐条款。</div>';
+    resetMatchBoxes();
     renderItems(); renderReports(); toast("已清空");
   });
 
-  // 自动保存 + 实时刷新报告（一旦有内容）
+  // 自动保存 + 实时刷新报告
   document.querySelectorAll(".card input, .card select, .card textarea").forEach(el=>{
     el.addEventListener("input", ()=>{ updateProductList(); });
     el.addEventListener("change", ()=>{ save(); renderReports(); });
@@ -817,7 +878,6 @@ function bindEvents(){
 
 /* ==================== 初始化 ==================== */
 function init(){
-  // 生成选项复选框
   $("opt_supervision").innerHTML = SUPERVISION.map(s=>'<label class="chip"><input type="checkbox" value="'+esc(s)+'"><span>'+esc(s)+'</span></label>').join("");
   $("opt_result").innerHTML = RESULT.map(s=>'<label class="chip"><input type="checkbox" value="'+esc(s)+'"><span>'+esc(s)+'</span></label>').join("");
   $("opt_handling").innerHTML = HANDLING.map(s=>'<label class="chip"><input type="checkbox" value="'+esc(s)+'"><span>'+esc(s)+'</span></label>').join("");

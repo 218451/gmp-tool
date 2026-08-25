@@ -165,7 +165,7 @@
       <div class="field"><label>联系电话</label><input id="c_contactPhone" placeholder="例:13800000000"></div>
       <div class="field"><label>邮箱</label><input id="c_contactEmail" placeholder="例:zhangsan@xx.com"></div>
 
-      <div class="field full"><label>企业主要人员(盖章版表格,可填4人)</label></div>
+      <div class="field full"><label>企业主要人员(盖章版表格,可填5人)</label></div>
       <div class="field"><label>人员1 部门/职务</label><input id="p1_dept" placeholder="例:质量负责人"></div>
       <div class="field"><label>人员1 姓名</label><input id="p1_name" placeholder="例:张三"></div>
       <div class="field"><label>人员2 部门/职务</label><input id="p2_dept" placeholder="例:生产负责人"></div>
@@ -174,6 +174,8 @@
       <div class="field"><label>人员3 姓名</label><input id="p3_name"></div>
       <div class="field"><label>人员4 部门/职务</label><input id="p4_dept"></div>
       <div class="field"><label>人员4 姓名</label><input id="p4_name"></div>
+      <div class="field"><label>人员5 部门/职务</label><input id="p5_dept"></div>
+      <div class="field"><label>人员5 姓名</label><input id="p5_name"></div>
 
       <div class="field full"><label>产品类别(可多选)</label>
         <div class="chips" id="c_categories">
@@ -356,7 +358,7 @@
     </div>
     <div class="reports">
       <div class="report-col">
-        <h3>评估报告(不给企业版)</h3>
+        <h3>评估报告(提交药监版)</h3>
         <div class="report-box" id="reportA"></div>
         <div class="bar">
           <button class="btn small" id="copyA_btn">📋 复制文本</button>
@@ -862,7 +864,7 @@ function collectCompany(){
     statusMain:(document.querySelector('input[name="statusMain"]:checked')||{}).value||"", statusAbnormal:[...document.querySelectorAll("#statusAbnormalGroup input:checked")].map(e=>e.value), prodstatus:val("c_prodstatus"), date:val("c_date"), year:val("c_year"),
     siteChange:val("c_siteChange"), hasExport:val("c_hasExport"), managerKnow:val("c_managerKnow"),
     plan:val("c_plan"), assessor:val("c_assessor"),
-    personnel:[ {dept:val("p1_dept"),name:val("p1_name")},{dept:val("p2_dept"),name:val("p2_name")},{dept:val("p3_dept"),name:val("p3_name")},{dept:val("p4_dept"),name:val("p4_name")} ] };
+    personnel:[ {dept:val("p1_dept"),name:val("p1_name")},{dept:val("p2_dept"),name:val("p2_name")},{dept:val("p3_dept"),name:val("p3_name")},{dept:val("p4_dept"),name:val("p4_name")},{dept:val("p5_dept"),name:val("p5_name")} ] };
 }
 function fillCompany(c){
   const map={name:"c_name",credit:"c_credit",legal:"c_legal",manager:"c_manager",quality:"c_quality",
@@ -875,7 +877,7 @@ function fillCompany(c){
   const cats=c.categories||[];
   document.querySelectorAll("#c_categories input").forEach(e=>{ e.checked = cats.includes(e.value); });
   const p = c.personnel || [];
-  ["1","2","3","4"].forEach((n,i)=>{ const d=p[i]||{}; const de=$("p"+n+"_dept"); if(de) de.value = d.dept||""; const ne=$("p"+n+"_name"); if(ne) ne.value = d.name||""; });
+  ["1","2","3","4","5"].forEach((n,i)=>{ const d=p[i]||{}; const de=$("p"+n+"_dept"); if(de) de.value = d.dept||""; const ne=$("p"+n+"_name"); if(ne) ne.value = d.name||""; });
   const sm = c.statusMain || "";
   if(sm){ const r=document.querySelector('input[name="statusMain"][value="'+sm+'"]'); if(r) r.checked = true; }
   document.querySelectorAll("#statusAbnormalGroup input").forEach(e=>{ e.checked = (c.statusAbnormal||[]).includes(e.value); });
@@ -1195,7 +1197,7 @@ function getAdvice(){
 }
 function personnelRows(personnel){
   const rows=[];
-  for(let i=0;i<4;i++){ const p=(personnel&&personnel[i])||{}; rows.push([escHtml(p.dept||""), escHtml(p.name||"")]); }
+  for(let i=0;i<5;i++){ const p=(personnel&&personnel[i])||{}; rows.push([escHtml(p.dept||""), escHtml(p.name||"")]); }
   return rows;
 }
 function statusHtml(c){
@@ -1235,7 +1237,7 @@ function buildReportB(){
   const prodCats=["无菌医疗器械","植入性医疗器械","独立软件","体外诊断试剂","定制式义齿","其他"].map(x=>((c.categories||[]).includes(x)?"☑":"□")+" "+x).join("　")+((c.categories||[]).includes("其他")&&c.categoryOther?("("+escHtml(c.categoryOther)+")"):"");
 
   function itemRows(arr, kind){
-    const headers = kind==="nc" ? ["序号","指导原则条款号","不符合项描述"]
+    const headers = kind==="nc" ? ["序号","指导原则条款号(关键项前加*)","不符合项描述"]
                   : kind==="cur" ? ["序号","指导原则条款号","内容描述"]
                   : ["序号","条款号","内容描述"];
     if(!arr.length) return subTable(headers, [["","",""]], ["10%","25%","65%"]);
@@ -1687,7 +1689,7 @@ function viewEnterpriseDetail(rec){
   state = { company: rec.company||{}, fill: rec.fill||{}, checks: rec.checks||{}, flags: rec.flags||{}, items: rec.items||[], advice: rec.advice||"" };
   let html = "";
   try{
-    html = '<div style="margin-bottom:20px;"><div style="font-weight:bold;color:var(--blue);margin-bottom:8px;">评估报告(不给企业版)</div>'+buildReportA()+'</div>'
+    html = '<div style="margin-bottom:20px;"><div style="font-weight:bold;color:var(--blue);margin-bottom:8px;">评估报告(提交药监版)</div>'+buildReportA()+'</div>'
          + '<div><div style="font-weight:bold;color:var(--blue);margin-bottom:8px;">评估报告(企业盖章版)</div>'+buildReportB()+'</div>';
   }catch(e){ html = '<div class="empty">报告生成失败</div>'; }
   state = savedState;
@@ -1770,9 +1772,9 @@ function bindEvents(){
 
   $("copyA_btn").addEventListener("click",()=>copyHtml($("reportA").innerHTML));
   $("copyB_btn").addEventListener("click",()=>copyHtml($("reportB").innerHTML));
-  $("wordA_btn").addEventListener("click",()=>exportWord("评估报告(不给企业).doc",$("reportA").innerHTML));
+  $("wordA_btn").addEventListener("click",()=>exportWord("评估报告(提交药监版).doc",$("reportA").innerHTML));
   $("wordB_btn").addEventListener("click",()=>exportWord("评估报告(企业盖章).doc",$("reportB").innerHTML));
-  $("exportA_btn").addEventListener("click",()=>exportTxt("评估报告(不给企业).txt",$("reportA").innerHTML));
+  $("exportA_btn").addEventListener("click",()=>exportTxt("评估报告(提交药监版).txt",$("reportA").innerHTML));
   $("exportB_btn").addEventListener("click",()=>exportTxt("评估报告(企业盖章).txt",$("reportB").innerHTML));
 
   $("refreshSummary_btn").addEventListener("click",()=>{ save(); renderReports(); toast("汇总已刷新"); });

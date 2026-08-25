@@ -36,6 +36,7 @@
   .chip input{position:absolute;opacity:0;width:0;height:0;}
   .chip span{display:inline-block;padding:9px 14px;border:1.5px solid #c7d2e2;border-radius:22px;font-size:15px;background:#fff;cursor:pointer;user-select:none;transition:.15s;}
   .chip input:checked + span{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600;}
+  .chip input:disabled + span{opacity:.45;cursor:not-allowed;color:#9aa5b1;border-color:#d5dbe4;background:#f5f6f8;}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:13px 20px;font-size:16px;font-weight:600;cursor:pointer;min-height:50px;transition:.15s;letter-spacing:.5px;}
   .btn:hover{background:var(--blue-d);}
   .btn:active{transform:translateY(1px);}
@@ -99,6 +100,15 @@
   .summary-box table th{background:#eef1f6;}
   .summary-box .warn{color:#b45309;font-weight:600;}
   .summary-box .ok{color:var(--ok);}
+  #enterpriseModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;padding:16px;}
+  #enterpriseModal .panel{background:#fff;max-width:1100px;margin:3vh auto;border-radius:14px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;}
+  #enterpriseModal .phead{padding:14px 16px;border-bottom:1px solid #e2e8f2;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  #enterpriseModal .phead b{font-size:16px;color:var(--blue);flex:1;}
+  #entTable{width:100%;border-collapse:collapse;font-size:13px;}
+  #entTable th,#entTable td{border:1px solid #bbb;padding:5px 7px;vertical-align:top;text-align:left;}
+  #entTable th{background:#eef1f6;cursor:pointer;white-space:nowrap;position:sticky;top:0;user-select:none;}
+  #entTable .ename{color:var(--blue);font-weight:bold;cursor:pointer;white-space:nowrap;}
+  #entTable .ename:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -167,7 +177,7 @@
           <label class="chip"><input type="radio" name="statusMain" value="正常"><span>正常</span></label>
           <label class="chip"><input type="radio" name="statusMain" value="异常"><span>异常</span></label>
         </div>
-        <div class="chips" id="statusAbnormalGroup" style="display:none;padding-left:16px;">
+        <div class="chips" id="statusAbnormalGroup" style="padding-left:16px;">
           <label class="chip"><input type="checkbox" value="去向不明"><span>去向不明</span></label>
           <label class="chip"><input type="checkbox" value="向法院申请破产清算阶段"><span>向法院申请破产清算阶段</span></label>
           <label class="chip"><input type="checkbox" value="营业执照已注销但生产许可未注销"><span>营业执照已注销但生产许可未注销</span></label>
@@ -375,6 +385,7 @@
   </section>
 
   <section style="text-align:center;padding-bottom:40px;">
+    <button class="btn" id="enterpriseSummary_btn">📊 所有企业数据汇总</button>
     <button class="btn" id="exportBackup_btn">💾 导出备份</button>
     <button class="btn secondary" id="importBackup_btn">📥 导入备份</button>
     <button class="btn danger" id="clear_btn">🗑️ 清空所有数据</button>
@@ -392,6 +403,20 @@
       <button class="btn small" id="clauseClose">关闭</button>
     </div>
     <div id="clauseList"></div>
+  </div>
+</div>
+
+<!-- 所有企业数据汇总弹窗 -->
+<div id="enterpriseModal">
+  <div class="panel">
+    <div class="phead">
+      <b>📊 所有企业数据汇总</b>
+      <button class="btn small" id="exportCsv_btn">⬇️ 导出CSV</button>
+      <button class="btn small" id="clearAllData_btn" style="background:#fff;color:var(--danger);border:1.5px solid var(--danger);">🗑️ 清空全部</button>
+      <button class="btn small" id="enterpriseClose">关闭</button>
+    </div>
+    <div id="enterpriseStats" style="padding:10px 16px;font-size:14px;border-bottom:1px solid #e2e8f2;"></div>
+    <div id="enterpriseList" style="overflow:auto;padding:8px 12px;max-height:62vh;"></div>
   </div>
 </div>
 
@@ -827,7 +852,8 @@ function fillCompany(c){
 }
 function toggleStatusAbnormal(){
   const sm = (document.querySelector('input[name="statusMain"]:checked')||{}).value;
-  const g = $("statusAbnormalGroup"); if(g) g.style.display = (sm==="异常") ? "flex" : "none";
+  const disabled = (sm !== "异常");
+  document.querySelectorAll("#statusAbnormalGroup input").forEach(e=>{ e.disabled = disabled; if(disabled) e.checked = false; });
 }
 function collectFill(){
   return { estYear:val("f_estYear"), manualVersion:val("f_manualVersion"), manualDate:val("f_manualDate"),
@@ -1380,6 +1406,174 @@ function importBackup(file){
   reader.readAsText(file, "utf-8");
 }
 
+/* ==================== 所有企业数据汇总 ==================== */
+let entSortCol = null;
+let entSortDir = 1;
+function buildEnterpriseRecord(){
+  const c=state.company;
+  const ncAll = state.items.filter(i=>i.ver==="current" && i.level!=="不构成不符合");
+  const keyN = ncAll.filter(i=>i.level==="严重不符合").length;
+  const genN = ncAll.filter(i=>i.level==="一般不符合").length;
+  const curN = state.items.filter(i=>i.ver==="current" && i.level==="不构成不符合").length;
+  const newN = state.items.filter(i=>i.ver==="new").length;
+  const risks = getRiskPoints().map(r => RISK_TMPL[r[0]] || r[0]);
+  const g = autoCalculateGrade();
+  return {
+    name: c.name||"", date: c.date||"", categories: (c.categories||[]).join("、"),
+    address: c.address||"", legal: c.legal||"", manager: c.manager||"", quality: c.quality||"",
+    sales: c.sales||"", cert3: c.cert3||"", cert2: c.cert2||"",
+    employees: c.employees||"", inspectors: c.inspectors||"", auditors: c.auditors||"",
+    totalNc: keyN+genN+curN+newN, keyN: keyN, genN: genN, curN: curN, newN: newN,
+    grade: g.grade, gradeLabel: g.label,
+    risk1: risks[0]||"", risk2: risks[1]||"", risk3: risks[2]||"",
+    assessor: c.assessor||"",
+    company: c, fill: state.fill, checks: state.checks, items: state.items, advice: state.advice, flags: state.flags,
+    savedAt: new Date().toISOString()
+  };
+}
+function enterpriseKey(rec){
+  const name = (rec.name||"").trim() || "未命名企业";
+  const date = (rec.date||"").trim() || "未注明日期";
+  return "gmp_report_" + name + "_" + date;
+}
+function saveEnterpriseRecord(){
+  const rec = buildEnterpriseRecord();
+  if(!(rec.name||"").trim()) return false;
+  try{ localStorage.setItem(enterpriseKey(rec), JSON.stringify(rec)); return true; }catch(e){ return false; }
+}
+function loadEnterpriseRecords(){
+  const records = [];
+  try{
+    for(let i=0;i<localStorage.length;i++){
+      const key = localStorage.key(i);
+      if(key && key.indexOf("gmp_report_")===0){
+        try{ const r = JSON.parse(localStorage.getItem(key)); if(r && r.name) records.push(r); }catch(e){}
+      }
+    }
+  }catch(e){}
+  records.sort((a,b)=> (b.savedAt||"").localeCompare(a.savedAt||""));
+  return records;
+}
+function openEnterpriseModal(){ renderEnterpriseSummary(); $("enterpriseModal").style.display = "block"; }
+function closeEnterpriseModal(){ $("enterpriseModal").style.display = "none"; }
+function loadEnterpriseIntoForm(rec){
+  if(!confirm("加载该企业数据将覆盖当前页面未保存的内容，确定加载？")) return;
+  state = Object.assign({company:{},fill:{},checks:{supervision:[],result:[],handling:[],rectification:[],rectDays:""},flags:{majorViolation:false},items:[],advice:""}, {
+    company: rec.company||{}, fill: rec.fill||{}, checks: rec.checks||{}, flags: rec.flags||{}, items: rec.items||[], advice: rec.advice||""
+  });
+  save();
+  fillCompany(state.company); fillFill(state.fill); fillChecks(state.checks); fillFlags(state.flags);
+  $("advice").value = state.advice || DEFAULT_ADVICE;
+  renderItems(); renderReports();
+  closeEnterpriseModal();
+  toast("已加载企业："+(rec.name||""));
+  $("reportA").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function csvEscape(v){
+  v = (v==null) ? "" : String(v);
+  if(/[",\n\r]/.test(v)) return '"' + v.replace(/"/g,'""') + '"';
+  return v;
+}
+function exportEnterpriseCsv(){
+  const records = loadEnterpriseRecords();
+  const header = ["企业名称","评估日期","产品类别","生产地址","法定代表人","企业负责人","质量负责人","2025年销售额","III类注册证数","II类注册证数","员工总数","检验员数","内审员数","不符合项总数","关键项数","一般项数","现行法规建议项数","新版GMP建议项数","企业评级","风险点1","风险点2","风险点3","评估人员"];
+  const lines = [header.map(csvEscape).join(",")];
+  records.forEach(r=>{
+    const row = [r.name,r.date,r.categories,r.address,r.legal,r.manager,r.quality,r.sales,r.cert3,r.cert2,r.employees,r.inspectors,r.auditors,r.totalNc,r.keyN,r.genN,r.curN,r.newN,r.gradeLabel,r.risk1,r.risk2,r.risk3,r.assessor];
+    lines.push(row.map(csvEscape).join(","));
+  });
+  const csv = "\ufeff" + lines.join("\r\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href=url; a.download="所有企业数据汇总_"+todayStr()+".csv"; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },100);
+  toast("已导出CSV");
+}
+function clearAllEnterpriseData(){
+  if(!confirm("确定清空所有已保存的企业数据吗？此操作不可恢复。")) return;
+  try{
+    const keys = [];
+    for(let i=0;i<localStorage.length;i++){
+      const key = localStorage.key(i);
+      if(key && key.indexOf("gmp_report_")===0) keys.push(key);
+    }
+    keys.forEach(k=>localStorage.removeItem(k));
+  }catch(e){}
+  renderEnterpriseSummary();
+  toast("已清空所有企业数据");
+}
+function renderEnterpriseSummary(){
+  const records = loadEnterpriseRecords();
+  const total = records.length;
+  const avgNc = total ? (records.reduce((s,r)=>s+(+r.totalNc||0),0)/total).toFixed(1) : "0";
+  const gradeCount = {A:0,B:0,C:0,D:0};
+  records.forEach(r=>{ if(r.grade && gradeCount[r.grade]!==undefined) gradeCount[r.grade]++; });
+
+  const statsBox = $("enterpriseStats");
+  statsBox.innerHTML = '<div style="font-weight:bold;font-size:15px;color:var(--blue);">共 <b>'+total+'</b> 家企业　平均不符合项 <b>'+avgNc+'</b> 项</div>'
+    + '<div style="margin-top:4px;color:#5a6b82;">评级分布：A类 <b>'+gradeCount.A+'</b> 家　B类 <b>'+gradeCount.B+'</b> 家　C类 <b>'+gradeCount.C+'</b> 家　D类 <b>'+gradeCount.D+'</b> 家</div>';
+
+  const listBox = $("enterpriseList");
+  if(!total){
+    listBox.innerHTML = '<div class="empty" style="padding:20px;text-align:center;">暂无已保存的企业数据。<br>填写企业信息并点击「生成两份报告」后，数据会自动归档到此处。</div>';
+    return;
+  }
+
+  let sorted = records.slice();
+  if(entSortCol){
+    sorted.sort((a,b)=>{
+      const va = a[entSortCol], vb = b[entSortCol];
+      let r;
+      if(typeof va === "number" && typeof vb === "number") r = va - vb;
+      else r = String(va==null?"":va).localeCompare(String(vb==null?"":vb), "zh");
+      return r * entSortDir;
+    });
+  }
+
+  const cols = [
+    ["name","企业名称"],["date","评估日期"],["categories","产品类别"],
+    ["totalNc","不符合项总数"],["keyN","关键项"],["genN","一般项"],["newN","新版建议项"],
+    ["gradeLabel","企业评级"],["risk1","主要风险点"],["assessor","评估人员"]
+  ];
+
+  let tbl = '<table id="entTable"><thead><tr><th style="border:1px solid #bbb;padding:6px;background:#eef1f6;text-align:left;">序号</th>';
+  cols.forEach(([col,label])=>{
+    const arrow = entSortCol===col ? (entSortDir===1?" ▲":" ▼") : "";
+    tbl += '<th data-col="'+col+'" style="border:1px solid #bbb;padding:6px;background:#eef1f6;text-align:left;">'+escHtml(label)+arrow+'</th>';
+  });
+  tbl += '</tr></thead><tbody>';
+  sorted.forEach((r,idx)=>{
+    tbl += '<tr>';
+    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;">'+(idx+1)+'</td>';
+    tbl += '<td class="ename" data-load="'+idx+'" style="border:1px solid #bbb;padding:5px 7px;">'+escHtml(r.name||"—")+'</td>';
+    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;">'+escHtml(r.date||"—")+'</td>';
+    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;">'+escHtml(r.categories||"—")+'</td>';
+    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;text-align:center;">'+escHtml(r.totalNc)+'</td>';
+    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;text-align:center;">'+escHtml(r.keyN)+'</td>';
+    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;text-align:center;">'+escHtml(r.genN)+'</td>';
+    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;text-align:center;">'+escHtml(r.newN)+'</td>';
+    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;text-align:center;">'+escHtml(r.gradeLabel||"—")+'</td>';
+    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;">'+escHtml(r.risk1||"—")+'</td>';
+    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;">'+escHtml(r.assessor||"—")+'</td>';
+    tbl += '</tr>';
+  });
+  tbl += '</tbody></table>';
+  listBox.innerHTML = tbl;
+
+  listBox.querySelectorAll("th[data-col]").forEach(th=>{
+    th.addEventListener("click", ()=>{
+      const col = th.dataset.col;
+      if(entSortCol === col){ entSortDir = -entSortDir; } else { entSortCol = col; entSortDir = 1; }
+      renderEnterpriseSummary();
+    });
+  });
+  listBox.querySelectorAll(".ename[data-load]").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      loadEnterpriseIntoForm(sorted[+el.dataset.load]);
+    });
+  });
+}
+
 /* ==================== 事件 ==================== */
 function updateProductList(){
   const ps=val("c_products").split(/[、,,;;\s]+/).filter(Boolean);
@@ -1442,7 +1636,7 @@ function bindEvents(){
   $("add_btn").addEventListener("click", addItem);
   $("desc").addEventListener("keydown",e=>{ if((e.ctrlKey||e.metaKey)&&e.key==="Enter") addItem(); });
 
-  $("gen_header_btn").addEventListener("click",()=>{ save(); renderReports(); toast("两份报告已生成"); $("reportA").scrollIntoView({behavior:"smooth",block:"start"}); });
+  $("gen_header_btn").addEventListener("click",()=>{ save(); renderReports(); const ok=saveEnterpriseRecord(); toast(ok?"两份报告已生成，企业数据已归档":"两份报告已生成（未填企业名称，未归档）"); $("reportA").scrollIntoView({behavior:"smooth",block:"start"}); });
   $("refresh_btn").addEventListener("click",()=>{ save(); renderReports(); toast("报告已刷新"); });
 
   $("copyA_btn").addEventListener("click",()=>copyHtml($("reportA").innerHTML));
@@ -1456,6 +1650,12 @@ function bindEvents(){
   $("copySummary_btn").addEventListener("click",()=>copyHtml($("summaryBox").innerHTML));
   $("exportSummaryWord_btn").addEventListener("click",()=>exportWord("评估报告汇总.doc",$("summaryBox").innerHTML));
   $("exportSummaryTxt_btn").addEventListener("click",()=>exportTxt("评估报告汇总.txt",$("summaryBox").innerHTML));
+
+  $("enterpriseSummary_btn").addEventListener("click", openEnterpriseModal);
+  $("enterpriseClose").addEventListener("click", closeEnterpriseModal);
+  $("enterpriseModal").addEventListener("click", (e)=>{ if(e.target.id==="enterpriseModal") closeEnterpriseModal(); });
+  $("exportCsv_btn").addEventListener("click", exportEnterpriseCsv);
+  $("clearAllData_btn").addEventListener("click", clearAllEnterpriseData);
 
   $("clear_btn").addEventListener("click",()=>{
     if(!confirm("确定清空所有已填写的数据吗?此操作不可恢复。")) return;

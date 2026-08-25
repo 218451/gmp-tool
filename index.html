@@ -1981,9 +1981,9 @@ function buildDocxDataB(){
 
 function exportDocx(b64, data, filename){
   try{
-    if(typeof Docxtemplater==="undefined" || typeof PizZip==="undefined"){ toast("DOCX组件未加载，请联网后重试"); return; }
+    if(typeof docxtemplater==="undefined" || typeof PizZip==="undefined"){ toast("DOCX组件未加载，请联网后重试"); return; }
     const zip = new PizZip(b64ToUint8(b64));
-    const doc = new Docxtemplater(zip, { paragraphLoop:true, linebreaks:true, nullGetter:()=>"" });
+    const doc = new docxtemplater(zip, { paragraphLoop:true, linebreaks:true, nullGetter:()=>"" });
     doc.render(data);
     const out = doc.getZip().generate({ type:"uint8array", compression:"DEFLATE" });
     const blob = new Blob([out], { type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document" });

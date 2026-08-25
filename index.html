@@ -109,6 +109,18 @@
   #entTable th{background:#eef1f6;cursor:pointer;white-space:nowrap;position:sticky;top:0;user-select:none;}
   #entTable .ename{color:var(--blue);font-weight:bold;cursor:pointer;white-space:nowrap;}
   #entTable .ename:hover{text-decoration:underline;}
+  #adminModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;padding:16px;align-items:center;justify-content:center;}
+  #adminModal .admin-panel{background:#fff;max-width:360px;width:100%;border-radius:14px;padding:24px 22px;box-shadow:0 10px 40px rgba(0,0,0,.25);}
+  #adminModal .admin-title{font-size:18px;font-weight:bold;color:var(--blue);text-align:center;margin-bottom:10px;}
+  #adminModal .admin-tip{font-size:14px;color:#5a6b82;text-align:center;margin-bottom:16px;}
+  #adminModal .admin-password{width:100%;padding:12px;font-size:16px;border:1.5px solid #c7d2e2;border-radius:9px;margin-bottom:6px;min-height:46px;}
+  #adminModal .admin-error{color:var(--danger);font-size:13px;min-height:18px;margin-bottom:10px;}
+  #adminModal .admin-btns{display:flex;gap:10px;}
+  #adminModal .admin-btns .btn{flex:1;}
+  #detailModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1500;padding:16px;}
+  #detailModal .panel{background:#fff;max-width:900px;margin:3vh auto;border-radius:14px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;}
+  #detailModal .phead{padding:14px 16px;border-bottom:1px solid #e2e8f2;display:flex;gap:10px;align-items:center;}
+  #detailModal .phead b{font-size:16px;color:var(--blue);flex:1;}
 </style>
 </head>
 <body>
@@ -117,6 +129,9 @@
   <header class="top">
     <h1>医疗器械GMP检查报告辅助工具</h1>
     <div class="sub">现场检查辅助 · 数据仅存本机浏览器 · 手机/电脑通用</div>
+    <div style="margin-top:12px;">
+      <button class="btn" id="enterpriseSummary_btn" style="background:#fff;color:var(--blue);min-height:44px;">📊 查看所有企业数据</button>
+    </div>
   </header>
 
   <div class="notice">
@@ -169,6 +184,7 @@
           <label class="chip"><input type="checkbox" value="独立软件"><span>独立软件</span></label>
           <label class="chip"><input type="checkbox" value="其他"><span>其他</span></label>
         </div>
+        <input id="categoryOther" type="text" placeholder="其他类别名称(如:有源医疗器械)" style="width:100%;max-width:420px;min-height:40px;font-size:15px;border:1.5px solid #c7d2e2;border-radius:9px;padding:8px;margin-top:6px;">
       </div>
 
       <div class="field full">
@@ -243,15 +259,15 @@
       </div>
     </div>
     <div class="field" style="margin-bottom:14px;">
-      <label>评估依据(盖章版,默认全部勾选,可取消)</label>
+      <label>评估依据(盖章版,默认不勾选,请按需手动勾选)</label>
       <div id="opt_basis" style="display:flex;flex-direction:column;gap:8px;">
-        <label class="chip" style="max-width:100%;"><input type="checkbox" value="2014年第64号" checked><span>医疗器械生产质量管理规范(2014年第64号)</span></label>
-        <label class="chip" style="max-width:100%;"><input type="checkbox" value="无菌" checked><span>医疗器械生产质量管理规范附录无菌医疗器械</span></label>
-        <label class="chip" style="max-width:100%;"><input type="checkbox" value="植入" checked><span>医疗器械生产质量管理规范附录植入性医疗器械</span></label>
-        <label class="chip" style="max-width:100%;"><input type="checkbox" value="IVD" checked><span>医疗器械生产质量管理规范附录体外诊断试剂</span></label>
-        <label class="chip" style="max-width:100%;"><input type="checkbox" value="义齿" checked><span>医疗器械生产质量管理规范附录定制式义齿</span></label>
-        <label class="chip" style="max-width:100%;"><input type="checkbox" value="软件" checked><span>医疗器械生产质量管理规范附录独立软件</span></label>
-        <label class="chip" style="max-width:100%;"><input type="checkbox" value="2025年第107号" checked><span>医疗器械生产质量管理规范(2025年第107号)</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="2014年第64号"><span>医疗器械生产质量管理规范(2014年第64号)</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="无菌"><span>医疗器械生产质量管理规范附录无菌医疗器械</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="植入"><span>医疗器械生产质量管理规范附录植入性医疗器械</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="IVD"><span>医疗器械生产质量管理规范附录体外诊断试剂</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="义齿"><span>医疗器械生产质量管理规范附录定制式义齿</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="软件"><span>医疗器械生产质量管理规范附录独立软件</span></label>
+        <label class="chip" style="max-width:100%;"><input type="checkbox" value="2025年第107号"><span>医疗器械生产质量管理规范(2025年第107号)</span></label>
         <label class="chip" style="max-width:100%;"><input type="checkbox" value="其他"><span>其他</span></label>
         <input id="basisOther" type="text" placeholder="其他评估依据(选填)" style="width:100%;max-width:420px;min-height:40px;font-size:15px;border:1.5px solid #c7d2e2;border-radius:9px;padding:8px;">
       </div>
@@ -283,18 +299,6 @@
     </div>
 
     <div id="curBranch">
-      <div class="field" style="margin-bottom:12px;">
-        <label>检查依据附录(限定条款范围)</label>
-        <select id="appendixFilter">
-          <option value="all" selected>全部条款(含所有附录)</option>
-          <option value="common">通用</option>
-          <option value="无菌">无菌医疗器械</option>
-          <option value="植入">植入性医疗器械</option>
-          <option value="IVD">体外诊断试剂</option>
-          <option value="义齿">定制式义齿</option>
-          <option value="软件">独立软件</option>
-        </select>
-      </div>
       <div class="rowbtns" style="margin-bottom:10px;">
         <button class="btn" id="matchA_btn">🔍 智能匹配现行版</button>
         <button class="btn secondary" id="browseA_btn">📖 浏览完整条款库</button>
@@ -385,7 +389,6 @@
   </section>
 
   <section style="text-align:center;padding-bottom:40px;">
-    <button class="btn" id="enterpriseSummary_btn">📊 所有企业数据汇总</button>
     <button class="btn" id="exportBackup_btn">💾 导出备份</button>
     <button class="btn secondary" id="importBackup_btn">📥 导入备份</button>
     <button class="btn danger" id="clear_btn">🗑️ 清空所有数据</button>
@@ -411,12 +414,39 @@
   <div class="panel">
     <div class="phead">
       <b>📊 所有企业数据汇总</b>
-      <button class="btn small" id="exportCsv_btn">⬇️ 导出CSV</button>
-      <button class="btn small" id="clearAllData_btn" style="background:#fff;color:var(--danger);border:1.5px solid var(--danger);">🗑️ 清空全部</button>
       <button class="btn small" id="enterpriseClose">关闭</button>
     </div>
     <div id="enterpriseStats" style="padding:10px 16px;font-size:14px;border-bottom:1px solid #e2e8f2;"></div>
-    <div id="enterpriseList" style="overflow:auto;padding:8px 12px;max-height:62vh;"></div>
+    <div id="enterpriseList" style="overflow:auto;padding:8px 12px;max-height:56vh;"></div>
+    <div style="padding:12px 16px;border-top:1px solid #e2e8f2;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn small" id="exportCsv_btn">⬇️ 导出全部数据(CSV)</button>
+      <button class="btn small" id="clearAllData_btn" style="background:#fff;color:var(--danger);border:1.5px solid var(--danger);">🗑️ 清空全部数据</button>
+    </div>
+  </div>
+</div>
+
+<!-- 管理员验证弹窗 -->
+<div id="adminModal">
+  <div class="admin-panel">
+    <div class="admin-title">🔒 管理员验证</div>
+    <div class="admin-tip">请输入管理员密码以查看所有企业数据</div>
+    <input id="adminPassword" class="admin-password" type="password" placeholder="请输入密码" autocomplete="off">
+    <div class="admin-error" id="adminError"></div>
+    <div class="admin-btns">
+      <button class="btn" id="adminConfirm">确认</button>
+      <button class="btn secondary" id="adminCancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 企业详情弹窗 -->
+<div id="detailModal">
+  <div class="panel">
+    <div class="phead">
+      <b id="detailTitle">企业完整报告</b>
+      <button class="btn small" id="detailClose">关闭</button>
+    </div>
+    <div id="detailBody" style="overflow:auto;padding:12px 16px;max-height:70vh;"></div>
   </div>
 </div>
 
@@ -801,6 +831,7 @@ const BASIS_LABELS = {
 };
 const CATEGORY_TO_BASIS = { "无菌医疗器械":"无菌", "植入性医疗器械":"植入", "体外诊断试剂":"IVD", "定制式义齿":"义齿", "独立软件":"软件" };
 const STORE_KEY = "gmpTool_v4";
+const ADMIN_PASSWORD = "GMP2026";   // 管理员密码(可在此修改)
 const DEFAULT_ADVICE = "1、现行GMP不符合项优先落实闭环整改,防范产品质量风险;\n2、结合新版GMP(2025第107号)要求,统筹开展体系升级改造,加强______过程的控制,以按期满足新版法规实施要求。";
 let state = {
   company: {}, fill: {}, checks: { supervision:[], result:[], handling:[], rectification:[], rectDays:"" },
@@ -827,7 +858,7 @@ function collectCompany(){
   return { name:val("c_name"), credit:val("c_credit"), legal:val("c_legal"), manager:val("c_manager"),
     quality:val("c_quality"), address:val("c_address"), license:val("c_license"), sales:val("c_sales"),
     cert3:val("c_cert3"), cert2:val("c_cert2"), products:val("c_products"), employees:val("c_employees"),
-    inspectors:val("c_inspectors"), auditors:val("c_auditors"), contactName:val("c_contactName"), contactPhone:val("c_contactPhone"), contactEmail:val("c_contactEmail"), categories:cats,
+    inspectors:val("c_inspectors"), auditors:val("c_auditors"), contactName:val("c_contactName"), contactPhone:val("c_contactPhone"), contactEmail:val("c_contactEmail"), categories:cats, categoryOther:val("categoryOther"),
     statusMain:(document.querySelector('input[name="statusMain"]:checked')||{}).value||"", statusAbnormal:[...document.querySelectorAll("#statusAbnormalGroup input:checked")].map(e=>e.value), prodstatus:val("c_prodstatus"), date:val("c_date"), year:val("c_year"),
     siteChange:val("c_siteChange"), hasExport:val("c_hasExport"), managerKnow:val("c_managerKnow"),
     plan:val("c_plan"), assessor:val("c_assessor"),
@@ -838,7 +869,7 @@ function fillCompany(c){
     address:"c_address",license:"c_license",sales:"c_sales",cert3:"c_cert3",cert2:"c_cert2",products:"c_products",
     employees:"c_employees",inspectors:"c_inspectors",auditors:"c_auditors",contactName:"c_contactName",contactPhone:"c_contactPhone",contactEmail:"c_contactEmail",
     prodstatus:"c_prodstatus",date:"c_date",year:"c_year",siteChange:"c_siteChange",hasExport:"c_hasExport",
-    managerKnow:"c_managerKnow",plan:"c_plan",assessor:"c_assessor"};
+    managerKnow:"c_managerKnow",plan:"c_plan",assessor:"c_assessor",categoryOther:"categoryOther"};
   for(const k in map){ const e=$(map[k]); if(e) e.value = c[k]||""; }
   if(!c.date) $("c_date").value = todayStr();
   const cats=c.categories||[];
@@ -878,8 +909,7 @@ function fillChecks(c){
   const set=(sel,arr)=>{ document.querySelectorAll(sel+" input").forEach(e=>{ e.checked=(arr||[]).includes(e.value); }); };
   set("#opt_supervision",c.supervision); set("#opt_result",c.result); set("#opt_handling",c.handling); set("#opt_rectification",c.rectification);
   $("opt_rectdays").value=c.rectDays||"";
-  if(c.basis === undefined){ document.querySelectorAll("#opt_basis input").forEach(e=>{ e.checked = (e.value!=="其他"); }); }
-  else { set("#opt_basis", c.basis); }
+  set("#opt_basis", c.basis);
   $("basisOther").value = c.basisOther||"";
 }
 function save(){
@@ -912,15 +942,37 @@ function chapterOfA(no){
 }
 
 /* ==================== 匹配 ==================== */
-function getAppendixFilter(){ const e=$("appendixFilter"); return e ? e.value : "all"; }
-function filterClauseKeys(mode){
-  const allKeys = Object.keys(CLAUSE_CONTENT);
-  if(mode === "common") return allKeys.filter(k => clausePrefix(k) === "");
-  if(mode && mode !== "all") return allKeys.filter(k => clausePrefix(k) === "" || clausePrefix(k) === mode);
-  return allKeys;
+function getCheckedBasis(){
+  const basis = [];
+  document.querySelectorAll("#opt_basis input:checked").forEach(e=>{ basis.push(e.value); });
+  return basis;
 }
-function matchCurrent(text){ const t=text||""; const hits=[]; for(const m of KEYWORD_MAP_A){ if(m.kw.some(k=>t.indexOf(k)>=0)){ for(const c of m.clauses){ if(hits.indexOf(c)<0) hits.push(c); } } } const allowed=new Set(filterClauseKeys(getAppendixFilter())); return hits.filter(h=>allowed.has(h)).slice(0,3); }
-function matchNewGMP(text){ const t=text||""; const hits=[]; for(const m of NEW_GMP_KEYWORD_MAP){ if(m.kw.some(k=>t.indexOf(k)>=0)){ for(const c of m.clauses){ if(hits.indexOf(c)<0) hits.push(c); } } } return hits.slice(0,3); }
+function filterClauseKeys(){
+  const basis = getCheckedBasis();
+  const hasMain = basis.includes("2014年第64号");
+  const appendices = ["无菌","植入","IVD","义齿","软件"].filter(a => basis.includes(a));
+  const showMain = hasMain || appendices.length > 0;
+  const allKeys = Object.keys(CLAUSE_CONTENT);
+  return allKeys.filter(k => {
+    const prefix = clausePrefix(k);
+    if(prefix === "") return showMain;
+    return appendices.includes(prefix);
+  });
+}
+function hasNewGMPBasis(){ return getCheckedBasis().includes("2025年第107号"); }
+function matchCurrent(text){
+  const allowed = new Set(filterClauseKeys());
+  if(!allowed.size) return [];
+  const t=text||""; const hits=[];
+  for(const m of KEYWORD_MAP_A){ if(m.kw.some(k=>t.indexOf(k)>=0)){ for(const c of m.clauses){ if(hits.indexOf(c)<0) hits.push(c); } } }
+  return hits.filter(h=>allowed.has(h)).slice(0,3);
+}
+function matchNewGMP(text){
+  if(!hasNewGMPBasis()) return [];
+  const t=text||""; const hits=[];
+  for(const m of NEW_GMP_KEYWORD_MAP){ if(m.kw.some(k=>t.indexOf(k)>=0)){ for(const c of m.clauses){ if(hits.indexOf(c)<0) hits.push(c); } } }
+  return hits.slice(0,3);
+}
 function renderMatch(boxId, results, onPick){
   const box=$(boxId); const mtitle=box.querySelector(".mtitle"); const titleHtml = mtitle ? mtitle.outerHTML : "";
   if(!results.length){ box.innerHTML=titleHtml+'<div class="empty">未匹配到条款,请用「浏览条款库」手动选择。</div>'; return; }
@@ -945,8 +997,11 @@ function renderClauseList(q){
   const list=$("clauseList");
   let entries=[];
   if(clauseMode==="current"){
-    entries = filterClauseKeys(getAppendixFilter()).map(k=>({ key:k, no: clauseLabel(k), text: CLAUSE_CONTENT[k] }));
+    const keys = filterClauseKeys();
+    if(!keys.length){ list.innerHTML='<div class="empty">请先在「评估依据」中勾选相应法规或附录。</div>'; return; }
+    entries = keys.map(k=>({ key:k, no: clauseLabel(k), text: CLAUSE_CONTENT[k] }));
   } else {
+    if(!hasNewGMPBasis()){ list.innerHTML='<div class="empty">请先在「评估依据」中勾选2025年第107号。</div>'; return; }
     entries = Object.keys(NEW_GMP_CLAUSES).map(k=>({ key:k, no: k, text: NEW_GMP_CLAUSES[k] }));
   }
   if(q){
@@ -1363,7 +1418,7 @@ function exportTxt(filename, html){
 function exportWord(filename, html){
   const head='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
     +'<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta charset="utf-8">'
-    +'<style>@page{size:595.3pt 841.9pt;margin:56pt 56pt 56pt 56pt;}'
+    +'<style>@page{size:A4 portrait;margin:2.54cm 3.17cm 2.54cm 3.17cm;}'
     +'body{font-family:仿宋,仿宋_GB2312,FangSong,宋体,SimSun,serif;font-size:12pt;color:#000;}'
     +'table{border-collapse:collapse;width:100%;}'
     +'td,th{border:1px solid #000;padding:4pt 6pt;vertical-align:top;text-align:left;font-size:12pt;word-wrap:break-word;}'
@@ -1406,6 +1461,54 @@ function importBackup(file){
   reader.readAsText(file, "utf-8");
 }
 
+/* ==================== 管理员验证 ==================== */
+let adminAuthed = false;
+let adminFails = 0;
+let adminLockUntil = 0;
+let adminPendingCallback = null;
+function openAdminModal(callback){
+  adminPendingCallback = callback;
+  $("adminError").textContent = "";
+  $("adminPassword").value = "";
+  $("adminModal").style.display = "flex";
+  setTimeout(()=>{ $("adminPassword").focus(); }, 50);
+}
+function closeAdminModal(){ adminPendingCallback = null; $("adminModal").style.display = "none"; }
+function requireAdmin(callback){
+  if(adminAuthed){ callback(); return; }
+  openAdminModal(callback);
+}
+function verifyAdmin(){
+  const now = Date.now();
+  if(now < adminLockUntil){ $("adminError").textContent = "密码错误已达3次，请稍后再试"; return; }
+  const pwd = val("adminPassword");
+  if(pwd === ADMIN_PASSWORD){
+    adminAuthed = true; adminFails = 0;
+    $("adminModal").style.display = "none";
+    const cb = adminPendingCallback; adminPendingCallback = null;
+    if(cb) cb();
+    toast("验证通过");
+  } else {
+    adminFails++;
+    $("adminPassword").value = "";
+    if(adminFails >= 3){
+      adminFails = 0;
+      adminLockUntil = Date.now() + 30000;
+      $("adminError").textContent = "密码错误已达3次，请30秒后再试";
+      $("adminPassword").disabled = true;
+      $("adminConfirm").disabled = true;
+      setTimeout(()=>{
+        $("adminPassword").disabled = false;
+        $("adminConfirm").disabled = false;
+        $("adminError").textContent = "";
+        adminLockUntil = 0;
+      }, 30000);
+    } else {
+      $("adminError").textContent = "密码错误，您没有权限查看此数据";
+    }
+  }
+}
+
 /* ==================== 所有企业数据汇总 ==================== */
 let entSortCol = null;
 let entSortDir = 1;
@@ -1439,7 +1542,9 @@ function enterpriseKey(rec){
 function saveEnterpriseRecord(){
   const rec = buildEnterpriseRecord();
   if(!(rec.name||"").trim()) return false;
-  try{ localStorage.setItem(enterpriseKey(rec), JSON.stringify(rec)); return true; }catch(e){ return false; }
+  const key = enterpriseKey(rec);
+  rec._key = key;
+  try{ localStorage.setItem(key, JSON.stringify(rec)); return true; }catch(e){ return false; }
 }
 function loadEnterpriseRecords(){
   const records = [];
@@ -1531,9 +1636,7 @@ function renderEnterpriseSummary(){
   }
 
   const cols = [
-    ["name","企业名称"],["date","评估日期"],["categories","产品类别"],
-    ["totalNc","不符合项总数"],["keyN","关键项"],["genN","一般项"],["newN","新版建议项"],
-    ["gradeLabel","企业评级"],["risk1","主要风险点"],["assessor","评估人员"]
+    ["name","企业名称"],["date","评估日期"],["totalNc","不符合项总数"],["gradeLabel","企业评级"]
   ];
 
   let tbl = '<table id="entTable"><thead><tr><th style="border:1px solid #bbb;padding:6px;background:#eef1f6;text-align:left;">序号</th>';
@@ -1541,20 +1644,16 @@ function renderEnterpriseSummary(){
     const arrow = entSortCol===col ? (entSortDir===1?" ▲":" ▼") : "";
     tbl += '<th data-col="'+col+'" style="border:1px solid #bbb;padding:6px;background:#eef1f6;text-align:left;">'+escHtml(label)+arrow+'</th>';
   });
+  tbl += '<th style="border:1px solid #bbb;padding:6px;background:#eef1f6;text-align:left;">操作</th>';
   tbl += '</tr></thead><tbody>';
   sorted.forEach((r,idx)=>{
     tbl += '<tr>';
     tbl += '<td style="border:1px solid #bbb;padding:5px 7px;">'+(idx+1)+'</td>';
-    tbl += '<td class="ename" data-load="'+idx+'" style="border:1px solid #bbb;padding:5px 7px;">'+escHtml(r.name||"—")+'</td>';
+    tbl += '<td class="ename" style="border:1px solid #bbb;padding:5px 7px;">'+escHtml(r.name||"—")+'</td>';
     tbl += '<td style="border:1px solid #bbb;padding:5px 7px;">'+escHtml(r.date||"—")+'</td>';
-    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;">'+escHtml(r.categories||"—")+'</td>';
     tbl += '<td style="border:1px solid #bbb;padding:5px 7px;text-align:center;">'+escHtml(r.totalNc)+'</td>';
-    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;text-align:center;">'+escHtml(r.keyN)+'</td>';
-    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;text-align:center;">'+escHtml(r.genN)+'</td>';
-    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;text-align:center;">'+escHtml(r.newN)+'</td>';
     tbl += '<td style="border:1px solid #bbb;padding:5px 7px;text-align:center;">'+escHtml(r.gradeLabel||"—")+'</td>';
-    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;">'+escHtml(r.risk1||"—")+'</td>';
-    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;">'+escHtml(r.assessor||"—")+'</td>';
+    tbl += '<td style="border:1px solid #bbb;padding:5px 7px;white-space:nowrap;"><button class="btn small secondary" data-view="'+idx+'" style="min-height:32px;padding:4px 10px;font-size:13px;">查看详情</button> <button class="btn small" data-del="'+idx+'" style="min-height:32px;padding:4px 10px;font-size:13px;background:#fff;color:var(--danger);border:1.5px solid var(--danger);">删除</button></td>';
     tbl += '</tr>';
   });
   tbl += '</tbody></table>';
@@ -1567,11 +1666,31 @@ function renderEnterpriseSummary(){
       renderEnterpriseSummary();
     });
   });
-  listBox.querySelectorAll(".ename[data-load]").forEach(el=>{
-    el.addEventListener("click", ()=>{
-      loadEnterpriseIntoForm(sorted[+el.dataset.load]);
-    });
+  listBox.querySelectorAll("[data-view]").forEach(el=>{
+    el.addEventListener("click", ()=>viewEnterpriseDetail(sorted[+el.dataset.view]));
   });
+  listBox.querySelectorAll("[data-del]").forEach(el=>{
+    el.addEventListener("click", ()=>deleteEnterpriseRecord(sorted[+el.dataset.del]));
+  });
+}
+function viewEnterpriseDetail(rec){
+  const savedState = state;
+  state = { company: rec.company||{}, fill: rec.fill||{}, checks: rec.checks||{}, flags: rec.flags||{}, items: rec.items||[], advice: rec.advice||"" };
+  let html = "";
+  try{
+    html = '<div style="margin-bottom:20px;"><div style="font-weight:bold;color:var(--blue);margin-bottom:8px;">评估报告(不给企业版)</div>'+buildReportA()+'</div>'
+         + '<div><div style="font-weight:bold;color:var(--blue);margin-bottom:8px;">评估报告(企业盖章版)</div>'+buildReportB()+'</div>';
+  }catch(e){ html = '<div class="empty">报告生成失败</div>'; }
+  state = savedState;
+  $("detailTitle").textContent = (rec.name||"企业") + " - 完整报告";
+  $("detailBody").innerHTML = html;
+  $("detailModal").style.display = "block";
+}
+function deleteEnterpriseRecord(rec){
+  if(!confirm("确定删除该企业的记录：\n"+(rec.name||"")+"（"+(rec.date||"")+"）？")) return;
+  try{ localStorage.removeItem(rec._key || enterpriseKey(rec)); }catch(e){}
+  renderEnterpriseSummary();
+  toast("已删除该企业记录");
 }
 
 /* ==================== 事件 ==================== */
@@ -1582,6 +1701,7 @@ function updateProductList(){
 function syncBasisFromCategories(){
   const cats=[...document.querySelectorAll("#c_categories input:checked")].map(e=>e.value);
   const basisValues = cats.map(c=>CATEGORY_TO_BASIS[c]).filter(Boolean);
+  if(cats.includes("其他")) basisValues.push("2014年第64号");
   document.querySelectorAll("#opt_basis input").forEach(e=>{ if(basisValues.includes(e.value)) e.checked = true; });
 }
 function resetMatchBoxes(){
@@ -1651,11 +1771,16 @@ function bindEvents(){
   $("exportSummaryWord_btn").addEventListener("click",()=>exportWord("评估报告汇总.doc",$("summaryBox").innerHTML));
   $("exportSummaryTxt_btn").addEventListener("click",()=>exportTxt("评估报告汇总.txt",$("summaryBox").innerHTML));
 
-  $("enterpriseSummary_btn").addEventListener("click", openEnterpriseModal);
+  $("enterpriseSummary_btn").addEventListener("click", ()=>requireAdmin(openEnterpriseModal));
   $("enterpriseClose").addEventListener("click", closeEnterpriseModal);
   $("enterpriseModal").addEventListener("click", (e)=>{ if(e.target.id==="enterpriseModal") closeEnterpriseModal(); });
-  $("exportCsv_btn").addEventListener("click", exportEnterpriseCsv);
-  $("clearAllData_btn").addEventListener("click", clearAllEnterpriseData);
+  $("exportCsv_btn").addEventListener("click", ()=>requireAdmin(exportEnterpriseCsv));
+  $("clearAllData_btn").addEventListener("click", ()=>requireAdmin(clearAllEnterpriseData));
+  $("adminConfirm").addEventListener("click", verifyAdmin);
+  $("adminCancel").addEventListener("click", closeAdminModal);
+  $("adminPassword").addEventListener("keydown", (e)=>{ if(e.key==="Enter") verifyAdmin(); });
+  $("detailClose").addEventListener("click", ()=>{ $("detailModal").style.display = "none"; });
+  $("detailModal").addEventListener("click", (e)=>{ if(e.target.id==="detailModal") $("detailModal").style.display = "none"; });
 
   $("clear_btn").addEventListener("click",()=>{
     if(!confirm("确定清空所有已填写的数据吗?此操作不可恢复。")) return;
@@ -1675,7 +1800,6 @@ function bindEvents(){
   document.querySelectorAll("#majorViolation, #opt_supervision input, #opt_result input, #opt_handling input, #opt_rectification input, #opt_rectdays").forEach(el=>{
     el.addEventListener("change", ()=>{ save(); renderReports(); });
   });
-  $("appendixFilter").addEventListener("change", ()=>{ resetMatchBoxes(); if($("clauseModal").style.display==="block" && clauseMode==="current") renderClauseList($("clauseSearch").value); });
   document.querySelectorAll('input[name="statusMain"]').forEach(r=>r.addEventListener("change", ()=>{ toggleStatusAbnormal(); }));
   document.querySelectorAll("#c_categories input").forEach(el=>el.addEventListener("change", ()=>{ syncBasisFromCategories(); save(); renderReports(); }));
   $("exportBackup_btn").addEventListener("click", exportBackup);

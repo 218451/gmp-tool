@@ -1107,18 +1107,18 @@ function renderItems(){
 
 /* ==================== 报告构建(HTML 表格,对齐模板) ==================== */
 function RT(){ return 'border-collapse:collapse;width:100%;font-size:13px;'; }
-function RTD(extra){ return 'border:1px solid #000;padding:5px 8px;vertical-align:top;text-align:left;'+(extra||''); }
+function RTD(extra){ return 'border:1pt solid #000;padding:0.3cm 0.5cm;vertical-align:top;'+(extra||''); }
 function rptTitle(t){ return '<div style="text-align:center;font-weight:bold;font-size:17px;margin:2px 0 10px;">'+escHtml(t)+'</div>'; }
 function mainTable(rows){
   let h='<table style="'+RT()+'">';
-  rows.forEach(r=>{ h+='<tr><td class="lbl" style="'+RTD('width:17%;font-weight:bold;background:#eef2f9;text-align:center;')+'">'+r[0]+'</td><td style="'+RTD('width:83%;')+'">'+r[1]+'</td></tr>'; });
+  rows.forEach(r=>{ h+='<tr><td class="lbl" style="'+RTD('width:17%;font-weight:bold;background:#E6E6E6;text-align:center;')+'">'+r[0]+'</td><td style="'+RTD('width:83%;')+'">'+r[1]+'</td></tr>'; });
   return h+'</table>';
 }
 function subTable(headers, rows, widths){
   let h='<table style="'+RT()+'margin:4px 0;table-layout:fixed;word-wrap:break-word;overflow-wrap:break-word;">';
   const w=i=>(widths&&widths[i]?('width:'+widths[i]+';'):'');
-  if(headers){ h+='<tr>'+headers.map((x,i)=>'<th style="'+RTD('font-weight:bold;background:#eef2f9;text-align:center;'+w(i))+'">'+escHtml(x)+'</th>').join('')+'</tr>'; }
-  rows.forEach(r=>{ h+='<tr>'+r.map((c,i)=>'<td style="'+RTD(w(i))+'">'+c+'</td>').join('')+'</tr>'; });
+  if(headers){ h+='<tr>'+headers.map((x,i)=>'<th style="'+RTD('font-weight:bold;background:#E6E6E6;text-align:center;'+w(i))+'">'+escHtml(x)+'</th>').join('')+'</tr>'; }
+  rows.forEach(r=>{ h+='<tr>'+r.map((c,i)=>'<td style="'+RTD('text-align:center;'+w(i))+'">'+c+'</td>').join('')+'</tr>'; });
   return h+'</table>';
 }
 function para(s){ return '<div style="margin:4px 0;">'+s+'</div>'; }
@@ -1200,17 +1200,26 @@ function personnelRows(personnel){
 }
 function statusHtml(c){
   const main = c.statusMain || "";
+  const subs = c.statusAbnormal || [];
+  const subOpts = ["去向不明","向法院申请破产清算阶段","营业执照已注销但生产许可未注销","营业执照已注销但生产备案未取消","其他"];
+  const mk = on => on ? "☑" : "□";
+  const line1 = mk(main==="正常")+" 正常";
+  const line2 = mk(main==="异常")+" 异常："+subOpts.map(s=>mk(subs.includes(s))+" "+s).join("　");
+  return line1+'<br>'+line2;
+}
+function statusText(c){
+  const main = c.statusMain || "";
   if(main === "正常") return "正常";
   if(main === "异常"){
     const subs = (c.statusAbnormal || []).filter(Boolean);
     return subs.length ? ("异常-" + subs.join("、")) : "异常";
   }
-  return "____";
+  return "";
 }
 function basisHtml(k){
   const basis = k.basis || [];
   let html = "";
-  BASIS_ORDER.forEach(v=>{ if(basis.includes(v)) html += "☑ "+escHtml(BASIS_LABELS[v])+"<br>"; });
+  BASIS_ORDER.forEach(v=>{ html += (basis.includes(v)?"☑":"□")+" "+escHtml(BASIS_LABELS[v])+"<br>"; });
   const otherChecked = basis.includes("其他");
   html += (otherChecked ? "☑ " : "□ ") + "其他:" + (otherChecked ? escHtml(k.basisOther||"____") : "____");
   html += "<br>注:<br>涉及不符合现行版法规可开具不符合项;<br>不构成不符合项,但企业体系有提升空间可开具建议项;<br>凡涉及不符合新版法规之处均不构成不符合判定,仅开具建议项。";
@@ -1223,13 +1232,13 @@ function buildReportB(){
   const sugNew=state.items.filter(i=>i.ver==="new");
   const n1=nonConform.length, n2=sugCur.length, n3=sugNew.length;
 
-  const prodCats=["无菌医疗器械","植入性医疗器械","体外诊断试剂","定制式义齿","独立软件","其他"].map(x=>((c.categories||[]).includes(x)?"☑":"□")+x).join(" ");
+  const prodCats=["无菌医疗器械","植入性医疗器械","独立软件","体外诊断试剂","定制式义齿","其他"].map(x=>((c.categories||[]).includes(x)?"☑":"□")+" "+x).join("　")+((c.categories||[]).includes("其他")&&c.categoryOther?("("+escHtml(c.categoryOther)+")"):"");
 
   function itemRows(arr, kind){
     const headers = kind==="nc" ? ["序号","指导原则条款号","不符合项描述"]
                   : kind==="cur" ? ["序号","指导原则条款号","内容描述"]
                   : ["序号","条款号","内容描述"];
-    if(!arr.length) return subTable(headers, [["","",""]], ["6%","22%","72%"]);
+    if(!arr.length) return subTable(headers, [["","",""]], ["10%","25%","65%"]);
     const rows=arr.map((it,idx)=>{
       let clauseNo;
       if(kind==="nc") clauseNo="指导原则"+(it.level==="严重不符合"?"*":"")+it.clause;
@@ -1237,7 +1246,7 @@ function buildReportB(){
       else clauseNo=it.clause;
       return [String(idx+1), escHtml(clauseNo), escHtml(it.formalDesc)+(it.product?"("+escHtml(it.product)+")":"")];
     });
-    return subTable(headers, rows, ["6%","22%","72%"]);
+    return subTable(headers, rows, ["10%","25%","65%"]);
   }
 
   const effResult = Array.from(new Set([...(k.result||[]), ...autoResultChecks(g.grade)]));
@@ -1264,10 +1273,10 @@ function buildReportB(){
     ["评估日期", escHtml(fill(c.date))],
     ["产品类别", escHtml(prodCats)],
     ["核查产品范围", escHtml(fill(c.products))+"【注册证号】<br>(仅填写本次现场实际核查的产品及注册证,未核查产品不得填入)"],
-    ["企业状态", escHtml(statusHtml(c))],
+    ["企业状态", statusHtml(c)],
     ["生产状态", (c.prodstatus==="连续生产"?"☑":"□")+" 连续生产 "+(c.prodstatus==="一年内间歇性生产"?"☑":"□")+" 一年内间歇性生产 "+(c.prodstatus==="连续停产一年以上"?"☑":"□")+" 连续停产一年以上"],
     ["评估依据", basisHtml(k)],
-    ["企业主要人员", subTable(["部门/职务","姓名"], personnelRows(c.personnel), ["30%","70%"])],
+    ["企业主要人员", subTable(["部门/职务","姓名"], personnelRows(c.personnel), ["50%","50%"])],
     ["总体评估", escHtml("企业成立于"+fill(c.year)+",《医疗器械生产许可证》有效期至"+fill(c.license)+",法定代表人:"+fill(c.legal)+",企业负责人:"+fill(c.manager)+",质量负责人:"+fill(c.quality)+",2025年销售额约"+fill(c.sales)+"余万元,企业主营产品有"+fill(c.products)+",均正常生产。目前生产地址为:"+fill(c.address)+"。本次现场检查覆盖上述核查产品涉及的质量管理体系全流程。企业质量管理体系基本能够/能够有效运行;本次检查共发现现行GMP不符合项 "+n1+" 项,同时对标新版GMP识别 "+n3+" 项改进提升建议。")],
     ["不符合项", para("1.表中所列缺陷仅为评估组此次现场检查发现内容,不代表你公司质量管理体系全部问题。<br>2.本表所列为本评估组本次现场检查发现的不符合项,仅覆盖本次检查范围,不代表企业质量管理体系全部问题。企业签字仅确认报告中事实描述无误,最终行政处置结论由委托药品监管部门确定。<br>3.对所列缺陷有异议的,可与评估组进行沟通,或向评估组织单位提交书面说明。")+itemRows(nonConform,"nc")+para("不符合项共"+n1+"项:其中关键项"+nonConform.filter(i=>i.level==="严重不符合").length+"项,一般项"+nonConform.filter(i=>i.level==="一般不符合").length+"项。")],
     ["现行法规建议项", itemRows(sugCur,"cur")],
@@ -1299,7 +1308,7 @@ function buildSummary(){
   const newN = state.items.filter(i=>i.ver==="new").length;
   const total = keyN+genN+curN+newN;
   const risks = getRiskPoints();
-  const status = statusHtml(c);
+  const status = statusText(c);
 
   let h = "";
   h += sumSec("一、企业基本信息摘要");
@@ -1315,7 +1324,7 @@ function buildSummary(){
   h += sumKV("员工总数", c.employees?("<b>"+escHtml(c.employees)+"</b>"):'<span class="warn">⚠️ 待补充</span>');
   h += sumKV("检验员/内审员", "<b>"+(c.inspectors||"0")+"</b> / <b>"+(c.auditors||"0")+"</b>");
   h += sumKV("产品类别", (c.categories||[]).length?("<b>"+escHtml(c.categories.join("、"))+"</b>"):'<span class="warn">⚠️ 待补充</span>');
-  h += sumKV("企业状态", status!=="____"?("<b>"+escHtml(status)+"</b>"):'<span class="warn">⚠️ 待补充</span>');
+  h += sumKV("企业状态", status?("<b>"+escHtml(status)+"</b>"):'<span class="warn">⚠️ 待补充</span>');
   h += sumKV("生产状态", sumVal(c.prodstatus));
 
   h += sumSec("二、质量管理体系运行摘要");

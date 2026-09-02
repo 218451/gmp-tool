@@ -339,6 +339,7 @@
 
     <div style="margin-top:14px;">
       <button class="btn" id="add_btn">➕ 生成并填入报告</button>
+      <button class="btn secondary" id="cancel_edit_btn" style="display:none;">✖ 取消修改</button>
       <span class="hint" style="margin-left:10px;">自动润色描述;现行版→不符合项/建议项表,新版→新版建议项表(互不交叉)</span>
     </div>
   </section>
@@ -14053,6 +14054,7 @@ const CATEGORY_TO_BASIS = { "无菌医疗器械":"无菌", "植入性医疗器�
 const STORE_KEY = "gmpTool_v4";
 const ADMIN_PASSWORD = "GMP2026";   // 管理员密码(可在此修改)
 const DEFAULT_ADVICE = "1、现行GMP不符合项优先落实闭环整改,防范产品质量风险;\n2、结合新版GMP(2025第107号)要求,统筹开展体系升级改造,加强______过程的控制,以按期满足新版法规实施要求。";
+let editingIndex = null; // 正在修改的不符合项下标(null=新增模式)
 let state = {
   company: {}, fill: {}, checks: { supervision:[], result:[], handling:[], rectification:[], rectDays:"" },
   flags: { majorViolation: false }, items: [], advice: ""
@@ -14320,9 +14322,10 @@ function renderItems(){
     let tags;
     if(it.ver==="current"){ tags=levelPill(it.level)+' <span class="pill">现行 指导原则'+escHtml(it.clause)+'</span>'; }
     else { tags='<span class="pill new">新版 '+escHtml(it.clause)+'(建议项)</span>'; }
-    return '<div class="item-row"><div class="meta"><div class="line">'+tags+'</div><div class="desc">'+escHtml(it.formalDesc)+(it.product?(' <em style="color:#5a6b82">('+escHtml(it.product)+')</em>'):"")+'</div></div><button class="btn small ghost" data-del="'+idx+'">删除</button></div>';
+    return '<div class="item-row"><div class="meta"><div class="line">'+tags+'</div><div class="desc">'+escHtml(it.formalDesc)+(it.product?(' <em style="color:#5a6b82">('+escHtml(it.product)+')</em>'):"")+'</div></div><button class="btn small ghost" data-edit="'+idx+'">修改</button><button class="btn small ghost" data-del="'+idx+'">删除</button></div>';
   }).join("");
-  list.querySelectorAll("[data-del]").forEach(btn=>{ btn.addEventListener("click",()=>{ state.items.splice(+btn.dataset.del,1); save(); renderItems(); renderReports(); }); });
+  list.querySelectorAll("[data-edit]").forEach(btn=>{ btn.addEventListener("click",()=>{ startEditItem(+btn.dataset.edit); }); });
+  list.querySelectorAll("[data-del]").forEach(btn=>{ btn.addEventListener("click",()=>{ state.items.splice(+btn.dataset.del,1); if(editingIndex!==null){ editingIndex=null; $("add_btn").textContent="➕ 生成并填入报告"; $("cancel_edit_btn").style.display="none"; } save(); renderItems(); renderReports(); }); });
 }
 
 /* ==================== 报告构建(HTML 表格,对齐模板) ==================== */
@@ -14958,11 +14961,34 @@ function addItem(){
     item.clause=val("clauseB").trim();
     if(!item.clause){ toast("请填写新版GMP条款号"); return; }
   }
-  state.items.push(item);
+  if(editingIndex!==null){ const ei=editingIndex; item.id=(state.items[ei]||{}).id||item.id; state.items[ei]=item; editingIndex=null; $("add_btn").textContent="➕ 生成并填入报告"; $("cancel_edit_btn").style.display="none"; toast("已保存修改(第 "+(ei+1)+" 项),报告已同步更新"); } else { state.items.push(item); toast("已填入报告(当前共 "+state.items.length+" 项)"); }
   save(); renderItems(); renderReports();
   $("desc").value=""; $("product").value=""; resetMatchBoxes();
-  toast("已填入报告(当前共 "+state.items.length+" 项)");
+  
   $("desc").focus();
+}
+function startEditItem(idx){
+  const it=state.items[idx]; if(!it) return;
+  editingIndex=idx;
+  $("desc").value = it.desc || it.formalDesc || "";
+  $("product").value = it.product || "";
+  const rv=document.querySelector('input[name="ver"][value="'+(it.ver==="new"?"new":"current")+'"]'); if(rv) rv.checked=true;
+  switchBranch();
+  resetMatchBoxes();
+  if(it.ver==="current"){ $("levelA").value=it.level||"一般不符合"; $("clauseA").value=it.clause||""; }
+  else { $("clauseB").value=it.clause||""; }
+  $("add_btn").textContent="💾 保存修改";
+  $("cancel_edit_btn").style.display="inline-block";
+  toast("正在修改第 "+(idx+1)+" 项,改完点击「保存修改」");
+  $("desc").scrollIntoView({behavior:"smooth",block:"center"});
+  $("desc").focus();
+}
+function cancelEdit(){
+  editingIndex=null;
+  $("add_btn").textContent="➕ 生成并填入报告";
+  $("cancel_edit_btn").style.display="none";
+  $("desc").value=""; $("product").value=""; resetMatchBoxes();
+  toast("已取消修改");
 }
 function bindEvents(){
   document.querySelectorAll('input[name="ver"]').forEach(r=>r.addEventListener("change",switchBranch));
@@ -14983,6 +15009,7 @@ function bindEvents(){
   $("clauseSearch").addEventListener("input",e=>renderClauseList(e.target.value));
   $("clauseModal").addEventListener("click",e=>{ if(e.target.id==="clauseModal") closeClauseBrowser(); });
   $("add_btn").addEventListener("click", addItem);
+  $("cancel_edit_btn").addEventListener("click", cancelEdit);
   $("desc").addEventListener("keydown",e=>{ if((e.ctrlKey||e.metaKey)&&e.key==="Enter") addItem(); });
 
   $("gen_header_btn").addEventListener("click",()=>{ save(); renderReports(); const ok=saveEnterpriseRecord(); toast(ok?"两份报告已生成，企业数据已归档":"两份报告已生成（未填企业名称，未归档）"); $("reportA").scrollIntoView({behavior:"smooth",block:"start"}); });
@@ -15018,7 +15045,7 @@ function bindEvents(){
     fillCompany({}); fillFill({}); fillChecks({}); fillFlags({});
     $("advice").value = DEFAULT_ADVICE;
     $("desc").value=""; $("product").value=""; $("clauseA").value=""; $("clauseB").value="";
-    resetMatchBoxes(); renderItems(); renderReports(); toast("已清空");
+    resetMatchBoxes(); editingIndex=null; $("add_btn").textContent="➕ 生成并填入报告"; $("cancel_edit_btn").style.display="none"; renderItems(); renderReports(); toast("已清空");
   });
 
   document.querySelectorAll(".card input, .card select, .card textarea").forEach(el=>{

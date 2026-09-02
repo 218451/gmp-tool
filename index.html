@@ -14401,7 +14401,7 @@ function buildReportA(){
   const rows = [
     ["企业名称", escHtml(fill(c.name))],
     ["生产地址", escHtml(fill(c.address))],
-    ["评估产品", escHtml(fill(c.products))],
+    ["评估产品", escHtml(fill(f.sampleProduct))+(f.sampleCert?("(注册证编号:"+escHtml(fill(f.sampleCert))+")"):"")],
     ["评估日期", escHtml(fill(c.date))],
     ["评估人员", escHtml(fill(c.assessor))],
     ["一、评估组对企业质量管理体系的总体评价", para(escHtml(p1))+para(escHtml(p2))+para(escHtml(p3))+para(escHtml(p4))+para(escHtml(p5))+para(escHtml(p6))],
@@ -14495,7 +14495,7 @@ function buildReportB(){
     ["联系方式", escHtml("联系人:"+(c.contactName||"")+" 电话:"+(c.contactPhone||"")+" 邮箱:"+(c.contactEmail||""))],
     ["评估日期", escHtml(fill(c.date))],
     ["产品类别", escHtml(prodCats)],
-    ["核查产品范围", escHtml(fill(c.products))+"【注册证号】<br>(仅填写本次现场实际核查的产品及注册证,未核查产品不得填入)"],
+    ["核查产品范围", escHtml(fill(f.sampleProduct))+(f.sampleCert?("【注册证号:"+escHtml(fill(f.sampleCert))+"】"):"")+"<br>(仅填写本次现场实际核查的产品及注册证,未核查产品不得填入)"],
     ["企业状态", statusHtml(c)],
     ["生产状态", (c.prodstatus==="连续生产"?"☑":"□")+" 连续生产 "+(c.prodstatus==="一年内间歇性生产"?"☑":"□")+" 一年内间歇性生产 "+(c.prodstatus==="连续停产一年以上"?"☑":"□")+" 连续停产一年以上"],
     ["评估依据", basisHtml(k)],
@@ -14659,7 +14659,9 @@ function exportWord(filename, html){
   const bodyHtml = html
     .replace(/<div style="text-align:center;font-weight:bold;font-size:17px;margin:2px 0 10px;">([\s\S]*?)<\/div>/g,'<h1 style="text-align:center;font-size:18pt;font-weight:bold;margin:0 0 10pt;">$1</h1>')
     .replace(/<div /g,'<p ')
-    .replace(/<\/div>/g,'</p>');
+    .replace(/<\/div>/g,'</p>')
+    .replace(/font-size:13px/g,'font-size:12pt')
+    .replace(/font-size:17px/g,'font-size:16pt');
   const doc = head + bodyHtml + '</body></html>';
   const blob=new Blob(["\ufeff"+doc],{type:"application/msword;charset=utf-8"});
   const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click();
@@ -15082,6 +15084,7 @@ init();
 function exportDocxHtml(innerHtml, filename){
   try{
     if(typeof htmlDocx==="undefined"){ toast("DOCX组件未加载,请稍后重试"); return; }
+    innerHtml = innerHtml.replace(/font-size:13px/g,"font-size:12pt").replace(/font-size:17px/g,"font-size:16pt");
     const fullHtml = '<!DOCTYPE html><html><head><meta charset="utf-8"><style>'
       + 'body{font-family:仿宋,仿宋_GB2312,FangSong,宋体,SimSun,serif;font-size:12pt;color:#000;margin:0;}'
       + 'table{border-collapse:collapse;width:100%;}'

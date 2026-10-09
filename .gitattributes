@@ -30,3 +30,9 @@
 *.md text
 *.yml text
 *.prisma text
+
+# ★ 原有产品「医疗器械GMP检查报告辅助工具」—— 永不做换行符转换
+# 这份文件是用户长期在用的产品，任何字节都不得改动。
+# 远程存的是 CRLF（历史提交即是），若git 自动转换会造成每次都显示为"已修改"。
+gmp-增值评估工具/../index.html -text
+/index.html -text

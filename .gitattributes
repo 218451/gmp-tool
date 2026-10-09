@@ -1,0 +1,32 @@
+# ===== 换行符统一 =====
+# Windows 开发、Linux 部署：仓库内统一存 LF，检出时按平台自动转换，
+# 避免「每个文件都提示 LF will be replaced by CRLF」的噪音，
+# 也避免 .cmd / .sh 脚本在Linux 上因CRLF 而无法执行。
+*text=auto eol=lf
+
+# Windows 批处理必须保留 CRLF，否则在 cmd 下可能异常
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# 二进制文件不做换行转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.docx binary
+*.xlsx binary
+*.db binary
+*.sqlite binary
+
+# 明确声明常见文本类型
+*.ts text
+*.vue text
+*.js text
+*.json text
+*.css text
+*.html text
+*.md text
+*.yml text
+*.prisma text

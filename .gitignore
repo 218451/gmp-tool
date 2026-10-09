@@ -62,3 +62,11 @@ server/_*.ts
 server/_*.mts
 server/_*.js
 !server/src/**
+
+# ===== 内网穿透二进制（53MB，从Cloudflare 官方下载）=====
+# 换机时重新下载即可，不进仓库
+gmp-增值评估工具/cloudflared.exe
+
+# 运行时产物（内网穿透日志与证书包，换机可重新生成）
+gmp-增值评估工具/tunnel.log
+gmp-增值评估工具/ca-bundle.crt

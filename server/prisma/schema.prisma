@@ -1,0 +1,466 @@
+// ===== 新版 GMP 落地增值评估工具 - 数据库 Schema =====
+// 技术选型：SQLite + Prisma（生产可平滑切换 PostgreSQL，仅需改 datasource provider）
+//
+// 设计要点：分层反选模型
+//   Chapter（章节，14 章）  ← 第一层勾选，默认全选「已落地」
+//     └─ GmpClause（检查项，200 条）← 第二层勾选，默认继承章节值
+//   审核组（AuditGroup）按章节+条款映射分配，登录仅见自己被分配的条款
+//   未落地项自动派生为「异常」，汇总为待整改条目
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 用户表：三类角色 —— leader(组长) / auditor(审核员) / admin(管理员)
+// 审核员为「免密登录」，passwordHash 可为空；仅凭姓名 + 角色匹配
+model User {
+  id           String    @id @default(cuid())
+  username     String    @unique // 登录名（审核员可与姓名一致）
+  name         String // 真实姓名（项目、报告、计划中使用）
+  role         String // leader | auditor | admin
+  passwordHash String? // 审核员为空；bcrypt 哈希
+  active       Boolean   @default(true) // 禁用后不可登录
+  dept         String? // 所属部门/机构（可选）
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // 关联
+  projectsOwned  Project[]      @relation("ProjectOwner")
+  groups         AuditGroup[]   @relation("GroupLeader")
+  memberships    GroupMember[]
+  assessments    Assessment[]   // 该审核员提交的评估
+  reports        Report[]       @relation("ReportConfirmer")
+  logs           OperationLog[] // 该用户产生的操作日志
+
+  @@index([role])
+  @@map("users")
+}
+
+// 项目表：一次现场审核 = 一个项目（企业名称 + 审核日期）
+model Project {
+  id         String    @id @default(cuid())
+  name       String // 企业名称
+  auditDate  DateTime // 审核日期
+  clientName String? // 受审核方简称/产品线（可选）
+  status     String    @default("active") // active | archived
+  remark     String?
+  ownerId    String? // 创建人（组长）
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  owner       User?           @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  plans       AuditPlan[]     // 审核计划条目（组长上传一次，作为审核依据，不做多人协同）
+  groups      AuditGroup[]    // 审核组
+  planItems   PlanItem[]      // 条款分派结果
+  chapterRecords ChapterRecord[] // 章节层勾选记录
+  rectifications Rectification[]
+  assessments Assessment[]    // 评估结果
+  reports     Report[]        // 报告
+  slots       PlanSlot[]      // 过程工作包
+  focusRecs   FocusRecord[]   // 关注点判定
+
+  @@index([status])
+  @@map("projects")
+}
+
+// ===== 审核计划 =====
+// 组长上传一次，作为审核依据；不做版本编辑、不支持多人协同修改
+model AuditPlan {
+  id           String   @id @default(cuid())
+  projectId    String
+  auditorName  String // 审核员姓名（Excel/Word 原文，匹配用户失败也保留）
+  groupName    String? // 所属审核组（可选列；缺省落到「审核组·姓名」）
+  processCode  String? // 所属审核过程编号 P1..P12（Word 计划独有）
+  processName  String? // 过程名称原文，如「P7特殊过程确认及关键工序验证过程(有源产品)」
+  site         String? // 审核场所，如「南京」「南通」「句容」（Word 里是「B（南通）」的括号部分）
+  isoClause    String // ISO 13485 条款号，如 7.5.1
+  processLabel String? // 该条款在本过程中的表述（同一条款在不同过程表述不同时使用）
+  source       String   @default("manual") // excel | word | manual
+  seq          Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  project Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  items   PlanItem[]    // 分派到该计划的检查项
+  slots   PlanSlot[]    // 该过程行派发的工作包
+
+  @@index([projectId])
+  @@index([processCode])
+  @@map("audit_plans")
+}
+
+// 计划-检查项关联表：项目 + 审核组 内去重
+// 跨组不去重：同一检查项被A/B 两个组分别审核时，两条记录各自独立（现场计划确实如此）
+model PlanItem {
+  id          String @id @default(cuid())
+  projectId   String
+  planId      String
+  groupId     String? // 归属审核组；分派阶段回填（先建组再分派）
+  chapterCode String // 冗余：章节号，如 CH03，便于按章节聚合
+  gmpClauseId String // -> GmpClause.id
+
+  project Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  plan    AuditPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  gmpClause GmpClause @relation(fields: [gmpClauseId], references: [id], onDelete: Cascade)
+  group    AuditGroup? @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, gmpClauseId, groupId]) // 组内去重，跨组独立
+  @@index([chapterCode])
+  @@index([groupId])
+  @@map("plan_items")
+}
+
+// ===== 审核过程（P1..P12）=====
+// 审核员实际工作的单元，按ISO 过程方法划分（与 GMP 章节是两套坐标系）
+// 数据来源：三组《审核记录模板》P1..P12 真实 Word 文件
+model AuditProcess {
+  code      String  @id // P1..P12
+  name      String  // 领导作用及管理活动
+  seq       Int// 展示顺序
+  isoText   String? // 过程涉及的标准条款原文（含区间与双标准括号写法）
+  remark    String?
+
+  focuses ProcessFocus[]
+  slots   PlanSlot[]
+
+  @@map("audit_processes")
+}
+
+// 审核关注点：过程模板左栏的一条专业审核要点
+// 层级用 parentId 自引用：父节点是「主要活动及输出」这类容器，子节点才是可勾选的具体项
+model ProcessFocus {
+  id        String  @id @default(cuid())
+  processCode String // -> AuditProcess.code
+  parentId  String? // 父关注点（容器），null = 顶层
+  seq       Int     // 过程内顺序
+  title     String  // 关注点标题，如「特殊过程确认」
+  detail    String  @default("") // JSON 字符串数组：补充说明段落
+  checklist String  @default("[]") // JSON 字符串数组：模板右栏「审核记录」要点清单（审核员逐条核查/填写）
+  fillable  Boolean @default(true) // false = 总结栏（实施评价），不参与逐条判定
+
+  process AuditProcess @relation(fields: [processCode], references: [code], onDelete: Cascade)
+  parent  ProcessFocus? @relation("FocusTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children ProcessFocus[] @relation("FocusTree")
+  records FocusRecord[]
+
+  @@unique([processCode, seq])
+  @@index([parentId])
+  @@map("process_focuses")
+}
+
+// 审核员对某过程某关注点的判定记录
+// 唯一键含 groupId：同一关注点被两个组分别审核时各自留痕
+model FocusRecord {
+  id          String    @id @default(cuid())
+  projectId   String
+  focusId     String
+  groupId     String?
+  processCode String // 冗余，便于按过程聚合
+  status      String    @default("landed") // landed | partial | not_landed | na
+  note        String? // 审核记录正文（现场口述要点）
+  evidence    String    @default("") // JSON 字符串数组：证据清单（文件名/记录号）
+  verified    Boolean   @default(false)
+  updatedBy   String?
+  updatedAt   DateTime  @default(now())
+
+  focus   ProcessFocus @relation(fields: [focusId], references: [id], onDelete: Cascade)
+  project Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  group   AuditGroup?   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, focusId, groupId])
+  @@index([processCode])
+  @@map("focus_records")
+}
+
+// 计划工作包：过程行 × 审核组，一行 = 「某组在某过程要审哪些条款、哪些关注点」
+// 这是「同一过程派给多人」的落地载体：P7 同日派给 A/B/C → 3 条PlanSlot
+model PlanSlot {
+  id          String   @id @default(cuid())
+  projectId   String
+  processCode String // -> AuditProcess.code
+  variant     String   @default("") // 产品线/场所后缀：无菌产品 | 有源产品（同名过程靠它区分）
+  processName String   @default("") // 过程名称（冗余，便于直接展示）
+  groupId     String?
+  planId      String? // 来源计划行
+  auditorName String // 原文可能是「A（南京）」的代号形式
+  site        String? // 拆出括号里的场所
+  slotDate    String? // 日期原文，如「10月12日」
+  timeRange   String   @default("") // 时间原文，如「8:00～8:30」
+  deptName    String? // 受审核部门
+  seq         Int      @default(0)
+
+  project Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  process AuditProcess @relation(fields: [processCode], references: [code], onDelete: Cascade)
+  group   AuditGroup?  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  plan    AuditPlan?   @relation(fields: [planId], references: [id], onDelete: SetNull)
+  records SlotRecord[]
+
+  @@unique([projectId, processCode, variant, groupId, slotDate, timeRange])
+  @@index([groupId])
+  @@index([processCode])
+  @@map("plan_slots")
+}
+
+// 工作包 ↔ 具体检查项：一条 GMP 条款在某工作包内被谁审
+model SlotRecord {
+  id          String @id @default(cuid())
+  slotId      String
+  gmpClauseId String
+  isoClause   String // 冗余：本工作包内的条款表述
+  processLabel String? // 冗余：条款在该过程中的表述
+
+  slot      PlanSlot  @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  gmpClause GmpClause @relation(fields: [gmpClauseId], references: [id], onDelete: Cascade)
+
+  @@unique([slotId, gmpClauseId])
+  @@map("slot_records")
+}
+
+// ===== 审核组 =====
+// 审核组是分配与可见范围的最小单位；组内成员共享同一条款集合
+model AuditGroup {
+  id        String   @id @default(cuid())
+  projectId String
+  name      String // 审核组名称，如「A 组」
+  leaderId  String? // 组长（可为空）
+  sort      Int      @default(0)
+  createdAt DateTime @default(now())
+
+  project   Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  leader    User?         @relation("GroupLeader", fields: [leaderId], references: [id], onDelete: SetNull)
+  members   GroupMember[]
+  scopes    GroupScope[]  // 该组负责的章节范围
+  records   ChapterRecord[]
+  rectifies Rectification[]
+  planItems PlanItem[]    // 该组分派的检查项
+  slots     PlanSlot[]    // 该组的过程工作包
+  focusRecs FocusRecord[] // 该组的关注点判定
+
+  @@unique([projectId, name])
+  @@map("audit_groups")
+}
+
+// 审核组成员（一人可跨组，但默认一人一组）
+model GroupMember {
+  id      String @id @default(cuid())
+  groupId String
+  userId  String
+  role    String @default("member") // leader | member
+
+  group AuditGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, userId])
+  @@map("group_members")
+}
+
+// 审核组负责范围：可按章节整章分配，也可指定单条条款（覆盖章节默认）
+model GroupScope {
+  id          String  @id @default(cuid())
+  groupId     String
+  chapterCode String // CH01..CH14
+  mode        String  @default("chapter") // chapter(整章) | clause(例外条款)
+  gmpClauseId String? // mode=clause 时指定单条
+  createdAt   DateTime @default(now())
+
+  group AuditGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  gmpClause GmpClause? @relation(fields: [gmpClauseId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, chapterCode, gmpClauseId])
+  @@index([chapterCode])
+  @@map("group_scopes")
+}
+
+// ===== 章节（第一层勾选）=====
+// 14 章，来自《医疗器械生产质量管理规范检查指导原则》正文结构
+model GmpChapter {
+  code      String @id // CH01..CH14
+  name      String // 第一章 总则
+  seq       Int // 展示顺序
+  itemCount Int // 条款总数
+  keyCount  Int // ★★★ 关键项
+  mainCount Int // ★★ 主要项
+  genCount  Int // ★ 一般项
+  focus     Boolean @default(false) // 是否三大重点章节（质量保证/验证与确认/委托生产与外协加工）
+  remark    String?
+
+  clauses GmpClause[]
+  records ChapterRecord[]
+
+  @@map("gmp_chapters")
+}
+
+// 章节层勾选记录：默认 landed（已落地·待核实），取消勾选即记 not_landed
+model ChapterRecord {
+  id          String    @id @default(cuid())
+  projectId   String
+  chapterCode String
+  groupId     String? // null = 项目级汇总（组长视角）
+  status      String    @default("landed") // landed | partial | not_landed
+  verified    Boolean   @default(false) // 是否被显式确认过（区别于默认值）
+  updatedBy   String?
+  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
+
+  project Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  chapter GmpChapter  @relation(fields: [chapterCode], references: [code], onDelete: Cascade)
+  group   AuditGroup? @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, chapterCode, groupId])
+  @@map("chapter_records")
+}
+
+// ===== 检查项（第二层勾选）=====
+// 200 条真实条款：国药监械管〔2026〕14 号 附件《规范》检查项目
+model GmpClause {
+  id         String @id @default(cuid())
+  code       String @unique // 指导原则条款号，如 3.1.2（全局唯一）
+  chapterCode String // 所属章节
+  seq        Int // 项目内展示顺序
+  level      String // 关键 | 主要 | 一般
+  specClause String // 《规范》条款号，如「第十四条」
+  text       String // 指导原则条款原文（核查依据）
+  way        String @default("直接对应") // 直接对应 | 部分对应 | 扩展要求 | 法规特有
+  note       String? // 对应说明
+  isoClauses String @default("[]") // JSON 数组，如 ["4.1","4.1.5"]
+  isoNames   String @default("[]") // JSON 数组，与 isoClauses 一一对应
+  enabled    Boolean @default(true)
+
+  chapter      GmpChapter        @relation(fields: [chapterCode], references: [code], onDelete: Cascade)
+  mappings     ClauseMapping[]
+  planItems    PlanItem[]
+  groupScopes  GroupScope[]
+  assessments  Assessment[]
+  rectifies    Rectification[]
+  slotRecords  SlotRecord[]
+
+  @@index([chapterCode])
+  @@index([level])
+  @@map("gmp_clauses")
+}
+
+// 映射表：ISO 13485 条款 ↔ GMP 检查项（真实底表 388 对，管理员可增删改）
+model ClauseMapping {
+  id          String  @id @default(cuid())
+  isoClause   String // ISO 13485 条款号，如 7.5.8
+  isoName     String? // ISO 条款名称
+  gmpClauseId String // 关联 GmpClause
+  way         String  @default("直接对应") // 对应方式
+  remark      String?
+  enabled     Boolean @default(true) // 停用后不参与自动分派
+
+  gmpClause GmpClause @relation(fields: [gmpClauseId], references: [id], onDelete: Cascade)
+
+  @@unique([isoClause, gmpClauseId])
+  @@index([isoClause])
+  @@map("clause_mappings")
+}
+
+// ===== 评估记录（条款层反选）=====
+// 反选语义：默认已落地「无需记录」，只有被反选的条款才落库
+//   landed    已核实落地（点选「确认」）
+//   partial   部分落地
+//   not_landed 未落地 → abnormal 自动为 true
+//   na        不适用（须组长审批，见 isApproved）
+// 章节状态由条款层自动推导，不单独存
+model Assessment {
+  id          String    @id @default(cuid())
+  projectId   String
+  gmpClauseId String
+  groupId     String? // 责任审核组
+  auditorId   String // 实际操作人
+  status      String // landed | partial | not_landed | na
+  abnormal    Boolean   @default(false) // 派生：status=not_landed 时为 true
+  isApproved  Boolean   @default(false) // 「不适用」是否经组长审批
+  remark      String? // 组长复核意见
+  version     Int       @default(1) // 乐观锁
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project   Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  gmpClause GmpClause      @relation(fields: [gmpClauseId], references: [id], onDelete: Cascade)
+  auditor   User           @relation(fields: [auditorId], references: [id], onDelete: Cascade)
+  rectify   Rectification? @relation("RectifyOfAssessment")
+
+  @@unique([projectId, gmpClauseId, groupId]) // 组内去重，跨组独立
+  @@index([projectId, abnormal])
+  @@index([projectId, groupId])
+  @@map("assessments")
+}
+
+// ===== 待整改条目 =====
+// 未落地项自动汇总；组长可指派责任部门、设期限、跟踪闭环
+model Rectification {
+  id          String    @id @default(cuid())
+  projectId   String
+  gmpClauseId String
+  groupId     String?
+  assessmentId String? @unique // 关联的异常评估记录（一对一）
+  // 优先级由「风险等级 + 覆盖范围」派生，见 report-engine
+  priority    String    @default("P2") // P0 | P1 | P2
+  level       String // 冗余：关键 | 主要 | 一般（便于筛选）
+  chapterCode String // 冗余：章节（排序与分组展示）
+  title       String // 冗余：条款号 + 原文摘要
+  owner       String? // 责任部门
+  dueDate     DateTime?
+  status      String    @default("open") // open | doing | done | waived
+  handleNote  String? // 整改措施
+  handledBy   String?
+  handledAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  gmpClause GmpClause   @relation(fields: [gmpClauseId], references: [id], onDelete: Cascade)
+  group     AuditGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  // 整改条目与异常评估一一对应：以 Assessment.gmpClauseId 为关联键
+  assessment Assessment? @relation("RectifyOfAssessment", fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, gmpClauseId, groupId])
+  @@index([projectId, status])
+  @@index([projectId, priority])
+  @@map("rectifications")
+}
+
+// 报告表：结构固定 + 数据自动填充，content_json 存章节统计/红线/AI建议
+model Report {
+  id           String    @id @default(cuid())
+  projectId    String
+  contentJson  String // 完整报告内容（章节统计、四状态比例、红线、AI建议）
+  aiSummary    String? // AI 生成的高风险信号与改进建议（组长可编辑）
+  aiRaw        String? // AI 原始返回，便于追溯
+  aiProvider   String? // deepseek | fallback
+  confirmedBy  String? // 复核人（组长）user.id
+  confirmedAt  DateTime? // 复核时间
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  confirmer User?   @relation("ReportConfirmer", fields: [ confirmedBy], references: [id], onDelete: SetNull)
+
+  @@index([projectId])
+  @@map("reports")
+}
+
+// 操作日志表：登录、勾选、项目增删改、报告生成、映射表变更等
+model OperationLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  userName  String?
+  role      String?
+  action    String // 如 login / assessment_batch / project_create / report_generate
+  target    String? // 操作对象，如 project:gmp-xxx
+  detail    String? // JSON 字符串或文本摘要
+  ip        String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([action])
+  @@map("operation_logs")
+}

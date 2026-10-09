@@ -1,0 +1,57 @@
+﻿# ===== 一键部署：docker compose up -d =====
+# 访问：http://localhost（前端 Nginx 已代理 /api）
+# 手机访问：http://<服务器局域网IP>  （现场审核同网段可直接扫码/输入）
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: gmp-audit-server
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DATABASE_URL: "file:/data/gmp.db"
+      # ★ 以下两项部署前必须改：
+      #   JWT_SECRET 用随机长字符串：node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+      #   DEFAULT_ADMIN_PASSWORD 改完后即为admin 的初始登录密码
+      #   留默认值等于把弱口令暴露给所有能访问本服务的人
+      JWT_SECRET: "${JWT_SECRET:-change-me-to-a-long-random-string-in-production}"
+      JWT_EXPIRES_IN: "7d"
+      DEFAULT_ADMIN_PASSWORD: "${DEFAULT_ADMIN_PASSWORD:-change-me-before-deploy}"
+      # DeepSeek API Key（留空则自动使用规则引擎降级，不影响功能）
+      DEEPSEEK_API_KEY: "${DEEPSEEK_API_KEY:-}"
+      DEEPSEEK_BASE_URL: "${DEEPSEEK_BASE_URL:-https://api.deepseek.com/v1}"
+      DEEPSEEK_MODEL: "${DEEPSEEK_MODEL:-deepseek-chat}"
+      CORS_ORIGIN: "*"
+      MAX_PLAN_ROWS: "2000"
+    volumes:
+      # SQLite 数据持久化
+      - gmp_data:/data
+    expose:
+      - "3000"
+    networks:
+      - gmp_net
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: gmp-audit-web
+    restart: unless-stopped
+    depends_on:
+      server:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    networks:
+      - gmp_net
+
+volumes:
+  gmp_data:
+    driver: local
+
+networks:
+  gmp_net:
+    driver: bridge

@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   桌面端优先的尺寸规范（负责人要求：整体加大放宽、按钮明显加大易点击）
+   ------------------------------------------------------------
+   手机端适配本轮不做，因此这里按桌面视口设基准：
+     正文 15px（Tailwind 默认 14px 偏小，200 条条款读起来吃力）
+     常规点击区 48px；主操作按钮 56px
+   做法：把常用尺寸抽成组件类，各页面直接用类名，
+        避免在每个页面重复写 py-2 / min-h-[36px] 这类散落的魔数。
+   ============================================================ */
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+    color: #1a1a1a;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* 表单控件继承基准字号，避免各浏览器默认 13px 显得比正文小一号 */
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+  }
+}
+
+@layer components {
+  /* ---------- 按钮 ---------- */
+  /* 主按钮：主要动作（进入审核、生成报告、上传）。56px 高，视觉上最重 */
+  .btn-primary {
+    @apply inline-flex min-h-[56px] items-center justify-center gap-2 rounded-xl bg-brand px-7 text-base font-semibold text-white transition-all duration-150;
+  }
+  .btn-primary:hover:not(:disabled) {
+    @apply bg-brand-light;
+  }
+  .btn-primary:active:not(:disabled) {
+    @apply scale-[0.985];
+  }
+  .btn-primary:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  /* 次按钮：返回、刷新、导出等辅助动作。48px 高 */
+  .btn-ghost {
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border-2 border-gray-200 bg-white px-5 text-[15px] font-medium text-gray-700 transition-all duration-150;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    @apply border-brand bg-brand/5 text-brand;
+  }
+  .btn-ghost:active:not(:disabled) {
+    @apply scale-[0.985];
+  }
+  .btn-ghost:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  /* 深底上的按钮（页头内） */
+  .btn-onbrand {
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border-2 border-white/40 px-5 text-[15px] font-medium text-white transition-all duration-150;
+  }
+  .btn-onbrand:hover:not(:disabled) {
+    @apply border-white bg-white/15;
+  }
+  .btn-onbrand:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  /* ---------- 表单 ---------- */
+  .field {
+    @apply h-14 w-full rounded-xl border-2 border-gray-200 bg-white px-4 text-base outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10;
+  }
+  .field-sm {
+    @apply h-12 w-full rounded-lg border-2 border-gray-200 bg-white px-3 text-[15px] outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10;
+  }
+
+  /* ---------- 卡片 / 区块 ---------- */
+  .panel {
+    @apply rounded-2xl border border-gray-200 bg-white p-6;
+  }
+  .panel-title {
+    @apply text-base font-semibold text-gray-800;
+  }
+
+  /* 页面主容器：桌面端放宽到 1280px */
+  .page {
+    @apply mx-auto w-full max-w-[1280px] px-8 py-6;
+  }
+
+  /* ---------- 条款层级徽标（第 5 项：分级展示的视觉锚点）---------- */
+  .lv-key {
+    @apply shrink-0 rounded-md bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-700;
+  }
+  .lv-main {
+    @apply shrink-0 rounded-md bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700;
+  }
+  .lv-gen {
+    @apply shrink-0 rounded-md bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600;
+  }
+
+  /* ---------- 状态反馈 ---------- */
+  .alert-err {
+    @apply rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm leading-relaxed text-red-700;
+  }
+  .alert-warn {
+    @apply rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm leading-relaxed text-amber-700;
+  }
+  .alert-ok {
+    @apply rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm leading-relaxed text-emerald-700;
+  }
+}
+
+/* 加载中：按钮内联的旋转指示 */
+@keyframes gmp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin::before {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.5em;
+  vertical-align: -0.125em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 9999px;
+  animation: gmp-spin 0.7s linear infinite;
+}
+
+/* 打印样式：报告页打印即 PDF（后端只生成 Word，PDF 走浏览器打印） */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    font-size: 12px;
+  }
+  .print-break {
+    page-break-inside: avoid;
+  }
+}
+
+/* 隐藏数字输入框的上下箭头 */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* 桌面端横向滚动条不加粗，避免在宽屏上显得笨重 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

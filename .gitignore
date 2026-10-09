@@ -1,0 +1,64 @@
+﻿# ===== 依赖 =====
+node_modules/
+.pnp
+.pnp.js
+
+# ===== 构建产物 =====
+dist/
+build/
+*.tsbuildinfo
+
+# ===== ★ 环境变量与密钥（绝对不能提交）=====
+# .env 里存着 admin 密码明文、JWT 密钥、DeepSeek API Key
+.env
+.env.*
+!.env.example
+*.local
+
+# ===== ★ 数据库（存真实企业名与审核员姓名，绝不入库）=====
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+# 数据库备份文件（体积大且含真实数据）
+*.backup-*
+v2.db.backup-*
+
+# ===== 日志 =====
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ===== 编辑器与系统 =====
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== 临时文件 =====
+*.tmp
+*.temp
+*.bak
+cache/
+tmp/
+_temp/
+
+# ===== 上传文件（审核计划原件属客户资料）=====
+uploads/
+*.docx
+*.xlsx
+!审核计划模板.xlsx
+
+# ===== 测试产生的临时脚本 =====
+server/_*.ts
+server/_*.mts
+server/_*.js
+!server/src/**

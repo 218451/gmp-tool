@@ -1,0 +1,49 @@
+{
+  "name": "gmp-audit-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "新版 GMP 落地增值评估工具 - 后端服务",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "prisma generate && tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "db:push": "prisma db push --skip-generate && tsx prisma/seed.ts",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:reset": "prisma db push --force-reset --skip-generate && tsx prisma/seed.ts",
+    "typecheck": "tsc --noEmit",
+    "verify:plan": "tsx prisma/e2e-word.ts",
+    "verify:slot": "tsx prisma/e2e-slot.ts",
+    "verify:http": "tsx prisma/http-check.ts",
+    "extract:focus": "tsx extract-focus.ts",
+    "verify:crossgroup": "tsx prisma/verify-crossgroup.ts"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/adapter-better-sqlite3": "^7.10.0",
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^13.0.3",
+    "cors": "^2.8.5",
+    "docx": "^9.0.3",
+    "dotenv": "^16.4.7",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mammoth": "^1.13.0",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.10.2",
+    "prisma": "^5.22.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

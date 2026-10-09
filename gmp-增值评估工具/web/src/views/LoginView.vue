@@ -42,6 +42,16 @@ const ROLES: { key: Role; label: string; desc: string }[] = [
   { key: 'admin', label: '系统管理员', desc: '配置与维护' },
 ];
 
+/** 登录时若选了组长身份，提示输入的是账号（手机号）而非姓名 */
+const loginAsLeader = computed(() => mode.value === 'login' && role.value === 'leader');
+
+/** 注册时角色由系统按审核计划判定，这里明确告知，避免用户误以为手选生效 */
+const roleHint = computed(() => {
+  if (mode.value !== 'register') return '';
+  if (role.value === 'admin') return '管理员账号不对外注册，选此项等同于按「审核组长」注册。';
+  return '身份不用您判断：系统会自动按审核计划里您的职务（组长 / 组员）确定。';
+});
+
 function home(r: Role) {
   return r === 'auditor' ? '/auditor' : r === 'leader' ? '/leader' : '/admin';
 }
@@ -174,17 +184,21 @@ function switchMode(m: 'login' | 'register') {
             <div class="mt-1 text-[11px] opacity-80">{{ r.desc }}</div>
           </button>
         </div>
+        <p v-if="roleHint" class="mb-6 rounded-lg bg-brand/5 px-3 py-2 text-xs leading-relaxed text-brand">
+          {{ roleHint }}
+        </p>
 
         <!-- ============ 登录表单 ============ -->
         <template v-if="mode === 'login'">
           <label class="mb-2 block text-sm font-medium text-gray-700">
-            {{ role === 'auditor' ? '姓名' : '账号' }}
+            {{ role === 'auditor' ? '姓名' : '账号（注册时填的手机号）' }}
           </label>
           <input
             v-model="username"
             type="text"
+            :inputmode="loginAsLeader ? 'numeric' : 'text'"
             autocomplete="name"
-            :placeholder="role === 'auditor' ? '请输入你的真实姓名' : '管理员 admin / 组长账号'"
+            :placeholder="role === 'auditor' ? '请输入你的真实姓名' : '请输入注册时填的手机号'"
             class="mb-5 h-14 w-full rounded-xl border-2 border-gray-200 px-4 text-base outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10"
             @keyup.enter="submit"
           />
@@ -306,8 +320,10 @@ function switchMode(m: 'login' | 'register') {
       </div>
 
       <div class="mt-6 space-y-2 rounded-xl border border-gray-200 bg-white/70 p-5 text-xs leading-relaxed text-gray-500">
+        <div><b class="text-gray-700">身份怎么定</b>：不用您自己判断。系统按审核计划里您的职务自动确定——计划里是组长就是审核组长，是组员就是审核员。</div>
         <div><b class="text-gray-700">审核员</b>：注册后等待组长上传 Word 审核计划，系统按姓名自动把您加入对应审核组。</div>
         <div><b class="text-gray-700">审核组长</b>：注册后直接上传 Word 版审核计划，企业名称与分工由系统自动识别。</div>
+        <div><b class="text-gray-700">两个入口的区别</b>：选「审核员 / 组长」入口用<b class="text-gray-700">姓名</b>登录；选「审核组长」入口用<b class="text-gray-700">手机号</b>登录。组长在现场填记录时也走姓名入口。</div>
         <div><b class="text-gray-700">数据隔离</b>：每个项目（受审核企业）数据独立，您只能看到自己参与的项目。</div>
         <div class="text-gray-400">系统管理员账号 admin，由系统维护方提供，不对外自助注册。</div>
       </div>

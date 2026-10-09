@@ -16,20 +16,14 @@ import {
   BorderStyle,
   ShadingType,
   VerticalAlign,
-  PageBreak,
 } from 'docx';
 import type { ReportContent } from './report-engine';
-import { PRIORITY_LABEL, REDLINE_RULES, STATUS_LABEL, type Priority } from './types';
+import { REDLINE_RULES, type Priority } from './types';
 
 const FONT = '宋体';
 const RED = 'C62828';
 const GREEN = '2E7D32';
-const ORANGE = 'F9A825';
-const GREY = '9E9E9E';
 const AMBER_BG = 'FFF4E5';
-
-const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
-const safeDiv = (a: number, b: number) => (b ? a / b : 0);
 
 /** 条款原文可长达上百字，表格内统一限长，完整原文见附录 */
 const clip = (s: string, n = 46) => (s.length > n ? `${s.slice(0, n)}…（详见附录）` : s);
@@ -86,149 +80,64 @@ const alertBlock = (title: string, lines: string[], bg = AMBER_BG, titleColor = 
   return out;
 };
 
-/** 硬编码底表「统计说明」口径：无对应检查项的 ISO 条款（不得漏审） */
-const ISO_NO_CHECK = [
-  { no: '5.2', name: '质量方针' },
-  { no: '5.4.2', name: '质量目标可测量' },
-  { no: '7.2.2', name: '人力资源培训/能力' },
-  { no: '7.5.7', name: '生产和服务过程确认' },
-  { no: '7.5.10', name: '监视和测量设备的溯源确认' },
-  { no: '8.2.5', name: '记录控制（保存期限/可追溯性）' },
-  { no: '8.3.2', name: '不合格品处置（返工/让步接收）' },
-  { no: '8.3.3', name: '不良事件报告与召回' },
-];
+// 注：早期版本里的「ISO 无对应检查项底表」与「法规特有项表」已随正文收敛一并移除，
+//     两者均属体系审核底稿而非报告要回答的问题，需要时查 ISO_NO_CHECK_LIST 常量。
 
-/** 法规特有项：ISO 13485 无对应条款，认证审核与 GMP 检查判定口径不同 */
-const REG_ONLY = [
-  { code: '3.1.2', note: '法规特有要求，须按《规范》单独判定，不得以 ISO 无对应为由豁免' },
-  { code: '3.6.2', note: '法规特有要求，判定口径与认证审核不同' },
-  { code: '3.7.1', note: '法规特有要求，判定口径与认证审核不同' },
-  { code: '3.8.1', note: '法规特有要求，判定口径与认证审核不同' },
-];
-
-// ===== 报告主体：三段式（总体评价 → 亟待解决的问题 → 未落地条款清单）=====
+// ===== 报告主体：三块（红线预警 → 亟待解决的问题 → 未落地条款清单）=====
 /**
- * 报告结构依据（负责人口径）：
- *   报告要回答的只有三个问题 —— 哪些条款没落地、亟待解决哪些问题、总体评价是什么。
- *   因此正文按「结论先行」组织，不再逐章逐条罗列 200 项：
+ * 报告结构依据（负责人口径，2026-10-09 收敛）：
+ *   「生成的报告里面只体现红线预警、亟待解决的问题、未落地条款清单，其余都不要。」
  *
- *   一、总体评价        —— 一句话结论 + 等级 + 关键指标 + 评价正文（先给结论）
- *   二、亟待解决的问题   —— 按章 + 优先级归并的问题清单，每条含定性、依据、处置建议
- *   三、未落地条款清单   —— 支撑上表的条款明细（含原文），供复核与追责
+ * 因此正文**只有三块**，顺序按「先定性、再展开、后附明细」：
  *
- * 保留的合规必要内容（三处）：
- *   · 已核实 / 未核实口径说明 —— 防止把「默认已落地」误读为「审核确认已落地」
- *   · 红线预警 —— 触及法规红线，必须显式披露
- *   · 声明 —— 不作认证结论承诺，划清监管红线
+ *   一、红线预警         —— 触及法规红线才触发，触发即置顶；含四维度阈值对照表
+ *   二、亟待解决的问题   —— 按章 + 优先级归并，每条含定性、依据、责任组、处置建议
+ *   三、未落地条款清单   —— 支撑第二节的条款明细（含原文），供复核与追责
  *
- * 已从正文移除（改为按需索取）：三大重点章节专项统计、审核组进度明细、
+ * ★ 已删除的内容（负责人明确「其余都不要」）：
+ *   · 封面页（标题 / 企业名 / 审核日期 / 复核人）—— 改为正文顶部一行标题
+ *   · 「总体评价」整节 —— 一句话结论、评价等级、关键指标横排、评价正文
+ *   · 「核查口径说明」小节 —— 已核实/未核实口径表 + 落地率可能被高估的提示
+ *   · 「附：审核组补充说明」（AI 生成内容）
+ *   连带不再使用 aiSummary / confirmedBy 的内容（签名保留以兼容现有调用）。
+ *
+ * 保留「声明」一节（合规必要，划清监管红线）：
+ *   本工具不提供「直接提交监管 / 包通过检查」类承诺，删掉声明会让报告被误当成认证结论文件。
+ *
+ * 更早一轮已移除的内容：三大重点章节专项统计、审核组进度明细、
  * ISO 无对应条款硬编码表、法规特有项表、章节分布全表、重复条款明细表。
- * 这些是过程性材料，不是报告要回答的问题；需要时看系统页面即可。
  */
 
-const PRIORITIES: Priority[] = ['P0', 'P1', 'P2'];
 const PRIORITY_LABEL_SHORT: Record<Priority, string> = { P0: 'P0 立即处置', P1: 'P1 限期整改', P2: 'P2 持续改进' };
 const PRIORITY_COLOR: Record<Priority, string> = { P0: RED, P1: 'E65100', P2: '5D4037' };
-const PRIORITY_BG: Record<Priority, string> = { P0: 'FDECEC', P1: AMBER_BG, P2: 'F5F5F5' };
-
-/** 评价等级 → 配色 */
-const GRADE_STYLE: Record<string, { color: string; bg: string }> = {
-  critical: { color: RED, bg: 'FDECEC' },
-  poor: { color: 'E65100', bg: AMBER_BG },
-  acceptable: { color: '2E7D32', bg: 'EDF7ED' },
-  good: { color: GREEN, bg: 'EDF7ED' },
-};
 
 /** 生成精简版 docx Buffer */
 export async function buildDocx(rc: ReportContent, aiSummary: string, confirmedBy?: string | null): Promise<Buffer> {
+  // ★ 已按口径移除 AI 补充意见与复核人抬头，保留参数仅为兼容现有调用签名
+  void aiSummary;
+  void confirmedBy;
   const children: (Paragraph | Table)[] = [];
   const t = rc.totals;
-  const unverified = t.total - t.verified;
   const problems = rc.problems ?? [];
-  const v = rc.verdict;
-  const gradeStyle = GRADE_STYLE[v.grade] ?? { color: GREEN, bg: 'EDF7ED' };
 
-  // ===== 封面（压到最小：标题 + 企业 + 日期）=====
+  // ===== 标题（仅一行，替代原封面页）=====
   children.push(
     new Paragraph({
       alignment: AlignmentType.CENTER,
-      spacing: { after: 100 },
-      children: [new TextRun({ text: '新版 GMP 落地增值评估报告', bold: true, size: 34, font: FONT })],
-    }),
-  );
-  children.push(
-    new Paragraph({
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 60 },
-      children: [new TextRun({ text: rc.project.name || '—', size: 24, color: '333333', font: FONT })],
-    }),
-  );
-  children.push(
-    new Paragraph({
-      alignment: AlignmentType.CENTER,
-      spacing: { after: 240 },
+      spacing: { after: 160 },
       children: [
         new TextRun({
-          text: `审核日期 ${rc.project.auditDate}　|　复核人 ${confirmedBy || '待复核'}　|　生成于 ${new Date(rc.generatedAt).toLocaleDateString('zh-CN')}`,
-          size: 18,
-          color: '777777',
+          text: `${rc.project.name || '—'}　新版 GMP 落地增值评估报告`,
+          bold: true,
+          size: 30,
           font: FONT,
         }),
       ],
     }),
   );
 
-  // ===== 一、总体评价 =====
-  children.push(h1('一、总体评价'));
-
-  // 一句话结论（最醒目）
-  children.push(
-    new Paragraph({
-      spacing: { after: 120 },
-      shading: { type: ShadingType.CLEAR, fill: gradeStyle.bg },
-      border: {
-        left: { style: BorderStyle.SINGLE, size: 18, color: gradeStyle.color, space: 8 },
-      },
-      children: [new TextRun({ text: v.headline, bold: true, size: 24, color: gradeStyle.color, font: FONT })],
-    }),
-  );
-  children.push(p(`评价等级：${v.gradeLabel}`, { bold: true, color: gradeStyle.color, size: 22, align: AlignmentType.RIGHT }));
-
-  // 关键指标横排
-  children.push(
-    table(
-      v.metrics.map((m) => m.label),
-      [v.metrics.map((m) => m.value)],
-      { headFill: 'F5F5F5' },
-    ),
-  );
-
-  // 评价正文
-  for (const para of v.paragraphs) children.push(p(para, { size: 21 }));
-
-  // 核查口径说明（合规必要：防止把「默认已落地」误读为「审核确认落地」）
-  children.push(h2('核查口径说明'));
-  children.push(
-    table(
-      ['口径', '条款数', '含义'],
-      [
-        [`已核实 ${t.verified} 条`, `${t.verified}`, '有明确核查记录与结论'],
-        [`未核实 ${unverified} 条`, `${unverified}`, '默认已落地（待核实），不等同于审核确认已落地'],
-        [`合计 ${t.total} 条`, `${t.total}`, '本次核查范围'],
-      ],
-    ),
-  );
-  children.push(
-    p(
-      unverified > 0
-        ? `本报告落地率含 ${unverified} 项「默认已落地（待核实）」，可能被高估。建议以已核实条款为主要判断依据。`
-        : '本次范围内条款均已核实并形成结论，落地率可作为合规判断依据。',
-      { size: 20, color: unverified > 0 ? 'E65100' : GREEN },
-    ),
-  );
-
-  // 红线预警（触及法规红线，必须显式披露）
-  children.push(h2('红线预警'));
+  // ===== 一、红线预警 =====
+  children.push(h1('一、红线预警'));
   const th = rc.redline.thresholds ?? REDLINE_RULES;
   if (rc.redline.triggered) {
     children.push(...alertBlock('本次审核已触发红线预警，需按下列结论处置：', rc.redline.reasons));
@@ -245,6 +154,9 @@ export async function buildDocx(rc: ReportContent, aiSummary: string, confirmedB
         ['总不符合', `${rc.redline.totalNotMet}`, `≥${th.totalNotMet}`, rc.redline.totalNotMet >= th.totalNotMet ? '触发' : '未触发'],
       ],
     ),
+  );
+  children.push(
+    p(`本次核查范围合计 ${t.total} 条，已核实 ${t.verified} 条，未落地 ${t.abnormal} 条。`, { size: 20, color: '666666' }),
   );
 
   // ===== 二、亟待解决的问题 =====
@@ -300,9 +212,6 @@ export async function buildDocx(rc: ReportContent, aiSummary: string, confirmedB
 
   // ===== 三、未落地条款清单 =====
   children.push(h1('三、未落地条款清单'));
-  children.push(
-    p(`下列 ${rc.abnormalList.length} 条为本次核查判定未落地的条款，作为第二节问题的支撑明细。完整原文一并列出，便于受审核方逐条确认与追责。`, { size: 20 }),
-  );
   if (!rc.abnormalList.length) {
     children.push(p('无。', { color: GREEN }));
   } else {
@@ -337,24 +246,10 @@ export async function buildDocx(rc: ReportContent, aiSummary: string, confirmedB
     });
   }
 
-  // ===== 附：AI 补充意见（若有）=====
-  const aiLines = (aiSummary || '').split(/\r?\n/).filter((l) => l.trim());
-  if (aiLines.length) {
-    children.push(h1('附：审核组补充说明'));
-    for (const ln of aiLines) {
-      const text = ln.replace(/^#+\s*/, '').trim();
-      if (!text) continue;
-      const isHead = /^(高风险信号|改进建议|增值评估小结)/.test(text);
-      children.push(p(text, { bold: isHead, size: isHead ? 23 : 21 }));
-    }
-  }
+  // ★ 「附：审核组补充说明」（AI 生成内容）已按口径移除。
+  //   aiSummary 参数仍保留在签名里，但内容不再进入正文 —— 见函数开头注释。
 
-  children.push(new Paragraph({ children: [new PageBreak()] }));
-  children.push(
-    new Paragraph({ spacing: { after: 120 }, children: [new TextRun({ text: '（本报告正文结束）', size: 18, color: '999999', font: FONT })] }),
-  );
-
-children.push(h1('声明'));
+  children.push(h1('声明'));
   children.push(
     p(
       '本报告依据 ISO 13485:2016 及《医疗器械生产质量管理规范》（国药监械管〔2026〕14 号附件，2026-11-01 起施行）现场审核记录生成，采用「默认已落地＋反选异常」核查模式，仅作为认证审核组的增值评估与技术支持材料，不构成对受审核方产品注册、体系认证或其他行政许可结果的承诺。整改建议的最终实施责任在受审核方。本报告不提供直接提交监管、包通过检查或保证通过检查等结论性承诺。',
